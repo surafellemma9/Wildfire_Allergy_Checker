@@ -7,7 +7,9 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "generate-menu-data": "tsx scripts/generate-menu-data.ts"
+    "generate-menu-data": "tsx scripts/generate-menu-data.ts",
+    "validate-allergens": "tsx scripts/validate-allergens.ts",
+    "fix-allergens": "tsx scripts/fix-allergens.ts"
   },
   "dependencies": {
     "react": "^18.2.0",
