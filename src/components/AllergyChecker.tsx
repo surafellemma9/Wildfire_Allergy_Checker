@@ -98,25 +98,21 @@ export function AllergyChecker() {
     return checkDishSafety(selectedDish, Array.from(selectedAllergies));
   }, [selectedDish, selectedAllergies, showResults]);
 
-  const getStatusColor = (status: 'safe' | 'safe_with_mods' | 'unsafe') => {
+  const getStatusColor = (status: 'safe' | 'unsafe') => {
     switch (status) {
       case 'safe':
         return '#28a745'; // Green for safe
-      case 'safe_with_mods':
-        return '#ffc107'; // Yellow for warnings
       case 'unsafe':
         return '#dc3545'; // Red for danger
     }
   };
 
-  const getStatusText = (status: 'safe' | 'safe_with_mods' | 'unsafe') => {
+  const getStatusText = (status: 'safe' | 'unsafe') => {
     switch (status) {
       case 'safe':
-        return 'SAFE';
-      case 'safe_with_mods':
-        return 'REQUIRES MODIFICATIONS';
+        return 'SAFE - NO CHANGES';
       case 'unsafe':
-        return 'NOT RECOMMENDED';
+        return 'UNSAFE';
     }
   };
 
@@ -341,61 +337,32 @@ export function AllergyChecker() {
                 )}
               </div>
 
-              <div className="global-message">
-                <p>{result.globalMessage}</p>
-              </div>
-
-              {result.modificationSuggestions.length > 0 && (
-                <div className="modifications-section">
-                  <h3>Recommended Modifications</h3>
-                  <ul className="modifications-list">
-                    {result.modificationSuggestions.map((suggestion, index) => (
-                      <li key={index}>{suggestion}</li>
-                    ))}
-                  </ul>
+              {result.overallStatus === 'safe' ? (
+                <div className="safe-message">
+                  <p>{result.globalMessage}</p>
                 </div>
-              )}
-
-              <div className="per-allergy-section">
-                <h3>Allergen Analysis</h3>
-                {result.perAllergy.map((item) => (
-                  <div key={item.allergen} className="allergy-detail">
-                    <div className="allergy-header">
-                      <strong>{ALLERGEN_LABELS[item.allergen]}</strong>
-                      <span
-                        className="allergy-status-badge"
-                        style={{ 
-                          backgroundColor: getStatusColor(item.status),
-                          color: '#ffffff'
-                        }}
-                      >
-                        {getStatusText(item.status)}
-                      </span>
-                    </div>
-                    <p className="allergy-message">{item.message}</p>
-                    {item.foundIngredients && item.foundIngredients.length > 0 && (
-                      <div className="found-ingredients">
-                        <strong>Identified ingredients containing {ALLERGEN_LABELS[item.allergen]}:</strong>
-                        <ul>
-                          {item.foundIngredients.map((ingredient, idx) => (
-                            <li key={idx}><em>{ingredient}</em></li>
-                          ))}
-                        </ul>
-                      </div>
-                    )}
-                    {item.suggestions && item.suggestions.length > 0 && (
-                      <div className="allergy-suggestions">
-                        <strong>Modification options:</strong>
-                        <ul>
-                          {item.suggestions.map((suggestion, idx) => (
-                            <li key={idx}>{suggestion}</li>
-                          ))}
-                        </ul>
-                      </div>
-                    )}
+              ) : (
+                <>
+                  <div className="unsafe-message">
+                    <p>{result.globalMessage}</p>
                   </div>
-                ))}
-              </div>
+
+                  {result.perAllergy.some(item => item.status === 'unsafe' && item.substitutions.length > 0) && (
+                    <div className="substitutions-banner">
+                      <h3>Substitutions</h3>
+                      <ul className="substitutions-list">
+                        {result.perAllergy
+                          .filter(item => item.status === 'unsafe')
+                          .flatMap(item => 
+                            item.substitutions.map((sub, idx) => (
+                              <li key={`${item.allergen}-${idx}`}>{sub}</li>
+                            ))
+                          )}
+                      </ul>
+                    </div>
+                  )}
+                </>
+              )}
 
               {result.dish.notes && result.dish.notes.trim() !== '' && (
                 <div className="notes-box">

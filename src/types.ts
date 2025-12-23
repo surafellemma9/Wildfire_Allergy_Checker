@@ -39,16 +39,14 @@ export interface MenuItem {
 export interface AllergyCheckResult {
   dish: MenuItem;
   selectedAllergies: Allergen[];
-  overallStatus: 'safe' | 'safe_with_mods' | 'unsafe';
+  overallStatus: 'safe' | 'unsafe';
   perAllergy: Array<{
     allergen: Allergen;
     contains: boolean;
-    status: 'safe' | 'safe_with_mods' | 'unsafe';
-    message: string;
-    suggestions?: string[];
-    foundIngredients?: string[];
+    status: 'safe' | 'unsafe';
+    canBeModified: boolean;
+    substitutions: string[];
   }>;
   globalMessage: string;
-  modificationSuggestions: string[];
 }
 

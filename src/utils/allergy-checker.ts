@@ -115,90 +115,121 @@ function findAllergenIngredients(description: string, allergen: Allergen): strin
   return found;
 }
 
-// General modification suggestions by allergen
-const allergenSuggestions: Record<Allergen, string[]> = {
-  dairy: [
-    'Substitute butter with olive oil or dairy-free margarine',
-    'Replace cream with coconut cream or non-dairy milk alternatives',
-    'Remove or substitute cheese with dairy-free alternatives',
-    'Use dairy-free alternatives for any sauces or dressings'
-  ],
-  egg: [
-    'Remove egg-based binders or use egg substitutes',
-    'Omit egg-based sauces or dressings',
-    'Substitute egg wash with oil or dairy-free milk',
-    'Ensure no egg-based breading or batter'
-  ],
-  gluten: [
-    'Use gluten-free bread, buns, or pasta alternatives',
-    'Substitute flour-based thickeners with cornstarch or arrowroot',
-    'Remove croutons or bread-based garnishes',
-    'Ensure all sauces and marinades are gluten-free'
-  ],
-  shellfish: [
-    'Remove shellfish from the dish entirely',
-    'Substitute with non-shellfish protein if applicable',
-    'Ensure no shellfish-based stocks or broths are used',
-    'Clean all surfaces and utensils to prevent cross-contamination'
-  ],
-  fish: [
-    'Remove fish from the dish entirely',
-    'Substitute with non-fish protein if applicable',
-    'Ensure no fish-based stocks or sauces are used',
-    'Clean all surfaces and utensils to prevent cross-contamination'
-  ],
-  soy: [
-    'Substitute soy sauce with tamari (gluten-free) or coconut aminos',
-    'Remove soy-based marinades or dressings',
-    'Check all sauces for soy ingredients',
-    'Use soy-free alternatives for any Asian-inspired dishes'
-  ],
-  peanuts: [
-    'Remove peanuts and peanut-based ingredients',
-    'Substitute peanut oil with other cooking oils',
-    'Ensure no peanut-based sauces or garnishes',
-    'Clean all surfaces and utensils to prevent cross-contamination'
-  ],
-  tree_nuts: [
-    'Remove tree nuts and nut-based ingredients',
-    'Substitute nut oils with other cooking oils',
-    'Remove nut-based crusts or toppings',
-    'Clean all surfaces and utensils to prevent cross-contamination'
-  ],
-  sesame: [
-    'Remove sesame seeds and sesame oil',
-    'Substitute sesame-based dressings or sauces',
-    'Remove sesame seed buns or bread',
-    'Clean all surfaces and utensils to prevent cross-contamination'
-  ],
-  msg: [
-    'Remove MSG-containing seasonings',
-    'Use fresh herbs and spices instead of pre-mixed seasonings',
-    'Check all sauces and marinades for MSG',
-    'Use natural flavor enhancers like mushrooms or tomatoes'
-  ],
-  onion_garlic: [
-    'Remove all onion and garlic from the dish',
-    'Substitute with celery or fennel for similar texture',
-    'Use asafoetida (hing) powder as a garlic substitute if tolerated',
-    'Omit garlic-based marinades, sauces, and dressings',
-    'Remove garlic croutons or bread-based garnishes',
-    'Ensure no onion or garlic in stocks, broths, or bases'
-  ],
-  tomato: [
-    'Remove tomatoes and tomato-based ingredients',
-    'Substitute tomato sauce with alternative sauces (e.g., pesto, white sauce)',
-    'Omit tomato paste, tomato jam, or tomato-based condiments',
-    'Remove tomato garnishes or toppings',
-    'Check all sauces and dressings for tomato ingredients',
-    'Substitute with bell peppers or other vegetables if applicable'
-  ],
+// Helper to get allergen label
+const ALLERGEN_LABELS: Record<Allergen, string> = {
+  dairy: 'Dairy',
+  egg: 'Egg',
+  gluten: 'Gluten',
+  shellfish: 'Shellfish',
+  fish: 'Fish',
+  soy: 'Soy',
+  peanuts: 'Peanuts',
+  tree_nuts: 'Tree Nuts',
+  sesame: 'Sesame',
+  msg: 'MSG',
+  onion_garlic: 'Onion/Garlic',
+  tomato: 'Tomato',
 };
+
+// Check if dish is a prepared food that cannot be modified (soups, bisques, etc.)
+function isPreparedFood(dish: MenuItem): boolean {
+  const description = dish.description.toLowerCase();
+  const dishName = dish.dish_name.toLowerCase();
+  const category = dish.category.toLowerCase();
+  
+  // Soups, bisques, and pre-made items
+  const preparedKeywords = ['soup', 'bisque', 'stew', 'chili', 'gumbo'];
+  return preparedKeywords.some(keyword => 
+    dishName.includes(keyword) || 
+    description.includes(keyword) ||
+    category.includes('soup')
+  );
+}
+
+// Generate substitution list for an allergen
+function generateSubstitutions(dish: MenuItem, allergen: Allergen, canModify: boolean): string[] {
+  if (!canModify) {
+    return [`NO ${ALLERGEN_LABELS[allergen]}`];
+  }
+
+  const substitutions: string[] = [];
+  const foundIngredients = findAllergenIngredients(dish.description, allergen);
+  
+  // Generate specific substitutions based on allergen type
+  switch (allergen) {
+    case 'dairy':
+      if (foundIngredients.some(ing => ing.toLowerCase().includes('butter'))) {
+        substitutions.push('NO butter (use oil)');
+      }
+      if (foundIngredients.some(ing => ing.toLowerCase().includes('cheese'))) {
+        substitutions.push('NO cheese');
+      }
+      if (foundIngredients.some(ing => ing.toLowerCase().includes('cream'))) {
+        substitutions.push('NO cream (use non-dairy alternative)');
+      }
+      if (substitutions.length === 0) {
+        substitutions.push(`NO ${ALLERGEN_LABELS[allergen]}`);
+      }
+      break;
+    case 'gluten':
+      if (foundIngredients.some(ing => ing.toLowerCase().includes('bun') || ing.toLowerCase().includes('bread'))) {
+        substitutions.push('NO bun/bread (use gluten-free)');
+      }
+      if (foundIngredients.some(ing => ing.toLowerCase().includes('crouton'))) {
+        substitutions.push('NO croutons');
+      }
+      if (foundIngredients.some(ing => ing.toLowerCase().includes('flour'))) {
+        substitutions.push('NO flour (use gluten-free alternative)');
+      }
+      if (substitutions.length === 0) {
+        substitutions.push(`NO ${ALLERGEN_LABELS[allergen]}`);
+      }
+      break;
+    case 'shellfish':
+    case 'fish':
+      substitutions.push(`NO ${ALLERGEN_LABELS[allergen]}`);
+      break;
+    case 'egg':
+      if (foundIngredients.some(ing => ing.toLowerCase().includes('mayo'))) {
+        substitutions.push('NO mayonnaise');
+      }
+      if (substitutions.length === 0) {
+        substitutions.push(`NO ${ALLERGEN_LABELS[allergen]}`);
+      }
+      break;
+    case 'soy':
+      if (foundIngredients.some(ing => ing.toLowerCase().includes('soy sauce') || ing.toLowerCase().includes('tamari'))) {
+        substitutions.push('NO soy sauce (use coconut aminos)');
+      } else {
+        substitutions.push(`NO ${ALLERGEN_LABELS[allergen]}`);
+      }
+      break;
+    case 'sesame':
+      if (foundIngredients.some(ing => ing.toLowerCase().includes('sesame seed bun'))) {
+        substitutions.push('NO sesame seed bun (use regular bun)');
+      } else {
+        substitutions.push(`NO ${ALLERGEN_LABELS[allergen]}`);
+      }
+      break;
+    case 'onion_garlic':
+      substitutions.push('NO onion/garlic');
+      break;
+    case 'tomato':
+      substitutions.push('NO tomato');
+      break;
+    default:
+      substitutions.push(`NO ${ALLERGEN_LABELS[allergen]}`);
+  }
+
+  return substitutions;
+}
 
 export function checkDishSafety(
   dish: MenuItem,
   allergies: Allergen[]
 ): AllergyCheckResult {
+  const canModify = !isPreparedFood(dish) && !(dish.cannot_be_made_safe_notes && dish.cannot_be_made_safe_notes.trim() !== '');
+  
   const perAllergy = allergies.map((allergen) => {
     // For onion_garlic and tomato, check description only (no CSV column)
     const isDescriptionOnly = allergen === 'onion_garlic' || allergen === 'tomato';
@@ -220,87 +251,32 @@ export function checkDishSafety(
       }
     }
 
-    // Find specific ingredients containing this allergen
-    const foundIngredients = contains ? findAllergenIngredients(dish.description, allergen) : [];
-
-    let status: 'safe' | 'safe_with_mods' | 'unsafe';
-    let message: string;
-    let suggestions: string[] = [];
-
-    if (containsValue === 'N' || containsValue === '' || containsValue === null || !contains) {
-      status = 'safe';
-      message = 'Does not contain this allergen according to current data.';
-    } else if (containsValue === 'Y' || contains) {
-      // Build message with specific ingredients
-      let ingredientMessage = '';
-      if (foundIngredients.length > 0) {
-        const ingredientList = foundIngredients.join(', ');
-        ingredientMessage = ` Contains: ${ingredientList}.`;
-      } else {
-        ingredientMessage = ' Contains this allergen (specific ingredients not identified in description).';
-      }
-
-      if (dish.cannot_be_made_safe_notes && dish.cannot_be_made_safe_notes.trim() !== '') {
-        status = 'unsafe';
-        message = dish.cannot_be_made_safe_notes + ingredientMessage;
-        // Still provide suggestions even if marked as cannot be made safe
-        suggestions = allergenSuggestions[allergen];
-      } else if (dish.mod_notes && dish.mod_notes.trim() !== '') {
-        status = 'safe_with_mods';
-        message = dish.mod_notes + ingredientMessage;
-        // Combine specific mod notes with general suggestions
-        suggestions = [dish.mod_notes, ...allergenSuggestions[allergen]];
-      } else {
-        status = 'unsafe';
-        message = 'Contains this allergen.' + ingredientMessage + ' Modification suggestions provided below.';
-        suggestions = allergenSuggestions[allergen];
-      }
-    } else {
-      // Fallback (shouldn't happen with proper data)
-      status = 'unsafe';
-      message = 'Unknown allergen status. Treat as NOT safe and consult chef/manager.';
-      suggestions = allergenSuggestions[allergen];
-    }
+    const status: 'safe' | 'unsafe' = (containsValue === 'Y' || contains) ? 'unsafe' : 'safe';
+    const substitutions = status === 'unsafe' ? generateSubstitutions(dish, allergen, canModify) : [];
 
     return {
       allergen,
       contains,
       status,
-      message,
-      suggestions: suggestions.length > 0 ? suggestions : undefined,
-      foundIngredients: foundIngredients.length > 0 ? foundIngredients : undefined,
+      canBeModified: canModify,
+      substitutions,
     };
   });
 
-  // Determine overall status
-  let overallStatus: 'safe' | 'safe_with_mods' | 'unsafe';
-  if (perAllergy.some((a) => a.status === 'unsafe')) {
-    overallStatus = 'unsafe';
-  } else if (perAllergy.some((a) => a.status === 'safe_with_mods')) {
-    overallStatus = 'safe_with_mods';
-  } else {
-    overallStatus = 'safe';
-  }
+  // Determine overall status - if ANY allergen is unsafe, overall is unsafe
+  const overallStatus: 'safe' | 'unsafe' = perAllergy.some((a) => a.status === 'unsafe') ? 'unsafe' : 'safe';
 
   // Generate global message
   let globalMessage: string;
   if (overallStatus === 'unsafe') {
-    globalMessage = 'This dish contains allergens that may not be safely modified. Review modification suggestions below and consult with kitchen management before serving.';
-  } else if (overallStatus === 'safe_with_mods') {
-    globalMessage = 'Dish can be served ONLY with the modifications listed below. Confirm with kitchen and follow allergy procedures.';
-  } else {
-    globalMessage = 'Dish appears safe for the selected allergens based on current data. Still follow standard allergy protocols.';
-  }
-
-  // Collect all modification suggestions
-  const modificationSuggestions: string[] = [];
-  perAllergy.forEach((item) => {
-    if (item.suggestions && item.suggestions.length > 0) {
-      modificationSuggestions.push(...item.suggestions);
+    if (!canModify) {
+      globalMessage = 'Cannot be changed after preparation. This dish contains allergens and cannot be modified.';
+    } else {
+      globalMessage = 'This dish contains allergens. See substitutions below.';
     }
-  });
-  // Remove duplicates
-  const uniqueSuggestions = Array.from(new Set(modificationSuggestions));
+  } else {
+    globalMessage = 'No Changes';
+  }
 
   return {
     dish,
@@ -308,7 +284,6 @@ export function checkDishSafety(
     overallStatus,
     perAllergy,
     globalMessage,
-    modificationSuggestions: uniqueSuggestions,
   };
 }
 
