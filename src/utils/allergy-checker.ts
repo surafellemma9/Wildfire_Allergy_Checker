@@ -115,6 +115,33 @@ function findAllergenIngredients(description: string, allergen: Allergen): strin
   return found;
 }
 
+/**
+ * Find custom allergen terms in the dish description
+ */
+function findCustomAllergenIngredients(description: string, customAllergen: string): string[] {
+  if (!description || !customAllergen.trim()) return [];
+  
+  const descriptionLower = description.toLowerCase();
+  const allergenLower = customAllergen.toLowerCase().trim();
+  const found: string[] = [];
+  
+  // Use word boundaries to find the custom allergen term
+  const regex = new RegExp(`\\b${allergenLower.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'gi');
+  if (regex.test(descriptionLower)) {
+    // Find the actual word as it appears in the description (preserve case)
+    const matches = description.match(regex);
+    if (matches && matches.length > 0) {
+      matches.forEach(match => {
+        if (!found.includes(match)) {
+          found.push(match);
+        }
+      });
+    }
+  }
+  
+  return found;
+}
+
 // Helper to get allergen label
 const ALLERGEN_LABELS: Record<Allergen, string> = {
   dairy: 'Dairy',
@@ -226,7 +253,8 @@ function generateSubstitutions(dish: MenuItem, allergen: Allergen, canModify: bo
 
 export function checkDishSafety(
   dish: MenuItem,
-  allergies: Allergen[]
+  allergies: Allergen[],
+  customAllergies: string[] = []
 ): AllergyCheckResult {
   const canModify = !isPreparedFood(dish) && !(dish.cannot_be_made_safe_notes && dish.cannot_be_made_safe_notes.trim() !== '');
   
@@ -236,10 +264,11 @@ export function checkDishSafety(
     
     let containsValue: 'Y' | 'N' | '' | null = null;
     let contains = false;
+    let foundIngredients: string[] = [];
     
     if (isDescriptionOnly) {
       // Check description for these allergens
-      const foundIngredients = findAllergenIngredients(dish.description, allergen);
+      foundIngredients = findAllergenIngredients(dish.description, allergen);
       contains = foundIngredients.length > 0;
       containsValue = contains ? 'Y' : 'N';
     } else {
@@ -248,6 +277,10 @@ export function checkDishSafety(
       if (column) {
         containsValue = dish[column] as 'Y' | 'N' | '' | null;
         contains = containsValue === 'Y';
+        // Also find ingredients in description for display
+        if (contains) {
+          foundIngredients = findAllergenIngredients(dish.description, allergen);
+        }
       }
     }
 
@@ -260,11 +293,34 @@ export function checkDishSafety(
       status,
       canBeModified: canModify,
       substitutions,
+      foundIngredients: foundIngredients.length > 0 ? foundIngredients : undefined,
     };
   });
 
+  // Check custom allergens
+  const customAllergyResults = customAllergies.map((customAllergen) => {
+    const foundIngredients = findCustomAllergenIngredients(dish.description, customAllergen);
+    const contains = foundIngredients.length > 0;
+    const status: 'safe' | 'unsafe' = contains ? 'unsafe' : 'safe';
+    const substitutions = status === 'unsafe' 
+      ? (canModify ? [`NO ${customAllergen}`] : [`Cannot remove ${customAllergen} - dish cannot be modified`])
+      : [];
+
+    return {
+      allergen: customAllergen,
+      contains,
+      status,
+      canBeModified: canModify,
+      substitutions,
+      foundIngredients: foundIngredients.length > 0 ? foundIngredients : undefined,
+    };
+  });
+
+  // Combine all allergy results
+  const allPerAllergy = [...perAllergy, ...customAllergyResults];
+
   // Determine overall status - if ANY allergen is unsafe, overall is unsafe
-  const overallStatus: 'safe' | 'unsafe' = perAllergy.some((a) => a.status === 'unsafe') ? 'unsafe' : 'safe';
+  const overallStatus: 'safe' | 'unsafe' = allPerAllergy.some((a) => a.status === 'unsafe') ? 'unsafe' : 'safe';
 
   // Generate global message
   let globalMessage: string;
@@ -281,8 +337,9 @@ export function checkDishSafety(
   return {
     dish,
     selectedAllergies: allergies,
+    customAllergies,
     overallStatus,
-    perAllergy,
+    perAllergy: allPerAllergy,
     globalMessage,
   };
 }

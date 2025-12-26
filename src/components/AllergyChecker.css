@@ -690,6 +690,126 @@ h1 {
   font-size: 0.95rem;
 }
 
+.custom-allergen-section {
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 2px solid #e1e8ed;
+}
+
+.custom-allergen-section label {
+  display: block;
+  margin-bottom: 0.75rem;
+  color: #1a202c;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.custom-allergen-input-group {
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.custom-allergen-input {
+  flex: 1;
+  padding: 0.875rem 1rem;
+  border: 2px solid #e1e8ed;
+  border-radius: 6px;
+  font-size: 1rem;
+  background: #ffffff;
+  color: #1a202c;
+  box-sizing: border-box;
+  transition: all 0.2s ease;
+  font-family: inherit;
+}
+
+.custom-allergen-input:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+}
+
+.custom-allergen-input::placeholder {
+  color: #6c757d;
+}
+
+.add-custom-allergen-button {
+  padding: 0.875rem 1.5rem;
+  background: #007bff;
+  color: #ffffff;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  box-shadow: 0 2px 4px rgba(0, 123, 255, 0.2);
+}
+
+.add-custom-allergen-button:hover:not(:disabled) {
+  background: #0056b3;
+  box-shadow: 0 4px 8px rgba(0, 123, 255, 0.3);
+  transform: translateY(-1px);
+}
+
+.add-custom-allergen-button:disabled {
+  background: #e9ecef;
+  color: #6c757d;
+  cursor: not-allowed;
+  box-shadow: none;
+  transform: none;
+}
+
+.custom-allergens-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.custom-allergen-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: #e7f3ff;
+  color: #004085;
+  padding: 0.5rem 0.875rem;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  border: 1px solid #b3d9ff;
+}
+
+.remove-custom-allergen-button {
+  background: transparent;
+  border: none;
+  color: #004085;
+  font-size: 1.25rem;
+  font-weight: 700;
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+}
+
+.remove-custom-allergen-button:hover {
+  background: #004085;
+  color: #ffffff;
+}
+
+.custom-allergen-badge {
+  background: #e7f3ff !important;
+  color: #004085 !important;
+  border: 1px solid #b3d9ff !important;
+}
+
 @media (max-width: 768px) {
   .container {
     padding: 1.5rem;
