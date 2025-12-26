@@ -1,8 +1,8 @@
 "use client";
+import { cn } from "@/lib/utils";
+import { AlertTriangle, FileCheck, Utensils } from "lucide-react";
 import { animate } from "motion/react";
 import React, { useEffect, useState } from "react";
-import { cn } from "@/lib/utils";
-import { AlertTriangle, Utensils, FileCheck } from "lucide-react";
 
 interface ProgressIndicatorProps {
   currentStep: number; // 1, 2, or 3
@@ -45,7 +45,6 @@ export function ProgressIndicator({ currentStep, className }: ProgressIndicatorP
           const Icon = step.icon;
           const isActive = step.num === currentStep;
           const isCompleted = step.num < currentStep;
-          const isUpcoming = step.num > currentStep;
 
           return (
             <React.Fragment key={step.num}>
