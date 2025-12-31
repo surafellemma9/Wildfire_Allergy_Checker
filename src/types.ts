@@ -19,6 +19,7 @@ export interface MenuItem {
   category: string;
   menu: string;
   description: string;
+  ingredients: string[]; // Parsed list of all ingredients
   allergy_raw: string;
   contains_dairy: 'Y' | 'N' | '' | null;
   contains_egg: 'Y' | 'N' | '' | null;

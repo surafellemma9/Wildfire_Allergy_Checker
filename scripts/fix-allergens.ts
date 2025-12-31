@@ -195,3 +195,6 @@ fs.writeFileSync(csvPath, updatedCSV, 'utf-8');
 console.log(`\n✅ Fixed ${fixedCount} allergen flags in CSV file.`);
 console.log('Run "npm run generate-menu-data" to update the menu items data.');
 
+
+
+

@@ -115,3 +115,6 @@ If you encounter build issues:
 - Add more Spotlight/Spline effects to other sections
 - Implement dark mode support (already configured in CSS variables)
 
+
+
+
