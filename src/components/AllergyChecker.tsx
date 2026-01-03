@@ -3,7 +3,7 @@ import { GlowingEffect } from '@/components/ui/glowing-effect';
 import { cn } from '@/lib/utils';
 import { useMemo, useState } from 'react';
 import { menuItems } from '../data/menu-items';
-import type { Allergen } from '../types';
+import type { Allergen, MenuItem } from '../types';
 import { checkDishSafety } from '../utils/allergy-checker';
 
 const ALL_ALLERGENS: Allergen[] = [
@@ -39,7 +39,8 @@ const ALLERGEN_LABELS: Record<Allergen, string> = {
 export function AllergyChecker() {
   const [selectedDishId, setSelectedDishId] = useState<string>('');
   const [selectedSideDishId, setSelectedSideDishId] = useState<string>('');
-  const [selectedCrust, setSelectedCrust] = useState<string>('');
+  const [selectedCrusts, setSelectedCrusts] = useState<Set<string>>(new Set());
+  const [selectedProtein, setSelectedProtein] = useState<string>('');
   const [selectedAllergies, setSelectedAllergies] = useState<Set<Allergen>>(new Set());
   const [customAllergies, setCustomAllergies] = useState<Set<string>>(new Set());
   const [allergenSearchTerm, setAllergenSearchTerm] = useState('');
@@ -49,6 +50,7 @@ export function AllergyChecker() {
   const [showResults, setShowResults] = useState(false);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [highlightedIndex, setHighlightedIndex] = useState(-1);
+  const [showBrowseMode, setShowBrowseMode] = useState(false);
 
   const selectedDish = useMemo(() => {
     return menuItems.find((item) => item.id === selectedDishId) || null;
@@ -71,6 +73,12 @@ export function AllergyChecker() {
       'Sandwiches: Signatures'
     ];
     return entreeCategories.includes(selectedDish.category);
+  }, [selectedDish]);
+
+  // Check if selected dish is Classic Breakfast (needs protein selection)
+  const isClassicBreakfast = useMemo(() => {
+    if (!selectedDish) return false;
+    return selectedDish.dish_name.toLowerCase().includes('classic breakfast');
   }, [selectedDish]);
 
   // Get all side dishes
@@ -151,7 +159,7 @@ export function AllergyChecker() {
     const newSet = new Set(selectedAllergies);
     if (!newSet.has(allergen)) {
       newSet.add(allergen);
-      setSelectedAllergies(newSet);
+    setSelectedAllergies(newSet);
       setAllergenSearchTerm('');
       setShowAllergenSuggestions(false);
       setShowResults(false);
@@ -191,6 +199,12 @@ export function AllergyChecker() {
           setShowAllergenSuggestions(false);
       setShowResults(false);
         }
+      } else if ((selectedAllergies.size > 0 || customAllergies.size > 0) && !selectedDishId) {
+        // If allergens are selected but no dish, trigger browse mode
+        setShowBrowseMode(true);
+        setShowResults(false);
+        setAllergenSearchTerm('');
+        setShowAllergenSuggestions(false);
       }
     } else if (e.key === 'Escape') {
       setShowAllergenSuggestions(false);
@@ -206,9 +220,9 @@ export function AllergyChecker() {
       setSelectedAllergies(newSet);
     } else {
       // Custom allergen - remove from customAllergies
-      const newSet = new Set(customAllergies);
-      newSet.delete(allergen);
-      setCustomAllergies(newSet);
+    const newSet = new Set(customAllergies);
+    newSet.delete(allergen);
+    setCustomAllergies(newSet);
     }
     setShowResults(false);
   };
@@ -218,12 +232,16 @@ export function AllergyChecker() {
       alert('Please select a dish and at least one allergy.');
       return;
     }
+    if (isClassicBreakfast && !selectedProtein) {
+      alert('Please select a protein option (bacon or turkey sausage).');
+      return;
+    }
     setShowResults(true);
   };
 
-  // Check crust for allergens
-  const checkCrustAllergens = (crust: string, allergies: Allergen[]) => {
-    if (!crust) return null;
+  // Check crusts for allergens
+  const checkCrustAllergens = (crusts: Set<string>, allergies: Allergen[]) => {
+    if (!crusts || crusts.size === 0) return null;
     
     const crustAllergens: Record<string, Allergen[]> = {
       'bluecheese': ['dairy'],
@@ -237,17 +255,23 @@ export function AllergyChecker() {
     const crustSubstitutions: Record<string, string[]> = {};
     
     allergies.forEach((allergen) => {
-      const contains = crustAllergens[crust]?.includes(allergen) || false;
-      crustContains[allergen] = contains;
+      let contains = false;
+      const foundCrusts: string[] = [];
+      const substitutionCrusts: string[] = [];
       
-      if (contains) {
-        const crustLabel = crustOptions.find(c => c.value === crust)?.label || crust;
-        crustFoundIngredients[allergen] = [`${crustLabel} crust`];
-        crustSubstitutions[allergen] = [`NO ${crustLabel} crust`];
-      } else {
-        crustFoundIngredients[allergen] = [];
-        crustSubstitutions[allergen] = [];
-      }
+      // Check each selected crust
+      crusts.forEach((crust) => {
+        if (crustAllergens[crust]?.includes(allergen)) {
+          contains = true;
+          const crustLabel = crustOptions.find(c => c.value === crust)?.label || crust;
+          foundCrusts.push(`${crustLabel} crust`);
+          substitutionCrusts.push(`NO ${crustLabel} crust`);
+        }
+      });
+      
+      crustContains[allergen] = contains;
+      crustFoundIngredients[allergen] = foundCrusts;
+      crustSubstitutions[allergen] = substitutionCrusts;
     });
     
     // Check if any allergen is present
@@ -269,8 +293,8 @@ export function AllergyChecker() {
     // Check main dish
     const mainDishResult = checkDishSafety(selectedDish, Array.from(selectedAllergies), Array.from(customAllergies));
     
-    // Check crust if selected
-    const crustCheck = selectedCrust ? checkCrustAllergens(selectedCrust, Array.from(selectedAllergies)) : null;
+    // Check crusts if selected
+    const crustCheck = selectedCrusts && selectedCrusts.size > 0 ? checkCrustAllergens(selectedCrusts, Array.from(selectedAllergies)) : null;
     
     // If there's a side dish selected, check it too
     if (selectedSideDish) {
@@ -290,7 +314,7 @@ export function AllergyChecker() {
         mainDishResult,
         sideDishResult,
         crustCheck,
-        selectedCrust,
+        selectedCrusts,
         hasSideDish: true
       };
     }
@@ -308,10 +332,10 @@ export function AllergyChecker() {
       mainDishResult,
       sideDishResult: null,
       crustCheck,
-      selectedCrust,
+      selectedCrusts,
       hasSideDish: false
     };
-  }, [selectedDish, selectedSideDish, selectedCrust, selectedAllergies, customAllergies, showResults]);
+  }, [selectedDish, selectedSideDish, selectedCrusts, selectedProtein, selectedAllergies, customAllergies, showResults]);
 
   const getStatusText = (status: 'safe' | 'unsafe') => {
     switch (status) {
@@ -321,6 +345,68 @@ export function AllergyChecker() {
         return 'UNSAFE';
     }
   };
+
+  // Filter safe dishes by category for browse mode
+  const safeDishesByCategory = useMemo(() => {
+    if (!showBrowseMode || (selectedAllergies.size === 0 && customAllergies.size === 0)) {
+      return null;
+    }
+
+    const categories = {
+      'Appetizers': [] as MenuItem[],
+      'Entrees': [] as MenuItem[],
+      'Sides': [] as MenuItem[],
+      'Desserts': [] as MenuItem[],
+    };
+
+    const entreeCategories = [
+      'Steaks And Chops',
+      'Chicken And Barbecue',
+      'Fresh Fish And Seafood',
+      'Filet Mignon',
+      'Roasted Prime Rib  Of Beef Au Jus',
+      'Sandwiches: Prime Burgers',
+      'Sandwiches: Signatures',
+      'Nightly Specials',
+    ];
+
+    menuItems.forEach((dish) => {
+      // Skip non-menu items
+      if (dish.category === 'Glossary' || 
+          dish.category === 'Items Not On The Menu (Secret Menu):' ||
+          dish.category === 'Items Not On The Menu And Aq Prices' ||
+          dish.category === 'Dessert Prices' ||
+          dish.category === 'Non Alcoholic Beverage Prices' ||
+          dish.category === 'Brunch Items Not On The Menu – 155 Only' ||
+          dish.category === 'Item  Il 5/6/25 66 5/6/25  Mn 5/6/25  Va 5/6/25') {
+        return;
+      }
+
+      // Check if dish is safe
+      const checkResult = checkDishSafety(dish, Array.from(selectedAllergies), Array.from(customAllergies));
+      
+      if (checkResult.overallStatus === 'safe') {
+        if (dish.category === 'Appetizers') {
+          categories['Appetizers'].push(dish);
+        } else if (dish.category === 'Sides') {
+          categories['Sides'].push(dish);
+        } else if (dish.category === 'Desserts') {
+          categories['Desserts'].push(dish);
+        } else if (entreeCategories.includes(dish.category)) {
+          categories['Entrees'].push(dish);
+        }
+      }
+    });
+
+    // Sort dishes alphabetically within each category
+    Object.keys(categories).forEach((key) => {
+      categories[key as keyof typeof categories].sort((a, b) => 
+        a.dish_name.localeCompare(b.dish_name)
+      );
+    });
+
+    return categories;
+  }, [showBrowseMode, selectedAllergies, customAllergies]);
 
   return (
     <div className="min-h-screen bg-white relative overflow-hidden">
@@ -390,9 +476,14 @@ export function AllergyChecker() {
                   Side: {selectedSideDish.dish_name}
                 </span>
               )}
-              {selectedCrust && (
+              {selectedCrusts && selectedCrusts.size > 0 && (
                 <span className="px-3 py-1 text-sm font-medium rounded-full bg-green-500/20 text-green-700 border border-green-500/50">
-                  Crust: {crustOptions.find(c => c.value === selectedCrust)?.label}
+                  Crusts: {Array.from(selectedCrusts).map(c => crustOptions.find(opt => opt.value === c)?.label).filter(Boolean).join(', ')}
+                </span>
+              )}
+              {selectedProtein && (
+                <span className="px-3 py-1 text-sm font-medium rounded-full bg-purple-500/20 text-purple-700 border border-purple-500/50">
+                  Protein: {selectedProtein === 'bacon' ? 'Bacon' : 'Turkey Sausage'}
                 </span>
               )}
             </div>
@@ -410,13 +501,15 @@ export function AllergyChecker() {
                 onClick={() => {
                   setSelectedDishId('');
                   setSelectedSideDishId('');
-                  setSelectedCrust('');
+                  setSelectedCrusts(new Set());
+                  setSelectedProtein('');
                   setSelectedAllergies(new Set());
                   setCustomAllergies(new Set());
                   setAllergenSearchTerm('');
                   setSearchTerm('');
                   setShowResults(false);
                   setShowSuggestions(false);
+                  setShowBrowseMode(false);
                 }}
               >
                 Reset
@@ -476,6 +569,54 @@ export function AllergyChecker() {
               </p>
             </CardContent>
           </Card>
+
+        {/* Browse Safe Dishes Mode */}
+        {showBrowseMode && safeDishesByCategory && (
+          <Card className="mb-6 bg-white border-gray-200 shadow-sm">
+          <CardHeader>
+              <CardTitle className="text-gray-900">Safe Dishes for Your Allergies</CardTitle>
+              <CardDescription className="text-gray-600">
+                Press Enter in the allergen search box (with allergens selected and no dish selected) to browse all safe dishes
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              {Object.entries(safeDishesByCategory).map(([category, dishes]) => {
+                if (dishes.length === 0) return null;
+                return (
+                  <div key={category} className="space-y-3">
+                    <h3 className="text-xl font-bold text-gray-900 border-b-2 border-gray-300 pb-2">
+                      {category} ({dishes.length})
+                    </h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                      {dishes.map((dish) => (
+                        <div
+                          key={dish.id}
+                          className="p-4 bg-gray-50 rounded-lg border border-gray-200 hover:border-blue-500 hover:shadow-md transition-all cursor-pointer"
+                          onClick={() => {
+                            setSelectedDishId(dish.id);
+                            setSearchTerm(dish.dish_name);
+                            setShowBrowseMode(false);
+                            setShowResults(false);
+                          }}
+                        >
+                          <div className="font-semibold text-gray-900">{dish.dish_name}</div>
+                          {dish.ticket_code && (
+                            <div className="text-sm text-gray-600 mt-1">Ticket: {dish.ticket_code}</div>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                );
+              })}
+              {Object.values(safeDishesByCategory).every(cat => cat.length === 0) && (
+                <div className="text-center py-8">
+                  <p className="text-gray-600 text-lg">No safe dishes found for your selected allergies.</p>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        )}
 
         <Card className="mb-6 bg-white border-gray-200 shadow-sm">
           <CardHeader>
@@ -541,6 +682,7 @@ export function AllergyChecker() {
                       onClick={() => {
                         setSelectedDishId(item.id);
                         setSearchTerm(item.dish_name);
+                        setShowBrowseMode(false); // Exit browse mode when dish is selected
                         // Reset side dish if new dish is not an entree
                         const entreeCategories = [
                           'Steaks And Chops',
@@ -563,7 +705,11 @@ export function AllergyChecker() {
                            !dishName.includes('basil hayden') &&
                            (dishName.includes('steak') || dishName.includes('lamb') || dishName.includes('filet') || dishName.includes('porterhouse') || dishName.includes('rib') || dishName.includes('tenderloin') || dishName.includes('pork') || dishName.includes('porkchop') || dishName.includes('pork chop')));
                         if (!canHaveCrust) {
-                          setSelectedCrust('');
+                          setSelectedCrusts(new Set());
+                        }
+                        // Reset protein if not Classic Breakfast
+                        if (!item.dish_name.toLowerCase().includes('classic breakfast')) {
+                          setSelectedProtein('');
                         }
                         setShowSuggestions(false);
                         setHighlightedIndex(-1);
@@ -590,6 +736,7 @@ export function AllergyChecker() {
               value={selectedDishId}
               onChange={(e) => {
                 setSelectedDishId(e.target.value);
+                setShowBrowseMode(false); // Exit browse mode when dish is selected
                 const selected = menuItems.find((item) => item.id === e.target.value);
                 if (selected) {
                   setSearchTerm(selected.dish_name);
@@ -619,10 +766,15 @@ export function AllergyChecker() {
                      !dishName.includes('basil hayden') &&
                      (dishName.includes('steak') || dishName.includes('lamb') || dishName.includes('filet') || dishName.includes('porterhouse') || dishName.includes('rib') || dishName.includes('tenderloin') || dishName.includes('pork') || dishName.includes('porkchop') || dishName.includes('pork chop')));
                   if (!canHaveCrust) {
-                    setSelectedCrust('');
+                    setSelectedCrusts(new Set());
+                  }
+                  // Reset protein if not Classic Breakfast
+                  if (!selected.dish_name.toLowerCase().includes('classic breakfast')) {
+                    setSelectedProtein('');
                   }
                 } else {
-                  setSelectedCrust('');
+                  setSelectedCrusts(new Set());
+                  setSelectedProtein('');
                 }
                 setShowResults(false);
                 setShowSuggestions(false);
@@ -690,6 +842,32 @@ export function AllergyChecker() {
                 )}
               </div>
             )}
+            {isClassicBreakfast && (
+              <div className="mt-4">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Select Protein (Required)
+                </label>
+                <select
+                  value={selectedProtein}
+                  onChange={(e) => {
+                    setSelectedProtein(e.target.value);
+                    setShowResults(false);
+                  }}
+                  className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white text-gray-900"
+                >
+                  <option value="">-- Select Protein --</option>
+                  <option value="bacon">Bacon (3 slices)</option>
+                  <option value="turkey_sausage">Turkey Sausage (2 patties)</option>
+                </select>
+                {selectedProtein && (
+                  <div className="mt-2 p-3 bg-gray-50 rounded-lg border border-gray-200">
+                    <div className="text-sm font-medium text-gray-900">
+                      Selected Protein: {selectedProtein === 'bacon' ? 'Bacon (3 slices)' : 'Turkey Sausage (2 patties)'}
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
             {isEntree && (
               <div className="mt-4">
                 <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -723,26 +901,50 @@ export function AllergyChecker() {
             {canHaveCrust && (
               <div className="mt-4">
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Select Crust (Optional)
+                  Select Crusts (Optional - up to 4)
                 </label>
-                <select
-                  value={selectedCrust}
-                  onChange={(e) => {
-                    setSelectedCrust(e.target.value);
-                    setShowResults(false);
-                  }}
-                  className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white text-gray-900"
+                <div className="space-y-2">
+                  {crustOptions.map((crust) => {
+                    const isSelected = selectedCrusts?.has(crust.value) || false;
+                    const isDisabled = !isSelected && (selectedCrusts?.size || 0) >= 4;
+                    return (
+                <label
+                        key={crust.value}
+                  className={cn(
+                          "flex items-center gap-3 p-3 border-2 rounded-lg cursor-pointer transition-all",
+                          isSelected
+                            ? "bg-blue-50 border-blue-500"
+                            : isDisabled
+                            ? "bg-gray-100 border-gray-300 cursor-not-allowed opacity-50"
+                            : "bg-white border-gray-300 hover:border-blue-400 hover:bg-blue-50/50"
+                  )}
                 >
-                  <option value="">-- No Crust --</option>
-                  {crustOptions.map((crust) => (
-                    <option key={crust.value} value={crust.value}>
-                      {crust.label}
-                    </option>
-                  ))}
-                </select>
-                {selectedCrust && (
+                  <input
+                    type="checkbox"
+                          checked={isSelected}
+                          disabled={isDisabled}
+                          onChange={(e) => {
+                            const newCrusts = new Set(selectedCrusts);
+                            if (e.target.checked) {
+                              newCrusts.add(crust.value);
+                            } else {
+                              newCrusts.delete(crust.value);
+                            }
+                            setSelectedCrusts(newCrusts);
+                      setShowResults(false);
+                    }}
+                          className="w-5 h-5 text-blue-600 border-gray-300 rounded focus:ring-2 focus:ring-blue-500"
+                        />
+                        <span className="text-sm font-medium text-gray-900">{crust.label}</span>
+                </label>
+                    );
+                  })}
+            </div>
+                {selectedCrusts && selectedCrusts.size > 0 && (
                   <div className="mt-2 p-3 bg-gray-50 rounded-lg border border-gray-200">
-                    <div className="text-sm font-medium text-gray-900">Selected Crust: {crustOptions.find(c => c.value === selectedCrust)?.label}</div>
+                    <div className="text-sm font-medium text-gray-900">
+                      Selected Crusts: {Array.from(selectedCrusts).map(c => crustOptions.find(opt => opt.value === c)?.label).filter(Boolean).join(', ')}
+                    </div>
                   </div>
                 )}
               </div>
@@ -753,13 +955,20 @@ export function AllergyChecker() {
         <Card className="mb-6 bg-white border-gray-200 shadow-sm">
           <CardHeader>
             <CardTitle className="text-gray-900">2. Select Allergies (one or more)</CardTitle>
-            <CardDescription className="text-gray-600">Search for common allergens or type a custom allergen</CardDescription>
+            <CardDescription className="text-gray-600">
+              Search for common allergens or type a custom allergen. 
+              {selectedAllergies.size > 0 || customAllergies.size > 0 ? (
+                <span className="block mt-1 text-blue-600 font-medium">
+                  💡 Tip: Press Enter (with no dish selected) to browse all safe dishes for your allergies
+                </span>
+              ) : null}
+            </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="relative">
-              <input
+                <input
                 id="allergen-search"
-                type="text"
+                  type="text"
                 placeholder="Start typing allergen name (e.g., 'dairy', 'gluten', 'cilantro')..."
                 value={allergenSearchTerm}
                 onChange={(e) => handleAllergenInputChange(e.target.value)}
@@ -869,6 +1078,21 @@ export function AllergyChecker() {
                 </div>
                 </div>
               )}
+            {(selectedAllergies.size > 0 || customAllergies.size > 0) && !selectedDishId && (
+              <div className="mt-4 pt-4 border-t border-gray-200">
+                <button
+                  onClick={() => {
+                    setShowBrowseMode(true);
+                    setShowResults(false);
+                    setAllergenSearchTerm('');
+                    setShowAllergenSuggestions(false);
+                  }}
+                  className="w-full px-4 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors shadow-md hover:shadow-lg"
+                >
+                  Browse All Safe Dishes (or press Enter)
+                </button>
+            </div>
+            )}
           </CardContent>
         </Card>
 
@@ -876,17 +1100,17 @@ export function AllergyChecker() {
           <GlowingEffect
             spread={40}
             glow={true}
-            disabled={!selectedDish || (selectedAllergies.size === 0 && customAllergies.size === 0)}
+            disabled={!selectedDish || (selectedAllergies.size === 0 && customAllergies.size === 0) || (isClassicBreakfast && !selectedProtein)}
             proximity={80}
             inactiveZone={0.2}
             borderWidth={3}
           />
           <button
             onClick={handleCheckSafety}
-            disabled={!selectedDish || (selectedAllergies.size === 0 && customAllergies.size === 0)}
+            disabled={!selectedDish || (selectedAllergies.size === 0 && customAllergies.size === 0) || (isClassicBreakfast && !selectedProtein)}
             className={cn(
               "relative w-full py-4 px-6 text-lg font-semibold rounded-lg transition-all border-2",
-              !selectedDish || (selectedAllergies.size === 0 && customAllergies.size === 0)
+              !selectedDish || (selectedAllergies.size === 0 && customAllergies.size === 0) || (isClassicBreakfast && !selectedProtein)
                 ? "bg-gray-300 text-gray-600 cursor-not-allowed border-gray-400"
                 : "bg-blue-600 text-gray-900 hover:bg-blue-700 shadow-lg hover:shadow-xl transform hover:scale-[1.02] border-blue-700"
             )}
@@ -938,15 +1162,20 @@ export function AllergyChecker() {
                     Side Dish: {selectedSideDish.dish_name} {selectedSideDish.ticket_code && `(${selectedSideDish.ticket_code})`}
                   </CardDescription>
                 )}
-                {selectedCrust && (
+                {selectedCrusts && selectedCrusts.size > 0 && (
                   <CardDescription className="text-gray-600 mt-1">
-                    Crust: {crustOptions.find(c => c.value === selectedCrust)?.label}
+                    Crusts: {Array.from(selectedCrusts).map(c => crustOptions.find(opt => opt.value === c)?.label).filter(Boolean).join(', ')}
+                  </CardDescription>
+                )}
+                {selectedProtein && (
+                  <CardDescription className="text-gray-600 mt-1">
+                    Protein: {selectedProtein === 'bacon' ? 'Bacon (3 slices)' : 'Turkey Sausage (2 patties)'}
                   </CardDescription>
                 )}
               </CardHeader>
               <CardContent className="space-y-6">
                 {/* Entree Results */}
-                <div className="space-y-4">
+                  <div className="space-y-4">
                   <div className="flex items-center gap-3 mb-4">
                     <h3 className="text-xl font-bold text-gray-900">Entree: {result.mainDishResult.dish.dish_name}</h3>
                     <span
@@ -964,19 +1193,19 @@ export function AllergyChecker() {
                   {result.mainDishResult.perAllergy.length > 0 && (
                     <div className="space-y-3">
                       {result.mainDishResult.perAllergy.map((item, idx) => {
-                        const isCustomAllergen = typeof item.allergen === 'string' && !(item.allergen in ALLERGEN_LABELS);
-                        const allergenLabel = isCustomAllergen
-                          ? item.allergen
-                          : ALLERGEN_LABELS[item.allergen as Allergen] || item.allergen;
-                        
-                        return (
-                          <Card
+                      const isCustomAllergen = typeof item.allergen === 'string' && !(item.allergen in ALLERGEN_LABELS);
+                      const allergenLabel = isCustomAllergen
+                        ? item.allergen
+                        : ALLERGEN_LABELS[item.allergen as Allergen] || item.allergen;
+                      
+                      return (
+                        <Card
                             key={`entree-allergy-${idx}-${item.allergen}`}
-                            className={cn(
+                          className={cn(
                               "border-l-4 bg-white border-gray-200",
-                              item.status === 'safe' ? "border-l-green-500" : "border-l-red-500"
-                            )}
-                          >
+                            item.status === 'safe' ? "border-l-green-500" : "border-l-red-500"
+                          )}
+                        >
                             <CardContent className="pt-4 pb-4">
                               <div className="flex items-center justify-between mb-2">
                                 <strong className="text-base text-gray-900">{allergenLabel}</strong>
@@ -1030,9 +1259,9 @@ export function AllergyChecker() {
                   <div className="space-y-4 pt-6 border-t-2 border-gray-300">
                     <div className="flex items-center gap-3 mb-4">
                       <h3 className="text-xl font-bold text-gray-900">Side Dish: {result.sideDishResult.dish.dish_name}</h3>
-                      <span
-                        className={cn(
-                          "px-3 py-1 rounded-full text-xs font-bold uppercase",
+                              <span
+                                className={cn(
+                                  "px-3 py-1 rounded-full text-xs font-bold uppercase",
                           result.sideDishResult.overallStatus === 'safe'
                             ? "bg-green-500/20 text-green-700 border border-green-500/50"
                             : "bg-red-500/20 text-red-700 border border-red-500/50"
@@ -1064,54 +1293,56 @@ export function AllergyChecker() {
                                   <span
                                     className={cn(
                                       "px-2 py-1 rounded-full text-xs font-bold uppercase",
-                                      item.status === 'safe'
+                                  item.status === 'safe'
                                         ? "bg-green-500/20 text-green-700 border border-green-500/50"
                                         : "bg-red-500/20 text-red-700 border border-red-500/50"
-                                    )}
-                                  >
-                                    {item.status === 'safe' ? 'SAFE' : 'UNSAFE'}
-                                  </span>
-                                </div>
-                                {item.foundIngredients && item.foundIngredients.length > 0 && (
+                                )}
+                              >
+                                {item.status === 'safe' ? 'SAFE' : 'UNSAFE'}
+                              </span>
+                            </div>
+                            {item.foundIngredients && item.foundIngredients.length > 0 && (
                                   <div className="mb-3 pt-3 border-t border-gray-200">
                                     <strong className="block text-xs font-semibold text-gray-700 mb-1">
                                       Found ingredients:
-                                    </strong>
+                                </strong>
                                     <ul className="list-disc list-inside space-y-0.5">
-                                      {item.foundIngredients.map((ingredient, ingIdx) => (
+                                  {item.foundIngredients.map((ingredient, ingIdx) => (
                                         <li key={ingIdx} className="text-xs text-red-700">
-                                          <em>{ingredient}</em>
-                                        </li>
-                                      ))}
-                                    </ul>
-                                  </div>
-                                )}
-                                {item.status === 'unsafe' && item.substitutions.length > 0 && (
+                                      <em>{ingredient}</em>
+                                    </li>
+                                  ))}
+                                </ul>
+                              </div>
+                            )}
+                            {item.status === 'unsafe' && item.substitutions.length > 0 && (
                                   <div className="pt-3 border-t border-gray-200">
                                     <strong className="block text-xs font-semibold text-gray-700 mb-1">
                                       Substitutions:
-                                    </strong>
+                                </strong>
                                     <ul className="list-disc list-inside space-y-0.5">
-                                      {item.substitutions.map((sub, subIdx) => (
+                                  {item.substitutions.map((sub, subIdx) => (
                                         <li key={subIdx} className="text-xs text-gray-600">{sub}</li>
-                                      ))}
-                                    </ul>
-                                  </div>
-                                )}
-                              </CardContent>
-                            </Card>
-                          );
-                        })}
+                                  ))}
+                                </ul>
+                              </div>
+                            )}
+                          </CardContent>
+                        </Card>
+                      );
+                    })}
                       </div>
                     )}
                   </div>
                 )}
 
                 {/* Crust Results */}
-                {result.selectedCrust && result.crustCheck && (
+                {result.selectedCrusts && result.selectedCrusts.size > 0 && result.crustCheck && (
                   <div className="space-y-4 pt-6 border-t-2 border-gray-300">
                     <div className="flex items-center gap-3 mb-4">
-                      <h3 className="text-xl font-bold text-gray-900">Crust: {crustOptions.find(c => c.value === result.selectedCrust)?.label}</h3>
+                      <h3 className="text-xl font-bold text-gray-900">
+                        Crusts: {Array.from(result.selectedCrusts).map(c => crustOptions.find(opt => opt.value === c)?.label).filter(Boolean).join(', ')}
+                      </h3>
                       <span
                         className={cn(
                           "px-3 py-1 rounded-full text-xs font-bold uppercase",
@@ -1188,7 +1419,7 @@ export function AllergyChecker() {
                 {/* Combined Substitutions Summary */}
                 {((result.mainDishResult.perAllergy.some(item => item.status === 'unsafe' && item.substitutions.length > 0)) ||
                   (result.sideDishResult && result.sideDishResult.perAllergy.some(item => item.status === 'unsafe' && item.substitutions.length > 0)) ||
-                  (result.crustCheck && result.selectedCrust && Array.from(selectedAllergies).some(allergen => {
+                  (result.crustCheck && result.selectedCrusts && result.selectedCrusts.size > 0 && Array.from(selectedAllergies).some(allergen => {
                     const crustCheck = result.crustCheck;
                     return crustCheck && crustCheck.substitutions[allergen]?.length > 0;
                   }))) && (
@@ -1206,11 +1437,11 @@ export function AllergyChecker() {
                               {result.mainDishResult.perAllergy
                                 .filter(item => item.status === 'unsafe' && item.substitutions.length > 0)
                                 .flatMap((item, itemIdx) => 
-                                  item.substitutions.map((sub, idx) => (
+                            item.substitutions.map((sub, idx) => (
                                     <li key={`entree-sub-${itemIdx}-${idx}`} className="text-sm text-amber-800">{sub}</li>
-                                  ))
-                                )}
-                            </ul>
+                            ))
+                          )}
+                      </ul>
                           </div>
                         )}
                         {/* Side Dish Substitutions */}
@@ -1229,12 +1460,14 @@ export function AllergyChecker() {
                           </div>
                         )}
                         {/* Crust Substitutions */}
-                        {result.crustCheck && result.selectedCrust && Array.from(selectedAllergies).some(allergen => {
+                        {result.crustCheck && result.selectedCrusts && result.selectedCrusts.size > 0 && Array.from(selectedAllergies).some(allergen => {
                           const crustCheck = result.crustCheck;
                           return crustCheck && crustCheck.substitutions[allergen]?.length > 0;
                         }) && (
                           <div>
-                            <h4 className="font-semibold text-amber-900 mb-2">Crust ({crustOptions.find(c => c.value === result.selectedCrust)?.label || 'Unknown'}):</h4>
+                            <h4 className="font-semibold text-amber-900 mb-2">
+                              Crusts ({Array.from(result.selectedCrusts).map(c => crustOptions.find(opt => opt.value === c)?.label).filter(Boolean).join(', ') || 'Unknown'}):
+                            </h4>
                             <ul className="list-disc list-inside space-y-1 ml-2">
                               {Array.from(selectedAllergies)
                                 .filter(allergen => result.crustCheck && result.crustCheck.substitutions[allergen]?.length > 0)
