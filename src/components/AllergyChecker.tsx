@@ -60,19 +60,12 @@ export function AllergyChecker() {
     return selectedSideDishId ? menuItems.find((item) => item.id === selectedSideDishId) || null : null;
   }, [selectedSideDishId]);
 
-  // Check if selected dish is an entree (dinner or lunch)
-  const isEntree = useMemo(() => {
+  // Check if selected dish can have a side dish (all dishes except Appetizers and Sides)
+  const canHaveSideDish = useMemo(() => {
     if (!selectedDish) return false;
-    const entreeCategories = [
-      'Steaks And Chops',
-      'Chicken And Barbecue',
-      'Fresh Fish And Seafood',
-      'Filet Mignon',
-      'Roasted Prime Rib  Of Beef Au Jus',
-      'Sandwiches: Prime Burgers',
-      'Sandwiches: Signatures'
-    ];
-    return entreeCategories.includes(selectedDish.category);
+    // Exclude Appetizers and Sides categories
+    const excludedCategories = ['Appetizers', 'Sides'];
+    return !excludedCategories.includes(selectedDish.category);
   }, [selectedDish]);
 
   // Check if selected dish is Classic Breakfast (needs protein selection)
@@ -683,17 +676,9 @@ export function AllergyChecker() {
                         setSelectedDishId(item.id);
                         setSearchTerm(item.dish_name);
                         setShowBrowseMode(false); // Exit browse mode when dish is selected
-                        // Reset side dish if new dish is not an entree
-                        const entreeCategories = [
-                          'Steaks And Chops',
-                          'Chicken And Barbecue',
-                          'Fresh Fish And Seafood',
-                          'Filet Mignon',
-                          'Roasted Prime Rib  Of Beef Au Jus',
-                          'Sandwiches: Prime Burgers',
-                          'Sandwiches: Signatures'
-                        ];
-                        if (!entreeCategories.includes(item.category)) {
+                        // Reset side dish only if new dish is an Appetizer or Side
+                        const excludedCategories = ['Appetizers', 'Sides'];
+                        if (excludedCategories.includes(item.category)) {
                           setSelectedSideDishId('');
                         }
                         // Reset crust if new dish cannot have crust
@@ -740,17 +725,9 @@ export function AllergyChecker() {
                 const selected = menuItems.find((item) => item.id === e.target.value);
                 if (selected) {
                   setSearchTerm(selected.dish_name);
-                  // Reset side dish if new dish is not an entree
-                  const entreeCategories = [
-                    'Steaks And Chops',
-                    'Chicken And Barbecue',
-                    'Fresh Fish And Seafood',
-                    'Filet Mignon',
-                    'Roasted Prime Rib  Of Beef Au Jus',
-                    'Sandwiches: Prime Burgers',
-                    'Sandwiches: Signatures'
-                  ];
-                  if (!entreeCategories.includes(selected.category)) {
+                  // Reset side dish only if new dish is an Appetizer or Side
+                  const excludedCategories = ['Appetizers', 'Sides'];
+                  if (excludedCategories.includes(selected.category)) {
                     setSelectedSideDishId('');
                   }
                 } else {
@@ -868,7 +845,7 @@ export function AllergyChecker() {
                 )}
               </div>
             )}
-            {isEntree && (
+            {canHaveSideDish && (
               <div className="mt-4">
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Select Side Dish (Optional)
@@ -1426,6 +1403,9 @@ export function AllergyChecker() {
                   <Card className="border-amber-500/50 bg-amber-50 mt-6">
                     <CardHeader>
                       <CardTitle className="text-amber-900">Quick Reference - All Substitutions</CardTitle>
+                      <CardDescription className="text-red-700 font-semibold mt-2">
+                        ⚠️ Items marked in RED and BOLD cannot be modified - substitutions are NOT POSSIBLE
+                      </CardDescription>
                     </CardHeader>
                     <CardContent>
                       <div className="space-y-4">
@@ -1437,9 +1417,22 @@ export function AllergyChecker() {
                               {result.mainDishResult.perAllergy
                                 .filter(item => item.status === 'unsafe' && item.substitutions.length > 0)
                                 .flatMap((item, itemIdx) => 
-                            item.substitutions.map((sub, idx) => (
-                                    <li key={`entree-sub-${itemIdx}-${idx}`} className="text-sm text-amber-800">{sub}</li>
-                            ))
+                            item.substitutions.map((sub, idx) => {
+                                    const isNotPossible = sub.includes('NOT POSSIBLE') || sub.includes('not possible');
+                                    return (
+                                      <li 
+                                        key={`entree-sub-${itemIdx}-${idx}`} 
+                                        className={cn(
+                                          "text-sm",
+                                          isNotPossible 
+                                            ? "text-red-700 font-bold" 
+                                            : "text-amber-800"
+                                        )}
+                                      >
+                                        {sub}
+                                      </li>
+                                    );
+                                  })
                           )}
                       </ul>
                           </div>
@@ -1452,9 +1445,22 @@ export function AllergyChecker() {
                               {result.sideDishResult.perAllergy
                                 .filter(item => item.status === 'unsafe' && item.substitutions.length > 0)
                                 .flatMap((item, itemIdx) => 
-                                  item.substitutions.map((sub, idx) => (
-                                    <li key={`side-sub-${itemIdx}-${idx}`} className="text-sm text-amber-800">{sub}</li>
-                                  ))
+                                  item.substitutions.map((sub, idx) => {
+                                    const isNotPossible = sub.includes('NOT POSSIBLE') || sub.includes('not possible');
+                                    return (
+                                      <li 
+                                        key={`side-sub-${itemIdx}-${idx}`} 
+                                        className={cn(
+                                          "text-sm",
+                                          isNotPossible 
+                                            ? "text-red-700 font-bold" 
+                                            : "text-amber-800"
+                                        )}
+                                      >
+                                        {sub}
+                                      </li>
+                                    );
+                                  })
                                 )}
                             </ul>
                           </div>

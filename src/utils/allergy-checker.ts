@@ -332,7 +332,47 @@ function isPreparedFood(dish: MenuItem): boolean {
   // Desserts are typically pre-prepared (baked, chilled, etc.)
   const isDessert = category.includes('dessert');
   
-  return isSoup || isDessert;
+  // Items that are baked/roasted in the oven and served as-is (cannot be deconstructed)
+  // Examples: Baked Goat Cheese, Mac and Cheese (baked), Au Gratin Potatoes
+  const bakedKeywords = [
+    'baked in the oven',
+    'baked slowly',
+    'baked and',
+    'baked.',
+    'roasted to a golden brown in the oven',
+    'roasted in the oven',
+    'simmered', // Soups and stews that are simmered
+    'braised', // Braised items like short ribs
+    'slow roasted', // Prime rib, duck
+    'slowly braised'
+  ];
+  const isBakedPrepared = bakedKeywords.some(keyword => 
+    description.includes(keyword) && 
+    // Exclude items that are baked but can still be modified (like steaks that are broiled)
+    !description.includes('broiled') &&
+    !description.includes('grilled')
+  );
+  
+  // Items that are pre-made mixtures that cannot be separated
+  // Examples: crab cakes (mixture of ingredients), meatballs (mixture)
+  // Note: Soups/bisques are already caught by isSoup, so exclude them here
+  const preMadeKeywords = [
+    'consists of a mixture',
+    'mixture of',
+  ];
+  const isPreMadeMixture = preMadeKeywords.some(keyword => 
+    description.includes(keyword) &&
+    // Exclude soups/bisques (already handled by isSoup)
+    !isSoup &&
+    // Exclude items that are just mixed but can be modified (like salads)
+    !category.includes('salad')
+  );
+  
+  // Check if dish has cannot_be_made_safe_notes
+  const hasCannotBeMadeSafeNote = !!(dish.cannot_be_made_safe_notes && 
+    dish.cannot_be_made_safe_notes.trim() !== '');
+  
+  return isSoup || isDessert || isBakedPrepared || isPreMadeMixture || hasCannotBeMadeSafeNote;
 }
 
 /**
@@ -503,7 +543,7 @@ function generateSubstitutions(dish: MenuItem, allergen: Allergen, canModify: bo
     
     // If it's pre-prepared and has no garnish ingredients, return special message
     if (garnishIngredients.length === 0) {
-      return ['none, this dish has been pre-prepared'];
+      return ['⚠️ NOT POSSIBLE - This dish has been pre-prepared and cannot be modified'];
     }
     
     // Only process garnish ingredients for pre-prepared foods
@@ -814,7 +854,7 @@ function generateSubstitutions(dish: MenuItem, allergen: Allergen, canModify: bo
             ing.toLowerCase().includes('onion') && !ing.toLowerCase().includes('garlic')
           );
           const descriptiveName = onionIng ? getDescriptiveIngredientName(onionIng) : 'onion';
-          substitutions.push(`NO ${descriptiveName} (cannot be substituted in this dish)`);
+          substitutions.push(`⚠️ NOT POSSIBLE - ${descriptiveName} cannot be substituted in this dish`);
         } else {
           // For garlic or general onion/garlic, allow substitution with descriptive names
           const descriptiveNames = ingredientsToProcess.map(ing => getDescriptiveIngredientName(ing));
@@ -944,7 +984,7 @@ export function checkDishSafety(
     let substitutions: string[] = [];
     if (status === 'unsafe') {
       if (!canModify) {
-        substitutions = [`Cannot remove ${customAllergen} - dish cannot be modified`];
+        substitutions = [`⚠️ NOT POSSIBLE - Cannot remove ${customAllergen} - dish cannot be modified`];
       } else {
         // Use most descriptive ingredient names from dish.ingredients
         const descriptiveNames = foundIngredients.map(ing => {
