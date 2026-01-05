@@ -272,23 +272,96 @@ function analyzeModificationPossibility(dish: MenuItem, allergen: Allergen): {
     };
   }
   
-  // Allergen baked/fried into dish
+  // MODIFICATIONS POSSIBLE scenarios (check these FIRST):
+  // These are ingredients added DURING or AFTER cooking that can be removed
+  
+  // Butter/oil brushed on, glazed on, or drizzled on (applied to protein during/after cooking)
+  // Examples: "brushed with melted butter", "glazed with brown sugar...and butter"
   if (
-    (dishName.includes('baked') || 
-     dishName.includes('fried') ||
-     dishName.includes('crusted') ||
-     description.includes('baked in the oven') ||
-     description.includes('deep fried')) &&
+    description.includes('brushed with') ||
+    description.includes('glazed with') ||
+    description.includes('drizzled with')
+  ) {
+    // Check if the allergen is mentioned in what's being brushed/glazed on
+    const brushedMatch = description.match(/(?:brushed|glazed|drizzled)\s+with\s+([^.]+)/i);
+    if (brushedMatch) {
+      const brushedContent = brushedMatch[1].toLowerCase();
+      const hasAllergen = allergenIngredients[allergen]?.some(allergenIng => 
+        brushedContent.includes(allergenIng.toLowerCase())
+      ) || compositeContainsAllergen(brushedContent, allergen);
+      
+      if (hasAllergen) {
+        return {
+          modifiable: true,
+          suggestion: allergen === 'dairy' 
+            ? 'Request dish without butter (butter is brushed/glazed on and can be removed)'
+            : `Request dish without the glaze containing ${allergen}`
+        };
+      }
+    }
+  }
+  
+  // Steak butter, pre-mark butter (always modifiable - added after cooking)
+  if (
+    (description.includes('steak butter') ||
+     description.includes('pre-mark butter') ||
+     description.includes('premark butter')) &&
+    allergen === 'dairy'
+  ) {
+    return {
+      modifiable: true,
+      suggestion: 'Request dish without steak butter'
+    };
+  }
+  
+  // Allergen baked/fried INTO the core mixture OR baked ONTO the dish
+  // This applies when:
+  // 1. The allergen is part of a mixture that is then baked/fried together (cheese in mac and cheese)
+  // 2. The allergen is "covered with" and the dish name includes "baked" (cheese covered on French onion soup, then baked)
+  // BUT NOT: butter brushed/glazed on salmon (that's added on, can be removed - handled above)
+  if (
+    (description.includes('baked in the oven') ||
+     description.includes('deep fried') ||
+     (description.includes('mixed with') && (description.includes('baked') || description.includes('fried'))) ||
+     (description.includes('covered with') && dishName.includes('baked'))) &&
     dish.ingredients?.some(ing => {
       const ingLower = ing.toLowerCase();
-      return allergenIngredients[allergen]?.some(allergenIng => 
+      // Check if allergen is in a composite ingredient that's part of the baked/fried mixture
+      const isCompositeWithAllergen = compositeContainsAllergen(ingLower, allergen);
+      const isDirectAllergen = allergenIngredients[allergen]?.some(allergenIng => 
         ingLower.includes(allergenIng.toLowerCase())
       );
+      // Only mark as non-modifiable if it's part of the core mixture or baked onto it
+      // NOT if it's just brushed/glazed on (those are modifiable - handled above)
+      // Note: "topped with" might refer to something else (like croutons), so we don't exclude based on that
+      return (isCompositeWithAllergen || isDirectAllergen) && 
+             !description.includes('brushed with') &&
+             !description.includes('glazed with');
     })
   ) {
     return {
       modifiable: false,
       reason: 'The allergen is baked or fried into the dish and cannot be removed'
+    };
+  }
+  
+  // Crusted dishes - the crust is baked on, but check if allergen is in the crust vs the protein
+  // If allergen is in the crust itself (like horseradish crust with dairy), it's baked on
+  // But if allergen is just butter brushed on before crusting, it can be removed (handled above)
+  if (dishName.includes('crusted') && 
+      description.includes('crusted') &&
+      !description.includes('brushed with') && // If brushed on, it's modifiable (handled above)
+      dish.ingredients?.some(ing => {
+        const ingLower = ing.toLowerCase();
+        // Check if allergen is specifically in a crust ingredient
+        return (ingLower.includes('crust') || ingLower.includes('breadcrumb')) &&
+               allergenIngredients[allergen]?.some(allergenIng => 
+                 ingLower.includes(allergenIng.toLowerCase())
+               );
+      })) {
+    return {
+      modifiable: false,
+      reason: 'The allergen is in the crust which is baked onto the dish and cannot be removed'
     };
   }
   
@@ -345,8 +418,6 @@ function analyzeModificationPossibility(dish: MenuItem, allergen: Allergen): {
       reason: 'The allergen is part of a pre-made mixture that cannot be separated'
     };
   }
-  
-  // MODIFICATIONS POSSIBLE scenarios:
   
   // Side dressings (salads)
   if (
