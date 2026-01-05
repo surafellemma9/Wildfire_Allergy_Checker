@@ -51,6 +51,14 @@ export default {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+        // Professional color scheme
+        professional: {
+          primary: "#1e3a5f",
+          primaryAlt: "#2d3748",
+          safe: "#2d5016",
+          unsafe: "#991b1b",
+          accent: "#b8860b",
+        },
       },
       borderRadius: {
         lg: "var(--radius)",
@@ -86,6 +94,7 @@ export default {
   },
   plugins: [require("tailwindcss-animate")],
 }
+
 
 
 

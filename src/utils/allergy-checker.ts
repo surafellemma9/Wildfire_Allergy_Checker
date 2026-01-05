@@ -242,6 +242,156 @@ const allergenIngredients: Record<Allergen, string[]> = {
 };
 
 /**
+ * Analyze if a dish can be modified to remove an allergen
+ */
+function analyzeModificationPossibility(dish: MenuItem, allergen: Allergen): {
+  modifiable: boolean;
+  reason?: string;
+  suggestion?: string;
+} {
+  const dishName = dish.dish_name.toLowerCase();
+  const description = dish.description.toLowerCase();
+  
+  // NO MODIFICATIONS POSSIBLE scenarios:
+  
+  // Main protein IS the allergen
+  if (
+    (dishName.includes('calamari') || 
+     dishName.includes('shrimp') || 
+     dishName.includes('crab') ||
+     dishName.includes('scallop') ||
+     dishName.includes('salmon') ||
+     dishName.includes('cod') ||
+     dishName.includes('halibut') ||
+     dishName.includes('tuna')) && 
+    (allergen === 'shellfish' || allergen === 'fish')
+  ) {
+    return {
+      modifiable: false,
+      reason: 'The main component of this dish is the allergen and cannot be substituted'
+    };
+  }
+  
+  // Allergen baked/fried into dish
+  if (
+    (dishName.includes('baked') || 
+     dishName.includes('fried') ||
+     dishName.includes('crusted') ||
+     description.includes('baked in the oven') ||
+     description.includes('deep fried')) &&
+    dish.ingredients?.some(ing => {
+      const ingLower = ing.toLowerCase();
+      return allergenIngredients[allergen]?.some(allergenIng => 
+        ingLower.includes(allergenIng.toLowerCase())
+      );
+    })
+  ) {
+    return {
+      modifiable: false,
+      reason: 'The allergen is baked or fried into the dish and cannot be removed'
+    };
+  }
+  
+  // Core ingredient defines the dish
+  if (
+    (dishName.includes('mac and cheese') ||
+     dishName.includes('cheesecake') ||
+     dishName.includes('creamed') ||
+     dishName.includes('bisque') ||
+     dishName.includes('au gratin')) &&
+    allergen === 'dairy'
+  ) {
+    return {
+      modifiable: false,
+      reason: 'The allergen is a core ingredient that defines this dish'
+    };
+  }
+  
+  // Eggs are main component in breakfast dishes
+  if (
+    (dishName.includes('breakfast') || 
+     dishName.includes('omelet') || 
+     dishName.includes('benedict') ||
+     dishName.includes('french toast') ||
+     dishName.includes('pancake')) &&
+    allergen === 'egg'
+  ) {
+    return {
+      modifiable: false,
+      reason: 'Eggs are the main component of this dish and cannot be substituted'
+    };
+  }
+  
+  // Sauce/dressing mixed in (Caesar salad with anchovy)
+  if (
+    dishName.includes('caesar') && 
+    allergen === 'shellfish'
+  ) {
+    return {
+      modifiable: false,
+      reason: 'The dressing contains anchovy which cannot be separated from the salad'
+    };
+  }
+  
+  // Pre-prepared mixtures (meatballs, crab cakes, etc.)
+  if (
+    (description.includes('consists of a mixture') ||
+     description.includes('mixture of') ||
+     description.includes('mixed with')) &&
+    !dishName.includes('salad') // Salads can be modified
+  ) {
+    return {
+      modifiable: false,
+      reason: 'The allergen is part of a pre-made mixture that cannot be separated'
+    };
+  }
+  
+  // MODIFICATIONS POSSIBLE scenarios:
+  
+  // Side dressings (salads)
+  if (
+    dishName.includes('salad') &&
+    !dishName.includes('caesar')
+  ) {
+    const safeDressings = ['citrus lime vinaigrette', 'balsamic vinaigrette', 'red wine vinaigrette', 'lemon herb vinaigrette'];
+    return {
+      modifiable: true,
+      suggestion: `Choose allergen-free dressing option (${safeDressings.join(' or ')})`
+    };
+  }
+  
+  // Removable garnish/toppings
+  if (
+    description.includes('topped with') ||
+    description.includes('garnished with') ||
+    description.includes('sprinkled with')
+  ) {
+    return {
+      modifiable: true,
+      suggestion: 'Request dish without the garnish containing the allergen'
+    };
+  }
+  
+  // Side sauces/condiments
+  if (
+    description.includes('served with') ||
+    description.includes('ramekin of') ||
+    description.includes('on the side')
+  ) {
+    return {
+      modifiable: true,
+      suggestion: 'Request dish without the side sauce/condiment containing the allergen'
+    };
+  }
+  
+  // Default to no modification if unclear
+  return {
+    modifiable: false,
+    reason: 'Unable to safely modify this dish to remove the allergen'
+  };
+}
+
+/**
  * Find specific ingredients in the dish description that contain the allergen
  */
 function findAllergenIngredients(description: string, allergen: Allergen): string[] {
@@ -534,6 +684,17 @@ function getCompositeIngredientsWithAllergen(dish: MenuItem, allergen: Allergen)
 
 // Generate substitution list for an allergen
 function generateSubstitutions(dish: MenuItem, allergen: Allergen, canModify: boolean, foundIngredients: string[]): string[] {
+  // First check modification possibility
+  const modAnalysis = analyzeModificationPossibility(dish, allergen);
+  
+  // If modification is not possible, return the reason
+  if (!modAnalysis.modifiable) {
+    if (modAnalysis.reason) {
+      return [`NOT POSSIBLE - ${modAnalysis.reason}`];
+    }
+    return ['NOT POSSIBLE - This dish cannot be modified to remove the allergen'];
+  }
+  
   const isPrepared = isPreparedFood(dish);
   
   // For pre-prepared foods, filter to only garnish ingredients
@@ -543,7 +704,7 @@ function generateSubstitutions(dish: MenuItem, allergen: Allergen, canModify: bo
     
     // If it's pre-prepared and has no garnish ingredients, return special message
     if (garnishIngredients.length === 0) {
-      return ['⚠️ NOT POSSIBLE - This dish has been pre-prepared and cannot be modified'];
+      return ['NOT POSSIBLE - This dish has been pre-prepared and cannot be modified'];
     }
     
     // Only process garnish ingredients for pre-prepared foods
@@ -552,6 +713,11 @@ function generateSubstitutions(dish: MenuItem, allergen: Allergen, canModify: bo
   
   if (!canModify && !isPrepared) {
     return [`NO ${ALLERGEN_LABELS[allergen]}`];
+  }
+  
+  // If modification analysis suggests a specific approach, include it
+  if (modAnalysis.suggestion) {
+    // Continue with normal substitution generation, but the suggestion will be considered
   }
 
   const substitutions: string[] = [];
@@ -814,7 +980,7 @@ function generateSubstitutions(dish: MenuItem, allergen: Allergen, canModify: bo
         if (eggIng) {
           const descriptiveEgg = getDescriptiveIngredientName(eggIng);
           substitutions.push(`NO ${descriptiveEgg}`);
-        }
+      }
       if (substitutions.length === 0) {
         substitutions.push(`NO ${ALLERGEN_LABELS[allergen]}`);
         }
@@ -854,7 +1020,7 @@ function generateSubstitutions(dish: MenuItem, allergen: Allergen, canModify: bo
             ing.toLowerCase().includes('onion') && !ing.toLowerCase().includes('garlic')
           );
           const descriptiveName = onionIng ? getDescriptiveIngredientName(onionIng) : 'onion';
-          substitutions.push(`⚠️ NOT POSSIBLE - ${descriptiveName} cannot be substituted in this dish`);
+          substitutions.push(`NOT POSSIBLE - ${descriptiveName} cannot be substituted in this dish`);
         } else {
           // For garlic or general onion/garlic, allow substitution with descriptive names
           const descriptiveNames = ingredientsToProcess.map(ing => getDescriptiveIngredientName(ing));
@@ -870,7 +1036,7 @@ function generateSubstitutions(dish: MenuItem, allergen: Allergen, canModify: bo
         if (descriptiveNames.length > 0) {
           substitutions.push(...descriptiveNames.map(name => `NO ${name}`));
         } else {
-          substitutions.push('NO onion/garlic');
+      substitutions.push('NO onion/garlic');
         }
       }
       break;
@@ -880,7 +1046,7 @@ function generateSubstitutions(dish: MenuItem, allergen: Allergen, canModify: bo
       if (tomatoDescriptiveNames.length > 0) {
         substitutions.push(...tomatoDescriptiveNames.map(name => `NO ${name}`));
       } else {
-        substitutions.push('NO tomato');
+      substitutions.push('NO tomato');
       }
       break;
     default:
@@ -963,12 +1129,17 @@ export function checkDishSafety(
 
     const status: 'safe' | 'unsafe' = (containsValue === 'Y' || contains) ? 'unsafe' : 'safe';
     const substitutions = status === 'unsafe' ? generateSubstitutions(dish, allergen, canModify, foundIngredients) : [];
+    
+    // Determine if modification is actually possible based on analyzeModificationPossibility
+    // This overrides the general canModify flag for specific cases
+    const modAnalysis = analyzeModificationPossibility(dish, allergen);
+    const actualCanBeModified = modAnalysis.modifiable && canModify;
 
     return {
       allergen,
       contains,
       status,
-      canBeModified: canModify,
+      canBeModified: actualCanBeModified,
       substitutions,
       foundIngredients: foundIngredients.length > 0 ? foundIngredients : undefined,
     };
@@ -984,7 +1155,7 @@ export function checkDishSafety(
     let substitutions: string[] = [];
     if (status === 'unsafe') {
       if (!canModify) {
-        substitutions = [`⚠️ NOT POSSIBLE - Cannot remove ${customAllergen} - dish cannot be modified`];
+        substitutions = [`NOT POSSIBLE - Cannot remove ${customAllergen} - dish cannot be modified`];
       } else {
         // Use most descriptive ingredient names from dish.ingredients
         const descriptiveNames = foundIngredients.map(ing => {

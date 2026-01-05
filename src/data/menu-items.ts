@@ -1428,8 +1428,8 @@ export const menuItems: MenuItem[] = [
     "cannot_be_made_safe_notes": ""
   },
   {
-    "id": "is_not_available_suggest_a_rib_eye_if_the_guest_would_like_well_done_we_recommend_an_end_cut_roasted_prime_rib_of_beef",
-    "dish_name": "is not available (suggest a rib -eye).  If the guest would like well done, we recommend an end cut. Roasted Prime Rib of Beef",
+    "id": "roasted_prime_rib_of_beef",
+    "dish_name": "Roasted Prime Rib of Beef",
     "ticket_code": "10 OZ PRIME/16 OZ PRIME/22 OZ PRIME",
     "category": "Roasted Prime Rib  Of Beef Au Jus",
     "menu": "D",
@@ -1555,12 +1555,12 @@ export const menuItems: MenuItem[] = [
       "salmon",
       "side"
     ],
-    "allergy_raw": "Dairy",
+    "allergy_raw": "Dairy, fish",
     "contains_dairy": "Y",
     "contains_egg": "N",
     "contains_gluten": "N",
     "contains_shellfish": "N",
-    "contains_fish": "N",
+    "contains_fish": "Y",
     "contains_soy": "N",
     "contains_nuts": "N",
     "contains_sesame": "N",

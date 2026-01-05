@@ -1,6 +1,5 @@
 import { describe, it, expect } from 'vitest';
 import { menuItems } from '../menu-items';
-import type { MenuItem } from '../../types';
 
 describe('Menu Items Data', () => {
   it('should have menu items', () => {
@@ -69,23 +68,6 @@ describe('Menu Items Data', () => {
   });
 
   it('should have valid categories', () => {
-    const validCategories = [
-      'Appetizers',
-      'Salads',
-      'Steaks And Chops',
-      'Chicken And Barbecue',
-      'Fresh Fish And Seafood',
-      'Filet Mignon',
-      'Roasted Prime Rib  Of Beef Au Jus',
-      'Sandwiches: Prime Burgers',
-      'Sandwiches: Signatures',
-      'Sides',
-      'Desserts',
-      'Brunch',
-      'Kid\'S Menu',
-      'Nightly Specials',
-    ];
-
     menuItems.forEach((item) => {
       // Allow glossary and other categories too
       expect(item.category).toBeDefined();
@@ -94,8 +76,6 @@ describe('Menu Items Data', () => {
   });
 
   it('should have valid menu values', () => {
-    const validMenus = ['L', 'D', 'L & D', 'Weekend Brunch', 'Secret', 'PASE  and HH', 'Secret/Club'];
-    
     menuItems.forEach((item) => {
       expect(item.menu).toBeDefined();
       expect(typeof item.menu).toBe('string');

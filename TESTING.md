@@ -116,3 +116,4 @@ Tests should be run:
 
 The core allergy checking logic is well-tested and reliable. Component tests may need additional setup for UI components.
 
+

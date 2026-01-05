@@ -1,6 +1,6 @@
-import { describe, it, expect } from 'vitest';
+import { describe, expect, it } from 'vitest';
+import type { MenuItem } from '../../types';
 import { checkDishSafety } from '../allergy-checker';
-import type { MenuItem, Allergen } from '../../types';
 
 // Helper function to create a test menu item
 function createMenuItem(overrides: Partial<MenuItem>): MenuItem {
