@@ -412,5 +412,76 @@ describe('checkDishSafety', () => {
       expect(result.perAllergy.filter(item => item.status === 'unsafe').length).toBeGreaterThan(0);
     });
   });
+
+  describe('Pre-Prepared Dishes with Garnish', () => {
+    it('should allow garnish removal from pre-prepared bisque (corn garnish)', () => {
+      const dish = createMenuItem({
+        description: 'A mixture of shrimp, crab, butter, cream, flour. Garnished with corn, red peppers and chives.',
+        contains_dairy: 'Y',
+        contains_shellfish: 'Y',
+        contains_gluten: 'Y',
+        cannot_be_made_safe_notes: 'This dish has been pre-prepared and cannot be modified. However, the garnish (corn, red peppers, and chives) can be removed upon request.',
+        ingredients: ['shrimp', 'crab', 'butter', 'cream', 'flour', 'corn', 'red peppers', 'chives'],
+      });
+      
+      // Test corn allergy (garnish ingredient)
+      const result = checkDishSafety(dish, [], ['corn']);
+      const cornResult = result.perAllergy.find(r => r.allergen === 'corn');
+      
+      // Corn is garnish, so should be removable
+      if (cornResult) {
+        expect(cornResult.canBeModified).toBe(true);
+        expect(cornResult.substitutions.some(sub => 
+          sub.includes('NO corn') || sub.includes('corn')
+        )).toBe(true);
+        // Should NOT say NOT POSSIBLE for garnish
+        expect(cornResult.substitutions.some(sub => 
+          sub.includes('NOT POSSIBLE')
+        )).toBe(false);
+      }
+    });
+
+    it('should NOT allow removal of main ingredients from pre-prepared bisque (dairy)', () => {
+      const dish = createMenuItem({
+        description: 'A mixture of shrimp, crab, butter, cream, flour. Garnished with corn, red peppers and chives.',
+        contains_dairy: 'Y',
+        contains_shellfish: 'Y',
+        contains_gluten: 'Y',
+        cannot_be_made_safe_notes: 'This dish has been pre-prepared and cannot be modified. However, the garnish (corn, red peppers, and chives) can be removed upon request.',
+        ingredients: ['shrimp', 'crab', 'butter', 'cream', 'flour', 'corn', 'red peppers', 'chives'],
+      });
+      
+      // Test dairy allergy (main ingredient, not garnish)
+      const result = checkDishSafety(dish, ['dairy'], []);
+      const dairyResult = result.perAllergy.find(r => r.allergen === 'dairy');
+      
+      // Dairy is in main mixture, so should show NOT POSSIBLE
+      expect(result.overallStatus).toBe('unsafe');
+      expect(dairyResult?.status).toBe('unsafe');
+      expect(dairyResult?.canBeModified).toBe(false);
+      expect(dairyResult?.substitutions.some(sub => 
+        sub.includes('NOT POSSIBLE')
+      )).toBe(true);
+    });
+
+    it('should distinguish between garnish red peppers and seasoning red pepper', () => {
+      const dish = createMenuItem({
+        description: 'Soup with red pepper seasoning. Garnished with red peppers and chives.',
+        ingredients: ['red pepper', 'red peppers', 'chives'],
+      });
+      
+      // Test red peppers allergy (garnish)
+      const result = checkDishSafety(dish, [], ['red peppers']);
+      const peppersResult = result.perAllergy.find(r => r.allergen === 'red peppers');
+      
+      // Red peppers in garnish should be removable
+      if (peppersResult) {
+        expect(peppersResult.canBeModified).toBe(true);
+        expect(peppersResult.substitutions.some(sub => 
+          sub.includes('NOT POSSIBLE')
+        )).toBe(false);
+      }
+    });
+  });
 });
 

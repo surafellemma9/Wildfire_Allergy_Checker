@@ -10,7 +10,8 @@ export type Allergen =
   | 'sesame'
   | 'msg'
   | 'onion_garlic'
-  | 'tomato';
+  | 'tomato'
+  | 'seed';
 
 export interface MenuItem {
   id: string;

@@ -166,5 +166,81 @@ describe('Dishes That Cannot Be Modified - NOT POSSIBLE Verification', () => {
       }
     });
   });
+
+  // Test garnish removal for pre-prepared dishes
+  describe('Garnish Removal for Pre-Prepared Dishes', () => {
+    it('should allow garnish removal from Shrimp and Crab Bisque (corn allergy)', () => {
+      const dish = menuItems.find(d => d.dish_name === 'Shrimp and Crab Bisque');
+      
+      if (!dish) {
+        console.warn('Shrimp and Crab Bisque not found');
+        return;
+      }
+
+      // Test with custom corn allergy (garnish ingredient)
+      const result = checkDishSafety(dish, [], ['corn']);
+      const cornResult = result.perAllergy.find(r => r.allergen === 'corn');
+      
+      // Corn is in garnish, so dish should be safe (garnish can be removed)
+      // The system should either mark it as safe OR provide a substitution to remove garnish
+      if (cornResult) {
+        // If detected, should allow removal
+        expect(cornResult.canBeModified).toBe(true);
+        // Should have substitution to remove garnish, not "NOT POSSIBLE"
+        const hasNotPossible = cornResult.substitutions.some(sub => 
+          sub.includes('NOT POSSIBLE')
+        );
+        expect(hasNotPossible).toBe(false);
+      } else {
+        // If not detected, dish is safe
+        expect(result.overallStatus).toBe('safe');
+      }
+    });
+
+    it('should allow garnish removal from Shrimp and Crab Bisque (chives allergy)', () => {
+      const dish = menuItems.find(d => d.dish_name === 'Shrimp and Crab Bisque');
+      
+      if (!dish) {
+        console.warn('Shrimp and Crab Bisque not found');
+        return;
+      }
+
+      // Test with custom chives allergy (garnish ingredient)
+      const result = checkDishSafety(dish, [], ['chives']);
+      const chivesResult = result.perAllergy.find(r => r.allergen === 'chives');
+      
+      // Chives are in garnish, so dish should be safe (garnish can be removed)
+      if (chivesResult) {
+        expect(chivesResult.canBeModified).toBe(true);
+        const hasNotPossible = chivesResult.substitutions.some(sub => 
+          sub.includes('NOT POSSIBLE')
+        );
+        expect(hasNotPossible).toBe(false);
+      } else {
+        expect(result.overallStatus).toBe('safe');
+      }
+    });
+
+    it('should NOT allow removal of main ingredients from Shrimp and Crab Bisque (dairy)', () => {
+      const dish = menuItems.find(d => d.dish_name === 'Shrimp and Crab Bisque');
+      
+      if (!dish) {
+        console.warn('Shrimp and Crab Bisque not found');
+        return;
+      }
+
+      // Test with dairy allergy (main ingredient, not garnish)
+      const result = checkDishSafety(dish, ['dairy'], []);
+      const dairyResult = result.perAllergy.find(r => r.allergen === 'dairy');
+      
+      // Dairy is in main mixture, so should show NOT POSSIBLE
+      expect(result.overallStatus).toBe('unsafe');
+      expect(dairyResult?.status).toBe('unsafe');
+      expect(dairyResult?.canBeModified).toBe(false);
+      expect(dairyResult?.substitutions.some(sub => 
+        sub.includes('NOT POSSIBLE')
+      )).toBe(true);
+    });
+  });
 });
 

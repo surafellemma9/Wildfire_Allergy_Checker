@@ -4,53 +4,69 @@ import type { Allergen, AllergyCheckResult, MenuItem } from '../types';
 const compositeIngredients: Record<string, string[]> = {
   // Dairy-based
   'buttermilk': ['milk', 'cultured milk', 'lactic acid'],
-  'ranch dressing': ['mayonnaise', 'buttermilk', 'sour cream', 'garlic', 'onion', 'dill', 'parsley', 'chives', 'salt', 'pepper'],
-  'ranch': ['mayonnaise', 'buttermilk', 'sour cream', 'garlic', 'onion', 'dill', 'parsley', 'chives', 'salt', 'pepper'],
-  'yogurt sauce': ['yogurt', 'garlic', 'lemon juice', 'salt', 'pepper', 'dill'],
-  'horseradish cream sauce': ['horseradish', 'sour cream', 'mayonnaise', 'lemon juice', 'salt', 'pepper'],
-  'béarnaise': ['butter', 'egg yolk', 'white wine vinegar', 'shallots', 'tarragon', 'chervil', 'pepper'],
-  'hollandaise': ['butter', 'egg yolk', 'lemon juice', 'salt', 'cayenne pepper'],
+  'ranch dressing': ['buttermilk', 'mayonnaise', 'hidden valley ranch dry dressing'],
+  'ranch': ['buttermilk', 'mayonnaise', 'hidden valley ranch dry dressing'],
+  'apple ranch dressing': ['reduced apple cider', 'ranch dressing', 'parsley'],
+  'yogurt sauce': ['greek yogurt', 'extra virgin olive oil', 'lemon juice', 'garlic', 'basil', 'mint', 'salt', 'pepper', 'cucumber'],
+  'horseradish cream sauce': ['sour cream', 'prepared horseradish', 'salt', 'pepper'],
+  'béarnaise': ['white balsamic vinegar', 'white wine', 'shallots', 'tarragon', 'egg yolks', 'clarified butter', 'salt', 'pepper', 'tarragon'],
+  'béarnaise sauce': ['white balsamic vinegar', 'white wine', 'shallots', 'tarragon', 'egg yolks', 'clarified butter', 'salt', 'pepper', 'tarragon'],
+  'hollandaise': ['egg yolks', 'white wine', 'lemon juice', 'tabasco sauce', 'worcestershire sauce', 'salt', 'pepper', 'butter'],
+  'hollandaise sauce': ['egg yolks', 'white wine', 'lemon juice', 'tabasco sauce', 'worcestershire sauce', 'salt', 'pepper', 'butter'],
   'aioli': ['mayonnaise', 'garlic', 'lemon juice', 'olive oil'],
-  'ancho mayo': ['mayonnaise', 'ancho chili', 'lime juice', 'garlic'],
-  'spicy mayo': ['mayonnaise', 'sriracha', 'lime juice', 'garlic'],
-  'mustard mayonnaise': ['mayonnaise', 'mustard', 'dijon mustard'],
+  'ancho mayo': ['mayonnaise', 'al pastor marinade'],
+  'ancho mayonnaise': ['mayonnaise', 'al pastor marinade'],
+  'spicy mayo': ['mayonnaise', 'sambal chili paste'],
+  'mustard mayonnaise': ['mayonnaise', 'a1-steak sauce', 'worcestershire', 'whipping cream', 'dry mustard', 'salt'],
   
   // Sauces
-  'cocktail sauce': ['ketchup', 'horseradish', 'lemon juice', 'worcestershire sauce', 'hot sauce', 'salt', 'pepper'],
-  'apricot dipping sauce': ['apricot preserves', 'soy sauce', 'rice wine vinegar', 'ginger', 'garlic'],
+  'cocktail sauce': ['heinz cocktail sauce', 'prepared horseradish', 'lemon juice', 'salt', 'pepper'],
+  'apricot dipping sauce': ['apricot preserves', 'rice vinegar', 'sambal chili paste', 'garlic', 'ginger', 'cilantro', 'toasted sesame seeds', 'sesame oil', 'san j tamari', 'scallions'],
   'coconut dipping sauce': ['coconut milk', 'dark brown sugar', 'rice wine vinegar', 'tamari', 'ginger', 'chili paste'],
-  'barbecue sauce': ['ketchup', 'brown sugar', 'vinegar', 'worcestershire sauce', 'mustard', 'garlic', 'onion'],
-  'bbq sauce': ['ketchup', 'brown sugar', 'vinegar', 'worcestershire sauce', 'mustard', 'garlic', 'onion'],
+  'barbecue sauce': ['sweet baby rays original barbecue sauce', 'dried onion', 'garlic', 'butter', 'chili powder', 'paprika', 'cloves', 'cinnamon', 'dried basil', 'ginger puree', 'dried tarragon', 'ketchup', 'tomato paste', 'steak sauce', 'worcestershire sauce', 'molasses', 'san j tamari', 'water', 'red wine vinegar', 'lemon juice', 'beef base', 'pepper', 'chilies', 'balsamic vinegar', 'dijon mustard'],
+  'bbq sauce': ['sweet baby rays original barbecue sauce', 'dried onion', 'garlic', 'butter', 'chili powder', 'paprika', 'cloves', 'cinnamon', 'dried basil', 'ginger puree', 'dried tarragon', 'ketchup', 'tomato paste', 'steak sauce', 'worcestershire sauce', 'molasses', 'san j tamari', 'water', 'red wine vinegar', 'lemon juice', 'beef base', 'pepper', 'chilies', 'balsamic vinegar', 'dijon mustard'],
   'hot honey sauce': ['honey', 'hot sauce', 'butter', 'vinegar'],
-  'balsamic vinaigrette': ['balsamic vinegar', 'olive oil', 'dijon mustard', 'garlic', 'salt', 'pepper'],
-  'lemon herb vinaigrette': ['lemon juice', 'olive oil', 'herbs', 'garlic', 'salt', 'pepper'],
-  'lemon parmesan vinaigrette': ['lemon juice', 'olive oil', 'parmesan cheese', 'garlic', 'salt', 'pepper'],
-  'red wine vinaigrette': ['red wine vinegar', 'olive oil', 'dijon mustard', 'garlic', 'salt', 'pepper'],
+  'balsamic vinaigrette': ['house oil', 'balsamic vinegar', 'white balsamic vinegar', 'sugar', 'shallots', 'garlic', 'dijon mustard', 'salt', 'pepper'],
+  'citrus lime vinaigrette': ['dry mustard', 'sugar', 'garlic', 'lime juice', 'red wine vinegar', 'oregano', 'chilies', 'al pastor marinade', 'kosher salt', 'house oil'],
+  'citrus dressing': ['dry mustard', 'sugar', 'garlic', 'lime juice', 'red wine vinegar', 'oregano', 'chilies', 'al pastor marinade', 'kosher salt', 'house oil'],
+  'lemon herb vinaigrette': ['lemon juice', 'red wine vinegar', 'water', 'lemon zest', 'shallots', 'garlic', 'salt', 'pepper', 'old bay seasoning', 'sugar', 'dijon mustard', 'house oil', 'extra virgin olive oil', 'thyme', 'basil'],
+  'blue cheese dressing': ['mayonnaise', 'buttermilk', 'salt', 'pepper', 'blue cheese crumbles', 'tabasco sauce'],
+  'lemon parmesan vinaigrette': ['lemon juice', 'garlic', 'dijon mustard', 'salt', 'black pepper', 'house oil', 'extra virgin olive oil', 'parmesan cheese'],
+  'red wine vinaigrette': ['red wine vinegar', 'sugar', 'salt', 'pepper', 'oregano', 'thyme', 'basil', 'garlic puree', 'red chilies', 'parmesan', 'house oil'],
+  'shallot balsamic sauce': ['shallots', 'butter', 'au jus', 'balsamic vinegar', 'veal demi glaze', 'cornstarch', 'sugar', 'salt', 'pepper'],
+  'tartar sauce': ['mayonnaise', 'capers', 'lemon zest', 'lemon juice', 'shallots', 'pickle relish', 'dijon mustard', 'parsley', 'tabasco', 'worcestershire sauce'],
   'caesar dressing': ['anchovy', 'garlic', 'lemon juice', 'dijon mustard', 'asiago cheese', 'pasteurized egg yolk', 'red wine vinegar', 'house oil', 'salt', 'pepper'],
-  'tomato basil sauce': ['tomato', 'basil', 'garlic', 'olive oil', 'salt', 'pepper'],
-  'au jus': ['beef stock', 'onion', 'garlic', 'worcestershire sauce', 'salt', 'pepper'],
-  'mint chimichurri': ['mint', 'parsley', 'garlic', 'olive oil', 'red wine vinegar', 'salt', 'pepper'],
-  'mushroom gravy': ['mushrooms', 'butter', 'flour', 'chicken stock', 'whipping cream', 'heavy cream', 'onion', 'garlic', 'salt', 'pepper'],
+  'tomato basil sauce': ['plum tomatoes', 'onions', 'garlic', 'olive oil', 'salt', 'pepper', 'butter', 'oregano', 'sugar', 'tomato paste', 'basil'],
+  'ranchero sauce': ['plum tomatoes', 'onions', 'jalapenos', 'water', 'salt', 'cilantro'],
+  'au jus': ['beef fat from pre-roasted prime ribs', 'salt', 'pepper', 'house oil', 'garlic', 'onions', 'rosemary', 'bay leaf', 'thyme', 'beef base', 'veal demi glaze', 'water'],
+  'beef stock': ['beef bones', 'rosemary', 'thyme', 'sage', 'celery', 'carrots', 'garlic', 'onions'],
+  'mint chimichurri': ['parsley', 'mint', 'jalapenos', 'shallots', 'garlic', 'red wine vinegar', 'sugar', 'salt', 'pepper', 'extra virgin olive oil'],
+  'mushroom gravy': ['chicken jus', 'butter', 'flour', 'beef jus', 'whipping cream', 'rosemary', 'roasted wild mushrooms'],
   
   // Marinades
-  'mediterranean marinade': ['olive oil', 'lemon juice', 'garlic', 'oregano', 'thyme', 'rosemary', 'salt', 'pepper'],
-  'steak marinade': ['soy sauce', 'worcestershire sauce', 'garlic', 'onion', 'olive oil', 'black pepper'],
-  'bourbon marinade': ['bourbon', 'soy sauce', 'brown sugar', 'garlic', 'ginger', 'worcestershire sauce'],
+  'mediterranean marinade': ['lemon juice', 'red wine vinegar', 'olive oil', 'garlic', 'oregano', 'parsley', 'cumin', 'coriander', 'sugar', 'salt', 'pepper'],
+  'steak marinade': ['pineapple juice', 'balsamic vinegar', 'worcestershire sauce', 'san j tamari', 'ground guajillo chilies', 'peppercorns', 'pureed garlic'],
+  'al pastor marinade': ['ancho peppers', 'guajillo peppers', 'orange juice', 'grapefruit juice', 'salt', 'al pastor spice', 'chili powder', 'onion', 'garlic', 'red wine vinegar', 'cilantro', 'canola oil', 'paprika'],
+  'fresh herb marinade': ['thyme', 'parsley', 'basil', 'sage', 'chives', 'rosemary', 'garlic', 'red chilies', 'lemon zest', 'lemon juice', 'house oil'],
+  'bourbon marinade': ['basil hayden bourbon', 'jim beam bourbon', 'olive oil', 'dijon mustard', 'san j tamari', 'red wine vinegar', 'steak sauce', 'brown sugar', 'red onion', 'garlic', 'salt', 'pepper'],
   'basil hayden\'s bourbon': ['bourbon'],
   
   // Spice blends
-  'wildfire 8 spice': ['salt', 'pepper', 'garlic', 'onion', 'paprika', 'cayenne', 'other spices'],
-  'blackening spice': ['paprika', 'cayenne', 'garlic powder', 'onion powder', 'thyme', 'oregano', 'salt', 'pepper'],
-  'char-crust': ['spices', 'salt', 'pepper', 'garlic', 'onion'],
-  'old bay seasoning': ['celery salt', 'paprika', 'black pepper', 'cayenne', 'mustard', 'ginger', 'allspice', 'bay leaf'],
+  'wildfire 8 spice': ['kosher salt', 'coriander', 'fennel', 'mustard seed', 'rosemary', 'black pepper', 'bay leaves', 'crushed red pepper'],
+  'blackening spice': ['paprika', 'dehydrated garlic', 'dehydrated onion', 'spices', 'salt', 'extractives', 'silicon dioxide'],
+  'char-crust': ['garlic', 'peppercorns', 'sugar', 'spices', 'onion', 'caramel color', 'worcestershire powder', 'paprika', 'hydrolyzed soy', 'corn protein', 'wheat flour'],
+  'char-crusted': ['garlic', 'peppercorns', 'sugar', 'spices', 'onion', 'caramel color', 'worcestershire powder', 'paprika', 'hydrolyzed soy', 'corn protein', 'wheat flour'],
+  'old bay seasoning': ['celery salt', 'spices', 'mustard seed', 'red pepper', 'black pepper', 'bay leaves', 'cloves', 'allspice', 'ginger', 'mace', 'cardamom', 'cinnamon', 'paprika'],
+  'wildfire 8 spice': ['kosher salt', 'coriander', 'fennel', 'mustard seed', 'rosemary', 'black pepper', 'bay leaves', 'crushed red pepper'],
   
   // Other composite ingredients
   'coleslaw': ['cabbage', 'carrots', 'mayonnaise', 'vinegar', 'sugar', 'salt', 'pepper'],
-  'coleslaw dressing': ['mayonnaise', 'vinegar', 'sugar', 'salt', 'pepper', 'celery seed'],
+  'coleslaw dressing': ['mayonnaise', 'sour cream', 'sugar', 'white balsamic vinegar', 'salt', 'white pepper', 'celery seed', 'buedels horseradish'],
+  'crispy onions': ['spanish onions', 'salt', 'pepper', 'buttermilk', 'seasoned flour'],
   'garlic crouton': ['bread', 'garlic', 'butter', 'salt', 'pepper'],
   'garlic croutons': ['bread', 'garlic', 'butter', 'salt', 'pepper'],
-  'seasoned flour': ['flour', 'salt', 'pepper', 'spices'],
-  'saltine crackers': ['flour', 'salt', 'baking soda'],
+  'seasoned flour': ['flour', 'cornmeal', 'garlic', 'onion powder', 'salt', 'pepper', 'cayenne'],
+  'saltine crackers': ['enriched flour', 'soybean oil', 'salt', 'corn syrup', 'baking soda', 'yeast', 'soy lecithin'],
   'elbow macaroni': ['wheat', 'flour', 'water', 'eggs'],
   'half and half': ['milk', 'cream'],
   'whipping cream': ['cream', 'milk'],
@@ -58,18 +74,20 @@ const compositeIngredients: Record<string, string[]> = {
   'yellow cheese spread': ['milk', 'cheese', 'cultures', 'enzymes', 'salt', 'annatto'],
   'creamed spinach': ['spinach', 'cream', 'butter', 'flour', 'nutmeg', 'salt', 'pepper'],
   'au gratin potatoes': ['potatoes', 'cream', 'white cheddar cheese', 'butter', 'salt', 'pepper'],
-  'garlic butter': ['butter', 'garlic', 'parsley'],
-  'steak butter': ['butter', 'herbs', 'garlic', 'salt', 'pepper'],
+  'garlic butter': ['butter', 'garlic', 'parsley', 'oregano', 'lemon juice', 'red chilies', 'salt', 'pepper'],
+  'steak butter': ['balsamic vinegar', 'worcestershire sauce', 'sugar', 'butter', 'salt', 'pepper'],
+  'steak sauce': ['worcestershire sauce', 'ketchup', 'tamari soy sauce', 'salt', 'tomato paste'],
   'pre-mark butter': ['butter', 'herbs', 'garlic'],
   'premark butter': ['butter', 'herbs', 'garlic'],
-  'horseradish crust': ['horseradish', 'breadcrumbs', 'parmesan', 'butter'],
+  'horseradish crust': ['butter', 'japanese breadcrumbs', 'fresh horseradish', 'prepared horseradish', 'salt', 'pepper'],
   'peppercorn crust': ['black peppercorns', 'breadcrumbs', 'butter'],
-  'parmesan crust': ['parmesan cheese', 'breadcrumbs', 'butter'],
-  'mushroom crust': ['mushrooms', 'breadcrumbs', 'butter', 'garlic'],
-  'garlic crust': ['garlic', 'breadcrumbs', 'butter', 'parsley'],
-  'blue cheese crust': ['blue cheese', 'breadcrumbs', 'butter'],
+  'parmesan crust': ['butter', 'japanese breadcrumbs', 'parmesan cheese', 'garlic', 'shallots', 'thyme', 'parsley', 'salt', 'pepper'],
+  'mushroom crust': ['portobello mushrooms', 'cremini mushrooms', 'porcini mushrooms', 'domestic mushrooms', 'veal demi glaze', 'garlic', 'shallots', 'thyme', 'rosemary', 'parsley', 'sherry', 'breadcrumbs', 'butter', 'house oil', 'salt', 'pepper'],
+  'garlic crust': ['butter', 'garlic cloves', 'olive oil', 'salt', 'pepper', 'rosemary', 'thyme', 'shallots', 'white wine', 'lemon juice', 'cayenne pepper', 'lemon zest', 'granulated garlic', 'gluten free bread crumbs'],
+  'blue cheese crust': ['butter', 'japanese breadcrumbs', 'blue cheese', 'salt', 'pepper'],
   'coconut crumbs': ['coconut', 'garlic butter', 'parsley', 'japanese breadcrumbs'],
-  'japanese breadcrumbs': ['breadcrumbs', 'panko'],
+  'japanese breadcrumbs': ['bleached wheat flour', 'dextrose', 'yeast', 'salt'],
+  'panko': ['bleached wheat flour', 'dextrose', 'yeast', 'salt'],
   'breadcrumbs': ['bread', 'flour'],
   'breading': ['flour', 'egg', 'breadcrumbs'],
   'batter': ['flour', 'egg', 'milk', 'baking powder'],
@@ -77,10 +95,10 @@ const compositeIngredients: Record<string, string[]> = {
   'fried chicken flour': ['flour', 'spices', 'salt', 'pepper'],
   
   // Stocks and bases
-  'chicken stock': ['chicken', 'onion', 'carrot', 'celery', 'garlic', 'herbs', 'salt', 'pepper'],
-  'chicken jus': ['chicken stock', 'chicken drippings', 'onion', 'garlic'],
+  'chicken stock': ['chicken bones', 'celery', 'onions', 'carrots', 'parsley', 'garlic', 'bay leaf', 'thyme', 'peppercorns', 'chicken base'],
+  'chicken jus': ['chicken bones', 'sage', 'rosemary', 'thyme', 'shallots', 'garlic', 'white wine', 'chicken base', 'chicken stock'],
   'lobster base': ['lobster', 'shellfish', 'salt', 'spices'],
-  'shrimp poaching liquid': ['shrimp', 'shellfish', 'water', 'salt'],
+  'shrimp poaching liquid': ['water', 'white wine', 'onions', 'celery', 'bay leaf', 'thyme', 'old bay seasoning', 'lemon slices'],
   'clam juice': ['clams', 'shellfish', 'water', 'salt'],
   
   // Other
@@ -89,7 +107,7 @@ const compositeIngredients: Record<string, string[]> = {
   'dijon mustard': ['mustard seeds', 'white wine', 'vinegar', 'salt'],
   'honey dijon mustard': ['honey', 'dijon mustard', 'mustard seeds', 'vinegar'],
   'yellow mustard': ['mustard seeds', 'vinegar', 'turmeric', 'salt'],
-  'worcestershire sauce': ['vinegar', 'molasses', 'anchovy', 'tamari', 'onion', 'garlic', 'spices'],
+  'worcestershire sauce': ['vinegar', 'molasses', 'high fructose corn syrup', 'anchovies', 'water', 'onions', 'salt', 'garlic', 'tamarind concentrate', 'cloves', 'natural flavorings', 'chili pepper extract'],
   'tamari': ['soybeans', 'water', 'salt'],
   'soy sauce': ['soybeans', 'wheat', 'water', 'salt'],
   'teriyaki': ['soy sauce', 'sugar', 'mirin', 'sake', 'ginger', 'garlic'],
@@ -102,8 +120,11 @@ const compositeIngredients: Record<string, string[]> = {
   'american cheese': ['milk', 'cheese', 'cultures', 'enzymes', 'salt'],
   'jalapeno jack': ['milk', 'cheese', 'jalapeno peppers', 'cultures', 'enzymes', 'salt'],
   'swiss cheese': ['milk', 'cheese', 'cultures', 'enzymes', 'salt'],
-  'lemon butter sauce': ['butter', 'lemon juice', 'salt', 'pepper'],
-  'tomato jam': ['tomatoes', 'sugar', 'vinegar', 'salt', 'spices'],
+  'lemon butter sauce': ['reduced shallots', 'white wine', 'lemon juice', 'clam juice', 'white balsamic vinegar', 'cayenne pepper', 'cream', 'butter'],
+  'tomato jam': ['extra virgin olive oil', 'onions', 'garlic', 'fresh rosemary', 'fresh basil', 'dried oregano', 'dried basil', 'white wine', 'canned tomatoes', 'tomato paste', 'red chili flakes', 'sugar', 'salt', 'pepper'],
+  'caramelized onions': ['extra virgin olive oil', 'onions', 'salt', 'pepper'],
+  'roasted onions': ['red onion', 'steak marinade', 'house oil', 'salt', 'pepper'],
+  'roasted red onions': ['red onion', 'steak marinade', 'house oil', 'salt', 'pepper'],
   'cranberry sauce': ['cranberries', 'sugar', 'water', 'salt'],
   'cranberry lemon butter': ['cranberry sauce', 'lemon butter sauce', 'butter', 'lemon juice'],
   'cornbread crumbs': ['cornmeal', 'flour', 'butter', 'salt', 'baking powder'],
@@ -147,6 +168,69 @@ const compositeIngredients: Record<string, string[]> = {
   'oatmeal raisin cookies': ['butter', 'sugar', 'brown sugar', 'eggs', 'vanilla', 'gluten free flour', 'baking soda', 'baking powder', 'salt', 'gluten free rolled oats', 'raisins'],
   'flourless chocolate cake': ['chocolate pistoles', 'butter', 'eggs', 'sugar', 'vanilla', 'salt', 'cocoa powder'],
   'chocolate pistoles': ['chocolate', 'cocoa butter', 'sugar'],
+  
+  // Additional sauces and ingredients from PDF pages 23-31
+  'al pastor marinade': ['ancho peppers', 'guajillo peppers', 'orange juice', 'grapefruit juice', 'salt', 'al pastor spice', 'chili powder', 'onion', 'garlic', 'red wine vinegar', 'cilantro', 'canola oil', 'paprika'],
+  'al pastor spice': ['chili pepper', 'dehydrated garlic', 'onion', 'spices', 'paprika', 'maltodextrin', 'salt', 'natural flavors', 'silicon dioxide'],
+  'apple ranch dressing': ['reduced apple cider', 'ranch dressing', 'parsley'],
+  'applesauce': ['applesauce', 'sugar', 'cinnamon', 'lemon juice'],
+  'apricot preserves': ['apricots', 'sugar', 'brown cane sugar', 'concentrated lemon juice', 'fruit pectin'],
+  'avocado spread': ['avocado', 'salt', 'pepper', 'lime juice', 'scallions', 'cilantro'],
+  'beef base': ['roasted beef', 'beef broth', 'salt', 'hydrolyzed corn protein', 'caramel color', 'sugar', 'onion powder', 'beef fat', 'potato starch', 'flavorings', 'disodium inosinate', 'disodium guanylate', 'yeast extract'],
+  'beef stock': ['beef bones', 'rosemary', 'thyme', 'sage', 'celery', 'carrots', 'garlic', 'onions'],
+  'berry sauce': ['door county cherry juice', 'raspberries', 'strawberries', 'sugar', 'cornstarch'],
+  'blue cheese dressing': ['mayonnaise', 'buttermilk', 'salt', 'pepper', 'blue cheese crumbles', 'tabasco sauce'],
+  'brown sugar glaze': ['brown sugar', 'dijon mustard', 'san j tamari', 'butter'],
+  'buttermilk brine': ['buttermilk', 'salt', 'pepper'],
+  'caramel sauce': ['sugar', 'cream', 'butter', 'honey', 'vanilla', 'maple syrup'],
+  'caramelized onions': ['extra virgin olive oil', 'onions', 'salt', 'pepper'],
+  'char crust': ['garlic', 'peppercorns', 'sugar', 'spices', 'onion', 'caramel color', 'worcestershire powder', 'paprika', 'hydrolyzed soy', 'corn protein', 'wheat flour'],
+  'citrus dressing': ['dry mustard', 'sugar', 'garlic', 'lime juice', 'red wine vinegar', 'oregano', 'chilies', 'al pastor marinade', 'kosher salt', 'house oil'],
+  'citrus lime vinaigrette': ['dry mustard', 'sugar', 'garlic', 'lime juice', 'red wine vinegar', 'oregano', 'chilies', 'al pastor marinade', 'kosher salt', 'house oil'],
+  'chicken base': ['roasted chicken', 'salt', 'hydrolyzed corn protein', 'sugar', 'chicken fat', 'maltodextrin', 'autolyzed yeast extract', 'onion powder', 'disodium inosinate', 'disodium guanylate', 'turmeric', 'natural flavoring', 'extract of annatto'],
+  'chopped chicken': ['chicken breast', 'herb chicken marinade'],
+  'crispy onions': ['spanish onions', 'salt', 'pepper', 'buttermilk', 'seasoned flour'],
+  'croutons': ['cubed striata baguette', 'garlic puree', 'house oil', 'lemon juice', 'salt', 'pepper'],
+  'dejonghe crust': ['butter', 'asiago', 'japanese breadcrumbs', 'garlic', 'shallots', 'parsley', 'rosemary', 'lemon zest', 'salt', 'oregano', 'pepper', 'cayenne pepper', 'paprika', 'dry sherry', 'white wine'],
+  'door county cherry sauce': ['door county cherries', 'cherry juice', 'orange juice', 'sugar', 'almond extract', 'cornstarch'],
+  'duck stock': ['duck skin', 'duck fat', 'duck bones', 'bay leaves', 'thyme', 'red wine', 'chicken stock'],
+  'egg wash': ['egg yolks', 'half and half'],
+  'fresh herb marinade': ['thyme', 'parsley', 'basil', 'sage', 'chives', 'rosemary', 'garlic', 'red chilies', 'lemon zest', 'lemon juice', 'house oil'],
+  'garlic breadcrumbs': ['garlic butter', 'japanese breadcrumbs', 'salt', 'pepper', 'parsley'],
+  'garlic butter': ['butter', 'garlic', 'parsley', 'oregano', 'lemon juice', 'red chilies', 'salt', 'pepper'],
+  'garlic crust': ['butter', 'garlic cloves', 'olive oil', 'salt', 'pepper', 'rosemary', 'thyme', 'shallots', 'white wine', 'lemon juice', 'cayenne pepper', 'lemon zest', 'granulated garlic', 'gluten free bread crumbs'],
+  'gluten free breadcrumbs': ['gluten free buns', 'garlic butter', 'salt', 'pepper', 'chives'],
+  'graham cracker crumbs': ['unbleached enriched flour', 'graham flour', 'sugar', 'soybean oil', 'molasses', 'high fructose corn syrup', 'partially hydrogenated cottonseed oil', 'leavening', 'salt'],
+  'graham cracker crust': ['graham cracker crumbs', 'sugar', 'butter'],
+  'hidden valley ranch dry dressing': ['salt', 'monosodium glutamate', 'dried garlic', 'modified food starch', 'spices', 'dried onion', 'maltodextrin', 'natural flavor', 'guar gum', 'calcium stearate'],
+  'horseradish crust': ['butter', 'japanese breadcrumbs', 'fresh horseradish', 'prepared horseradish', 'salt', 'pepper'],
+  'hot fudge': ['cream', 'sugar', 'corn syrup', 'semi-sweet chocolate', 'butter', 'vanilla', 'salt'],
+  'house oil': ['canola oil', 'olive oil'],
+  'lemon butter sauce': ['reduced shallots', 'white wine', 'lemon juice', 'clam juice', 'white balsamic vinegar', 'cayenne pepper', 'cream', 'butter'],
+  'mushroom crust': ['portobello mushrooms', 'cremini mushrooms', 'porcini mushrooms', 'domestic mushrooms', 'veal demi glaze', 'garlic', 'shallots', 'thyme', 'rosemary', 'parsley', 'sherry', 'breadcrumbs', 'butter', 'house oil', 'salt', 'pepper'],
+  'parmesan crust': ['butter', 'japanese breadcrumbs', 'parmesan cheese', 'garlic', 'shallots', 'thyme', 'parsley', 'salt', 'pepper'],
+  'pico de gallo': ['plum tomatoes', 'onions', 'jalapenos', 'cilantro', 'salt', 'pepper', 'lemon juice'],
+  'prepared horseradish': ['horseradish', 'distilled vinegar', 'water', 'soybean oil', 'salt', 'artificial flavor'],
+  'ranchero sauce': ['plum tomatoes', 'onions', 'jalapenos', 'water', 'salt', 'cilantro'],
+  'roasted mushrooms': ['cremini mushrooms', 'portobello mushrooms', 'domestic mushrooms', 'salt', 'pepper', 'rosemary', 'garlic', 'balsamic vinegar', 'extra virgin olive oil'],
+  'roasted onions': ['red onion', 'steak marinade', 'house oil', 'salt', 'pepper'],
+  'roasted red onions': ['red onion', 'steak marinade', 'house oil', 'salt', 'pepper'],
+  'roasted wild mushrooms': ['portobello mushrooms', 'cremini mushrooms', 'domestic mushrooms', 'salt', 'pepper', 'rosemary', 'garlic', 'balsamic vinegar', 'extra virgin olive oil'],
+  'sambal chili paste': ['chili', 'salt', 'distilled vinegar', 'potassium sorbate', 'sodium bisulfite', 'xantham gum'],
+  'san j tamari': ['water', 'soybeans', 'salt', 'alcohol'],
+  'shallot balsamic sauce': ['shallots', 'butter', 'au jus', 'balsamic vinegar', 'veal demi glaze', 'cornstarch', 'sugar', 'salt', 'pepper'],
+  'shrimp poaching liquid': ['water', 'white wine', 'onions', 'celery', 'bay leaf', 'thyme', 'old bay seasoning', 'lemon slices'],
+  'shrimp stock': ['house oil', 'onion', 'celery', 'carrots', 'garlic', 'peppercorn', 'thyme', 'tarragon', 'bay leaves', 'shrimp shells', 'tomato paste', 'brandy', 'water'],
+  'steak sauce': ['worcestershire sauce', 'ketchup', 'tamari soy sauce', 'salt', 'tomato paste'],
+  'striata baguette': ['parisian sponge', 'king arthur flour', 'select bakers yeast', 'water', 'sir galahad flour', 'plain yogurt', 'salt', 'malt liquid', 'water'],
+  'sweet baby rays original barbecue sauce': ['high fructose corn syrup', 'distilled vinegar', 'tomato paste', 'modified food starch', 'salt', 'pineapple juice concentrate', 'natural smoke flavor', 'spices', 'caramel color', 'sodium benzoate', 'molasses', 'corn syrup', 'garlic', 'sugar', 'tamarind', 'natural flavor'],
+  'tabasco': ['distilled vinegar', 'red pepper', 'salt'],
+  'tartar sauce': ['mayonnaise', 'capers', 'lemon zest', 'lemon juice', 'shallots', 'pickle relish', 'dijon mustard', 'parsley', 'tabasco', 'worcestershire sauce'],
+  'veal demi glaze': ['veal stock', 'demi-glace sauce mix'],
+  'vegetable base': ['vegetables', 'sugar', 'salt', 'yeast extract', 'hydrolyzed corn protein', 'maltodextrin', 'canola oil', 'natural flavor', 'disodium inosinate', 'disodium guanylate', 'modified food starch', 'spice', 'hydrolyzed soy protein', 'burgundy wine solids'],
+  'vegetable stock': ['vegetable base', 'hot water'],
+  'wildfire 8 spice': ['kosher salt', 'coriander', 'fennel', 'mustard seed', 'rosemary', 'black pepper', 'bay leaves', 'crushed red pepper'],
+  'za\'atar': ['ground sumac seeds', 'ground thyme', 'roasted white sesame seeds'],
 };
 
 /**
@@ -158,7 +242,7 @@ function getSubIngredients(ingredient: string): string[] {
 }
 
 // Map allergen to the corresponding column name in MenuItem
-// Note: onion_garlic and tomato are not in the CSV columns, so we'll detect them from description
+// Note: onion_garlic, tomato, and seed are not in the CSV columns, so we'll detect them from description
 const allergenToColumn: Partial<Record<Allergen, keyof MenuItem>> = {
   dairy: 'contains_dairy',
   egg: 'contains_egg',
@@ -170,7 +254,7 @@ const allergenToColumn: Partial<Record<Allergen, keyof MenuItem>> = {
   tree_nuts: 'contains_tree_nuts',
   sesame: 'contains_sesame',
   msg: 'contains_msg',
-  // onion_garlic and tomato will be detected from description only
+  // onion_garlic, tomato, and seed will be detected from description only
 };
 
 // Ingredients that contain each allergen (case-insensitive matching)
@@ -238,6 +322,17 @@ const allergenIngredients: Record<Allergen, string[]> = {
     'tomato', 'tomatoes', 'tomato paste', 'tomato sauce', 'tomato jam',
     'tomato basil', 'cherry tomato', 'cherry tomatoes', 'tomato wedges',
     'tomato juice', 'sun-dried tomato', 'sun dried tomato', 'tomato puree'
+  ],
+  seed: [
+    'seed', 'seeds', 'sesame seed', 'sesame seeds', 'pumpkin seed', 'pumpkin seeds',
+    'sunflower seed', 'sunflower seeds', 'poppy seed', 'poppy seeds',
+    'chia seed', 'chia seeds', 'flax seed', 'flax seeds', 'hemp seed', 'hemp seeds',
+    'mustard seed', 'mustard seeds', 'celery seed', 'celery seeds',
+    'caraway seed', 'caraway seeds', 'fennel seed', 'fennel seeds',
+    'cumin seed', 'cumin seeds', 'coriander seed', 'coriander seeds',
+    'anise seed', 'anise seeds', 'dill seed', 'dill seeds',
+    'nigella seed', 'nigella seeds', 'black seed', 'black seeds',
+    'house oil'
   ],
 };
 
@@ -314,6 +409,26 @@ function analyzeModificationPossibility(dish: MenuItem, allergen: Allergen): {
     };
   }
   
+  // Ingredients that are "marinated in" are NOT modifiable - they're part of the base preparation
+  // Examples: "marinated in Mediterranean marinade", "marinated in herb chicken marinade"
+  if (description.includes('marinated in')) {
+    const marinatedMatch = description.match(/marinated\s+in\s+([^.]+)/i);
+    if (marinatedMatch) {
+      const marinatedContent = marinatedMatch[1].toLowerCase();
+      // Check if the allergen is in the marinade
+      const hasAllergenInMarinade = allergenIngredients[allergen]?.some(allergenIng => 
+        marinatedContent.includes(allergenIng.toLowerCase())
+      ) || compositeContainsAllergen(marinatedContent, allergen);
+      
+      if (hasAllergenInMarinade) {
+        return {
+          modifiable: false,
+          reason: 'The allergen is in the marinade which is part of the base preparation and cannot be removed'
+        };
+      }
+    }
+  }
+  
   // Allergen baked/fried INTO the core mixture OR baked ONTO the dish
   // This applies when:
   // 1. The allergen is part of a mixture that is then baked/fried together (cheese in mac and cheese)
@@ -377,6 +492,21 @@ function analyzeModificationPossibility(dish: MenuItem, allergen: Allergen): {
     return {
       modifiable: false,
       reason: 'The allergen is a core ingredient that defines this dish'
+    };
+  }
+  
+  // Bisques and soups - gluten/flour is in the main mixture, not modifiable
+  if (
+    (dishName.includes('bisque') ||
+     dishName.includes('soup') ||
+     dishName.includes('stew') ||
+     dishName.includes('chili') ||
+     dishName.includes('gumbo')) &&
+    allergen === 'gluten'
+  ) {
+    return {
+      modifiable: false,
+      reason: 'The allergen is part of a pre-made mixture that cannot be separated'
     };
   }
   
@@ -497,23 +627,109 @@ function findAllergenIngredients(description: string, allergen: Allergen): strin
  * Find custom allergen terms in the dish description
  */
 function findCustomAllergenIngredients(description: string, customAllergen: string): string[] {
-  if (!description || !customAllergen.trim()) return [];
+  if (!description || typeof description !== 'string' || !customAllergen || !customAllergen.trim()) return [];
   
   const descriptionLower = description.toLowerCase();
   const allergenLower = customAllergen.toLowerCase().trim();
   const found: string[] = [];
   
-  // Use word boundaries to find the custom allergen term
-  const regex = new RegExp(`\\b${allergenLower.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'gi');
-  if (regex.test(descriptionLower)) {
-    // Find the actual word as it appears in the description (preserve case)
-    const matches = description.match(regex);
-    if (matches && matches.length > 0) {
-      matches.forEach(match => {
-        if (!found.includes(match)) {
-          found.push(match);
+  // Special handling for "onion" and "garlic" to match related terms
+  // When someone enters "onion", they should match "onions", "onion powder", etc.
+  // When someone enters "garlic", they should match "garlic powder", "minced garlic", etc.
+  if (allergenLower === 'onion' || allergenLower === 'onions') {
+    // Use onion-related terms from onion_garlic allergen list, but exclude garlic terms
+    const onionTerms = allergenIngredients.onion_garlic.filter(term => {
+      const termLower = term.toLowerCase();
+      return termLower.includes('onion') && !termLower.includes('garlic');
+    });
+    
+    for (const term of onionTerms) {
+      const termLower = term.toLowerCase();
+      // Use word boundaries to avoid partial matches
+      const regex = new RegExp(`\\b${termLower.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'gi');
+      if (regex.test(descriptionLower)) {
+        // Find the actual word as it appears in the description (preserve case)
+        const matches = description.match(regex);
+        if (matches && matches.length > 0) {
+          matches.forEach(match => {
+            if (!found.includes(match)) {
+              found.push(match);
+            }
+          });
         }
-      });
+      }
+    }
+  } else if (allergenLower === 'garlic') {
+    // Use garlic-related terms from onion_garlic allergen list, but exclude onion terms
+    const garlicTerms = allergenIngredients.onion_garlic.filter(term => {
+      const termLower = term.toLowerCase();
+      return termLower.includes('garlic') && !termLower.includes('onion');
+    });
+    
+    for (const term of garlicTerms) {
+      const termLower = term.toLowerCase();
+      // Use word boundaries to avoid partial matches
+      const regex = new RegExp(`\\b${termLower.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'gi');
+      if (regex.test(descriptionLower)) {
+        // Find the actual word as it appears in the description (preserve case)
+        const matches = description.match(regex);
+        if (matches && matches.length > 0) {
+          matches.forEach(match => {
+            if (!found.includes(match)) {
+              found.push(match);
+            }
+          });
+        }
+      }
+    }
+  } else if (allergenLower === 'black pepper' || allergenLower === 'blackpepper') {
+    // Match "black pepper", "blackpepper", or just "pepper" (when black pepper is in ingredients)
+    const pepperPatterns = ['black pepper', 'blackpepper', 'pepper'];
+    for (const pattern of pepperPatterns) {
+      const regex = new RegExp(`\\b${pattern.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'gi');
+      if (regex.test(descriptionLower)) {
+        const matches = description.match(regex);
+        if (matches && matches.length > 0) {
+          matches.forEach(match => {
+            // Prefer "black pepper" if found, otherwise use the match
+            const normalized = match.toLowerCase().replace(/\s+/g, ' ');
+            if (!found.some(f => f.toLowerCase().replace(/\s+/g, ' ') === normalized)) {
+              found.push(match);
+            }
+          });
+        }
+      }
+    }
+  } else if (allergenLower === 'red pepper' || allergenLower === 'redpepper' || allergenLower === 'red peppers' || allergenLower === 'redpeppers') {
+    // Match "red pepper", "red peppers", "redpepper", "redpeppers"
+    const pepperPatterns = ['red peppers', 'redpeppers', 'red pepper', 'redpepper'];
+    for (const pattern of pepperPatterns) {
+      const regex = new RegExp(`\\b${pattern.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'gi');
+      if (regex.test(descriptionLower)) {
+        const matches = description.match(regex);
+        if (matches && matches.length > 0) {
+          matches.forEach(match => {
+            const normalized = match.toLowerCase().replace(/\s+/g, ' ');
+            if (!found.some(f => f.toLowerCase().replace(/\s+/g, ' ') === normalized)) {
+              found.push(match);
+            }
+          });
+        }
+      }
+    }
+  } else {
+    // For other custom allergens, use exact match with word boundaries
+    const regex = new RegExp(`\\b${allergenLower.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'gi');
+    if (regex.test(descriptionLower)) {
+      // Find the actual word as it appears in the description (preserve case)
+      const matches = description.match(regex);
+      if (matches && matches.length > 0) {
+        matches.forEach(match => {
+          if (!found.includes(match)) {
+            found.push(match);
+          }
+        });
+      }
     }
   }
   
@@ -534,6 +750,7 @@ const ALLERGEN_LABELS: Record<Allergen, string> = {
   msg: 'MSG',
   onion_garlic: 'Onion/Garlic',
   tomato: 'Tomato',
+  seed: 'Seed',
 };
 
 // Check if dish is a prepared food that cannot be modified (soups, bisques, desserts, etc.)
@@ -604,19 +821,35 @@ function isGarnishIngredient(dish: MenuItem, ingredient: string): boolean {
   const description = dish.description.toLowerCase();
   const ingredientLower = ingredient.toLowerCase();
   
+  // Marinades are NEVER garnish - they're part of the base preparation
+  // Examples: "marinated in Mediterranean marinade", "marinated in herb chicken marinade"
+  if (ingredientLower.includes('marinade') && description.includes('marinated in')) {
+    const marinatedMatch = description.match(/marinated\s+in\s+([^.]+)/i);
+    if (marinatedMatch) {
+      const marinatedContent = marinatedMatch[1].toLowerCase();
+      if (marinatedContent.includes(ingredientLower) || ingredientLower.includes(marinatedContent)) {
+        return false; // Marinade is part of base preparation, not garnish
+      }
+    }
+  }
+  
   // Check if ingredient appears after garnish-related phrases
   const garnishPhrases = [
     'garnished with',
     'garnished',
     'topped with',
     'topped',
+    'covered with',
+    'covered',
     'served with',
     'served',
     'with a side of',
     'on the side',
     'accompanied by',
     'with a ramekin of',
-    'ramekin of'
+    'ramekin of',
+    'drizzle of',
+    'drizzled with'
   ];
   
   for (const phrase of garnishPhrases) {
@@ -707,6 +940,46 @@ function compositeContainsAllergen(compositeIngredient: string, allergen: Allerg
 }
 
 /**
+ * Check if a composite ingredient contains onion (but not necessarily garlic)
+ */
+function compositeContainsOnion(compositeIngredient: string): boolean {
+  const subIngredients = getSubIngredients(compositeIngredient);
+  if (subIngredients.length === 0) return false;
+  
+  const onionTerms = allergenIngredients.onion_garlic.filter(term => {
+    const termLower = term.toLowerCase();
+    return termLower.includes('onion') && !termLower.includes('garlic');
+  });
+  
+  return subIngredients.some(subIng => 
+    onionTerms.some(onionTerm => 
+      subIng.toLowerCase().includes(onionTerm.toLowerCase()) ||
+      onionTerm.toLowerCase().includes(subIng.toLowerCase())
+    )
+  );
+}
+
+/**
+ * Check if a composite ingredient contains garlic (but not necessarily onion)
+ */
+function compositeContainsGarlic(compositeIngredient: string): boolean {
+  const subIngredients = getSubIngredients(compositeIngredient);
+  if (subIngredients.length === 0) return false;
+  
+  const garlicTerms = allergenIngredients.onion_garlic.filter(term => {
+    const termLower = term.toLowerCase();
+    return termLower.includes('garlic') && !termLower.includes('onion');
+  });
+  
+  return subIngredients.some(subIng => 
+    garlicTerms.some(garlicTerm => 
+      subIng.toLowerCase().includes(garlicTerm.toLowerCase()) ||
+      garlicTerm.toLowerCase().includes(subIng.toLowerCase())
+    )
+  );
+}
+
+/**
  * Find the most specific ingredient name from dish.ingredients that matches a found ingredient
  * For example, if foundIngredients has "mushroom" but dish.ingredients has "mushroom gravy",
  * return "mushroom gravy" instead
@@ -755,39 +1028,72 @@ function getCompositeIngredientsWithAllergen(dish: MenuItem, allergen: Allergen)
 
 // Generate substitution list for an allergen
 function generateSubstitutions(dish: MenuItem, allergen: Allergen, canModify: boolean, foundIngredients: string[]): string[] {
-  // First check modification possibility
-  const modAnalysis = analyzeModificationPossibility(dish, allergen);
-  
-  // If modification is not possible, return the reason
-  if (!modAnalysis.modifiable) {
-    if (modAnalysis.reason) {
-      return [`NOT POSSIBLE - ${modAnalysis.reason}`];
-    }
-    return ['NOT POSSIBLE - This dish cannot be modified to remove the allergen'];
-  }
-  
   const isPrepared = isPreparedFood(dish);
   
-  // For pre-prepared foods, filter to only garnish ingredients
-  let ingredientsToProcess = foundIngredients;
+  // Safety check: ensure foundIngredients is an array
+  if (!Array.isArray(foundIngredients)) {
+    foundIngredients = [];
+  }
+  
+  // For pre-prepared foods, separate garnish ingredients from main ingredients
+  let ingredientsToProcess = foundIngredients || [];
+  let mainIngredients: string[] = [];
   if (isPrepared) {
-    const garnishIngredients = foundIngredients.filter(ing => isGarnishIngredient(dish, ing));
+    const garnishIngredients = (foundIngredients || []).filter(ing => isGarnishIngredient(dish, ing));
+    mainIngredients = (foundIngredients || []).filter(ing => !isGarnishIngredient(dish, ing));
     
-    // If it's pre-prepared and has no garnish ingredients, return special message
-    if (garnishIngredients.length === 0) {
-      return ['NOT POSSIBLE - This dish has been pre-prepared and cannot be modified'];
+    // If it's pre-prepared and has main ingredients with the allergen, they cannot be modified
+    // Return NOT POSSIBLE immediately for main ingredients
+    if (mainIngredients.length > 0) {
+      const mainIngredientNames = mainIngredients.map(ing => findMostSpecificIngredientName(ing, dish));
+      // If there are also garnish ingredients, we'll process those separately below
+      // But for now, we know main ingredients are NOT POSSIBLE
+      if (garnishIngredients.length === 0) {
+        // No garnish ingredients, so everything is NOT POSSIBLE
+        return mainIngredientNames.map(ing => 
+          `NOT POSSIBLE - ${ing} (${ALLERGEN_LABELS[allergen]}) - cannot be removed, part of pre-made mixture`
+        );
+      }
+      // If there are garnish ingredients, we'll process those and add NOT POSSIBLE for main ingredients at the end
+      ingredientsToProcess = garnishIngredients;
+    } else if (garnishIngredients.length > 0) {
+      // Only garnish ingredients, we can modify those
+      ingredientsToProcess = garnishIngredients;
+    } else {
+      // No ingredients found at all, but dish contains allergen - check modification possibility
+      const modAnalysis = analyzeModificationPossibility(dish, allergen);
+      if (!modAnalysis.modifiable) {
+        if (modAnalysis.reason) {
+          return [`NOT POSSIBLE - ${ALLERGEN_LABELS[allergen]} cannot be removed - ${modAnalysis.reason}`];
+        }
+        return [`NOT POSSIBLE - ${ALLERGEN_LABELS[allergen]} cannot be removed - this dish has been pre-prepared and cannot be modified`];
+      }
     }
+  } else {
+    // For non-prepared foods, check modification possibility first
+    const modAnalysis = analyzeModificationPossibility(dish, allergen);
     
-    // Only process garnish ingredients for pre-prepared foods
-    ingredientsToProcess = garnishIngredients;
+    // If modification is not possible, return the reason
+      if (!modAnalysis.modifiable) {
+        if (modAnalysis.reason) {
+          return [`NOT POSSIBLE - ${ALLERGEN_LABELS[allergen]} cannot be removed - ${modAnalysis.reason}`];
+        }
+        return [`NOT POSSIBLE - ${ALLERGEN_LABELS[allergen]} cannot be removed - this dish cannot be modified`];
+      }
   }
   
   if (!canModify && !isPrepared) {
     return [`NO ${ALLERGEN_LABELS[allergen]}`];
   }
   
+  // Get modification analysis for non-prepared foods (already checked above for prepared foods)
+  let modAnalysis: { modifiable: boolean; reason?: string; suggestion?: string } | null = null;
+  if (!isPrepared) {
+    modAnalysis = analyzeModificationPossibility(dish, allergen);
+  }
+  
   // If modification analysis suggests a specific approach, include it
-  if (modAnalysis.suggestion) {
+  if (modAnalysis?.suggestion) {
     // Continue with normal substitution generation, but the suggestion will be considered
   }
 
@@ -806,10 +1112,16 @@ function generateSubstitutions(dish: MenuItem, allergen: Allergen, canModify: bo
    * Checks dish.ingredients first for specific names, then falls back to found ingredient
    */
   const getDescriptiveIngredientName = (foundIngredient: string): string => {
+    // Safety check: if foundIngredient is undefined or empty, return a default
+    if (!foundIngredient || typeof foundIngredient !== 'string') {
+      return ALLERGEN_LABELS[allergen] || 'ingredient';
+    }
+    
     // First check if there's a more specific match in dish.ingredients
     if (dish.ingredients && dish.ingredients.length > 0) {
       const foundLower = foundIngredient.toLowerCase();
       const specificMatch = dish.ingredients.find(ing => {
+        if (!ing || typeof ing !== 'string') return false;
         const ingLower = ing.toLowerCase();
         // Check if dish ingredient contains the found ingredient (more specific)
         return ingLower.includes(foundLower) && ingLower.length > foundLower.length;
@@ -839,6 +1151,27 @@ function generateSubstitutions(dish: MenuItem, allergen: Allergen, canModify: bo
           substitutions.push(`NO ${composite}`);
         }
       }
+      
+      // Check if butter is part of a cooked/simmered base mixture (NOT MODIFIABLE)
+      // Examples: "onions and butter simmered", "butter and onions cooked", "caramelized onions and butter"
+      const description = dish.description.toLowerCase();
+      const dishName = dish.dish_name.toLowerCase();
+      const isButterInBaseMixture = (
+        (description.includes('and butter') && (
+          description.includes('simmered') ||
+          description.includes('cooked') ||
+          description.includes('caramelized') ||
+          description.includes('sautéed') ||
+          description.includes('sweated')
+        )) ||
+        (description.includes('butter and') && (
+          description.includes('simmered') ||
+          description.includes('cooked') ||
+          description.includes('caramelized') ||
+          description.includes('sautéed') ||
+          description.includes('sweated')
+        ))
+      );
       
       // For steak dishes, handle steak butter and pre-mark butter separately
       if (isSteakDish(dish)) {
@@ -873,21 +1206,58 @@ function generateSubstitutions(dish: MenuItem, allergen: Allergen, canModify: bo
           substitutions.push('NO butter (use oil)');
         }
       } else {
-        // For non-steak dishes, check for general butter
-        if (ingredientsToProcess.some(ing => ing.toLowerCase().includes('butter')) || 
-            dish.ingredients?.some(ing => ing.toLowerCase().includes('butter'))) {
-          if (!compositeWithAllergen.some(c => c.toLowerCase().includes('butter'))) {
-            substitutions.push('NO butter (use oil)');
-          }
+        // For non-steak dishes, check for butter
+        // Only add butter to substitutions if it's NOT in the base mixture
+        // Butter in base mixture (cooked/simmered) should be in mainIngredients and marked as NOT POSSIBLE
+        const hasButterInGarnish = ingredientsToProcess.some(ing => 
+          ing.toLowerCase().includes('butter') && 
+          !ing.toLowerCase().includes('steak butter') &&
+          !ing.toLowerCase().includes('pre-mark butter') &&
+          !ing.toLowerCase().includes('premark butter')
+        );
+        
+        // Check if butter is in dish.ingredients but not in base mixture
+        const hasButterNotInBase = !isButterInBaseMixture && 
+          dish.ingredients?.some(ing => 
+            ing.toLowerCase().includes('butter') && 
+            !ing.toLowerCase().includes('steak butter') &&
+            !ing.toLowerCase().includes('pre-mark butter') &&
+            !ing.toLowerCase().includes('premark butter')
+          );
+        
+        if ((hasButterInGarnish || hasButterNotInBase) && 
+            !compositeWithAllergen.some(c => c.toLowerCase().includes('butter'))) {
+          // Butter is not in base mixture, so it's modifiable (e.g., brushed on, glazed on, or garnish)
+          substitutions.push('NO butter (use oil)');
+        }
+        // If butter is in base mixture (isButterInBaseMixture is true), we don't add it to substitutions
+        // It will be caught by the main ingredients check and marked as NOT POSSIBLE
+      }
+      
+      // Check for specific cheese types first (Swiss, Asiago, etc.) - these should be identified separately
+      const cheeseTypes = ['swiss', 'asiago', 'parmesan', 'cheddar', 'mozzarella', 'feta', 'blue cheese', 'goat cheese'];
+      for (const cheeseType of cheeseTypes) {
+        const foundCheese = ingredientsToProcess.find(ing => 
+          ing.toLowerCase().includes(cheeseType) || ing.toLowerCase() === cheeseType
+        ) || dish.ingredients?.find(ing => 
+          ing.toLowerCase().includes(cheeseType) || ing.toLowerCase() === cheeseType
+        );
+        
+        if (foundCheese && !compositeWithAllergen.some(c => c.toLowerCase().includes(cheeseType))) {
+          const descriptiveCheese = getDescriptiveIngredientName(foundCheese);
+          // Capitalize first letter for display
+          const displayName = descriptiveCheese.charAt(0).toUpperCase() + descriptiveCheese.slice(1);
+          substitutions.push(`NO ${displayName}`);
         }
       }
       
       // Check for specific dairy ingredients - use most specific names from dish.ingredients
       // Order matters - check more specific terms first
+      // Skip cheese types we already handled above
       const dairyIngredients = [
         'whipping cream', 'half and half', 'whole milk', 'skim milk',
         'white cheddar cheese', 'yellow cheese spread', 'cheddar cheese',
-        'sour cream', 'buttermilk', 'cheese', 'cream', 'milk', 'yogurt'
+        'sour cream', 'buttermilk', 'cream', 'milk', 'yogurt'
       ];
       for (const dairyIng of dairyIngredients) {
         const foundIng = ingredientsToProcess.find(ing => ing.toLowerCase().includes(dairyIng));
@@ -902,12 +1272,24 @@ function generateSubstitutions(dish: MenuItem, allergen: Allergen, canModify: bo
             
             if (dairyIng === 'cream' || dairyIng === 'whipping cream' || dairyIng === 'half and half') {
               substitutions.push(`NO ${specificName} (use non-dairy alternative)`);
-            } else if (dairyIng === 'cheese' || dairyIng.includes('cheese')) {
-              substitutions.push(`NO ${specificName}`);
             } else {
               substitutions.push(`NO ${specificName}`);
             }
           }
+        }
+      }
+      
+      // Check for generic "cheese" if no specific cheese types were found
+      if (!substitutions.some(sub => sub.toLowerCase().includes('cheese'))) {
+        const foundCheese = ingredientsToProcess.find(ing => 
+          ing.toLowerCase() === 'cheese' || ing.toLowerCase().includes('cheese')
+        ) || dish.ingredients?.find(ing => 
+          ing.toLowerCase() === 'cheese' || ing.toLowerCase().includes('cheese')
+        );
+        
+        if (foundCheese && !compositeWithAllergen.some(c => c.toLowerCase().includes('cheese'))) {
+          const descriptiveCheese = getDescriptiveIngredientName(foundCheese);
+          substitutions.push(`NO ${descriptiveCheese}`);
         }
       }
       
@@ -916,14 +1298,18 @@ function generateSubstitutions(dish: MenuItem, allergen: Allergen, canModify: bo
       }
       break;
     case 'gluten':
+      // For pre-prepared foods, only check ingredientsToProcess (garnish ingredients)
+      // Main ingredients (like flour in bisque) are handled separately below
+      // For non-prepared foods, also check dish.ingredients as fallback
+      
       // Check for bread/bun with descriptive names - check more specific types first
       const breadTypes = ['english muffin', 'english muffins', 'brioche bread', 'brioche', 'sesame seed bun', 'buttery onion bun', 'multi-grain bread', 'flatbread', 'bun', 'bread', 'toast'];
       let breadIng: string | undefined;
       
-      // Find the most specific bread type
+      // Find the most specific bread type (only from ingredientsToProcess for pre-prepared, with fallback for non-prepared)
       for (const breadTypeCheck of breadTypes) {
         const found = ingredientsToProcess.find(ing => ing.toLowerCase().includes(breadTypeCheck)) ||
-                     dish.ingredients?.find(ing => ing.toLowerCase().includes(breadTypeCheck));
+                     (!isPrepared ? dish.ingredients?.find(ing => ing.toLowerCase().includes(breadTypeCheck)) : undefined);
         if (found) {
           breadIng = found;
           break;
@@ -935,9 +1321,9 @@ function generateSubstitutions(dish: MenuItem, allergen: Allergen, canModify: bo
         substitutions.push(`NO ${descriptiveBread} (use gluten-free)`);
       }
       
-      // Check for croutons with descriptive names
+      // Check for croutons with descriptive names (only from ingredientsToProcess for pre-prepared, with fallback for non-prepared)
       const croutonIng = ingredientsToProcess.find(ing => ing.toLowerCase().includes('crouton')) ||
-                        dish.ingredients?.find(ing => ing.toLowerCase().includes('crouton'));
+                        (!isPrepared ? dish.ingredients?.find(ing => ing.toLowerCase().includes('crouton')) : undefined);
       if (croutonIng) {
         const descriptiveCrouton = getDescriptiveIngredientName(croutonIng);
         // ONLY salads can have gluten-free croutons as substitution
@@ -950,32 +1336,32 @@ function generateSubstitutions(dish: MenuItem, allergen: Allergen, canModify: bo
         }
       }
       
-      // Check for flour with descriptive names
+      // Check for flour with descriptive names (only from ingredientsToProcess for pre-prepared, with fallback for non-prepared)
       const flourIng = ingredientsToProcess.find(ing => ing.toLowerCase().includes('flour')) ||
-                      dish.ingredients?.find(ing => ing.toLowerCase().includes('flour'));
+                      (!isPrepared ? dish.ingredients?.find(ing => ing.toLowerCase().includes('flour')) : undefined);
       if (flourIng) {
         const descriptiveFlour = getDescriptiveIngredientName(flourIng);
         substitutions.push(`NO ${descriptiveFlour} (use gluten-free alternative)`);
       }
       
-      // Check for crackers, breadcrumbs, etc.
+      // Check for crackers, breadcrumbs, etc. (only from ingredientsToProcess for pre-prepared, with fallback for non-prepared)
       const crackerIng = ingredientsToProcess.find(ing => ing.toLowerCase().includes('cracker')) ||
-                        dish.ingredients?.find(ing => ing.toLowerCase().includes('cracker'));
+                        (!isPrepared ? dish.ingredients?.find(ing => ing.toLowerCase().includes('cracker')) : undefined);
       if (crackerIng) {
         const descriptiveCracker = getDescriptiveIngredientName(crackerIng);
         substitutions.push(`NO ${descriptiveCracker} (use gluten-free alternative)`);
       }
       
-      // Check for pasta/macaroni
+      // Check for pasta/macaroni (only from ingredientsToProcess for pre-prepared, with fallback for non-prepared)
       const pastaIng = ingredientsToProcess.find(ing => 
         ing.toLowerCase().includes('macaroni') || 
         ing.toLowerCase().includes('pasta') ||
         ing.toLowerCase().includes('noodle')
-      ) || dish.ingredients?.find(ing => 
+      ) || (!isPrepared ? dish.ingredients?.find(ing => 
         ing.toLowerCase().includes('macaroni') || 
         ing.toLowerCase().includes('pasta') ||
         ing.toLowerCase().includes('noodle')
-      );
+      ) : undefined);
       if (pastaIng) {
         const descriptivePasta = getDescriptiveIngredientName(pastaIng);
         substitutions.push(`NO ${descriptivePasta} (use gluten-free alternative)`);
@@ -1091,7 +1477,7 @@ function generateSubstitutions(dish: MenuItem, allergen: Allergen, canModify: bo
             ing.toLowerCase().includes('onion') && !ing.toLowerCase().includes('garlic')
           );
           const descriptiveName = onionIng ? getDescriptiveIngredientName(onionIng) : 'onion';
-          substitutions.push(`NOT POSSIBLE - ${descriptiveName} cannot be substituted in this dish`);
+          substitutions.push(`NOT POSSIBLE - ${ALLERGEN_LABELS[allergen]} cannot be removed - ${descriptiveName} cannot be substituted in this dish`);
         } else {
           // For garlic or general onion/garlic, allow substitution with descriptive names
           const descriptiveNames = ingredientsToProcess.map(ing => getDescriptiveIngredientName(ing));
@@ -1103,25 +1489,114 @@ function generateSubstitutions(dish: MenuItem, allergen: Allergen, canModify: bo
         }
       } else {
         // Use most descriptive ingredient names
-        const descriptiveNames = ingredientsToProcess.map(ing => getDescriptiveIngredientName(ing));
-        if (descriptiveNames.length > 0) {
-          substitutions.push(...descriptiveNames.map(name => `NO ${name}`));
+        if (ingredientsToProcess && ingredientsToProcess.length > 0) {
+          const descriptiveNames = ingredientsToProcess
+            .filter(ing => ing && typeof ing === 'string')
+            .map(ing => getDescriptiveIngredientName(ing));
+          if (descriptiveNames.length > 0) {
+            substitutions.push(...descriptiveNames.map(name => `NO ${name}`));
+          } else {
+            substitutions.push('NO onion/garlic');
+          }
         } else {
-      substitutions.push('NO onion/garlic');
+          substitutions.push('NO onion/garlic');
         }
       }
       break;
     case 'tomato':
       // Use most descriptive ingredient names
-      const tomatoDescriptiveNames = ingredientsToProcess.map(ing => getDescriptiveIngredientName(ing));
-      if (tomatoDescriptiveNames.length > 0) {
-        substitutions.push(...tomatoDescriptiveNames.map(name => `NO ${name}`));
+      if (ingredientsToProcess && ingredientsToProcess.length > 0) {
+        const tomatoDescriptiveNames = ingredientsToProcess
+          .filter(ing => ing && typeof ing === 'string')
+          .map(ing => getDescriptiveIngredientName(ing));
+        if (tomatoDescriptiveNames.length > 0) {
+          substitutions.push(...tomatoDescriptiveNames.map(name => `NO ${name}`));
+        } else {
+          substitutions.push('NO tomato');
+        }
       } else {
-      substitutions.push('NO tomato');
+        substitutions.push('NO tomato');
+      }
+      break;
+    case 'seed':
+      // Check for composite ingredients containing seeds
+      for (const composite of compositeWithAllergen) {
+        const subIngs = getSubIngredients(composite.toLowerCase());
+        const seedSubs = subIngs.filter(sub => 
+          allergenIngredients.seed.some(seedIng => 
+            sub.toLowerCase().includes(seedIng.toLowerCase()) ||
+            seedIng.toLowerCase().includes(sub.toLowerCase())
+          )
+        );
+        if (seedSubs.length > 0) {
+          substitutions.push(`NO ${composite} (contains: ${seedSubs.join(', ')})`);
+        } else {
+          substitutions.push(`NO ${composite}`);
+        }
+      }
+      
+      // Check for house oil specifically
+      const hasHouseOil = ingredientsToProcess.some(ing => 
+        ing.toLowerCase().includes('house oil')
+      ) || dish.ingredients?.some(ing => 
+        ing.toLowerCase().includes('house oil')
+      );
+      if (hasHouseOil && !compositeWithAllergen.some(c => c.toLowerCase().includes('house oil'))) {
+        substitutions.push('NO house oil');
+      }
+      
+      // Check for specific seed types - use most descriptive names
+      if (ingredientsToProcess && ingredientsToProcess.length > 0) {
+        const seedDescriptiveNames = ingredientsToProcess
+          .filter(ing => ing && typeof ing === 'string')
+          .map(ing => getDescriptiveIngredientName(ing));
+        if (seedDescriptiveNames.length > 0) {
+          // Filter out house oil as we handle it separately above
+          const nonHouseOilSeeds = seedDescriptiveNames.filter(name => 
+            !name.toLowerCase().includes('house oil')
+          );
+          if (nonHouseOilSeeds.length > 0) {
+            substitutions.push(...nonHouseOilSeeds.map(name => `NO ${name}`));
+          }
+        }
+      }
+      
+      // Check dish.ingredients for seeds if not already found
+      if (dish.ingredients && dish.ingredients.length > 0) {
+        const seedTerms = allergenIngredients.seed.filter(term => term !== 'house oil');
+        dish.ingredients.forEach(ing => {
+          if (ing && typeof ing === 'string') {
+            const ingLower = ing.toLowerCase();
+            const matchesSeed = seedTerms.some(term => {
+              const termLower = term.toLowerCase();
+              const regex = new RegExp(`\\b${termLower.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'i');
+              return regex.test(ingLower);
+            });
+            if (matchesSeed && !substitutions.some(sub => sub.toLowerCase().includes(ingLower))) {
+              const descriptiveSeed = getDescriptiveIngredientName(ing);
+              substitutions.push(`NO ${descriptiveSeed}`);
+            }
+          }
+        });
+      }
+      
+      if (substitutions.length === 0) {
+        substitutions.push(`NO ${ALLERGEN_LABELS[allergen]}`);
       }
       break;
     default:
       substitutions.push(`NO ${ALLERGEN_LABELS[allergen]}`);
+  }
+
+  // For pre-prepared foods with main ingredients, add NOT POSSIBLE messages for those
+  if (isPrepared && mainIngredients.length > 0) {
+    // Add NOT POSSIBLE messages for main ingredients at the beginning
+    const mainIngredientNames = mainIngredients.map(ing => findMostSpecificIngredientName(ing, dish));
+    const notPossibleMessages = mainIngredientNames.map(ing => 
+      `NOT POSSIBLE - ${ing} (${ALLERGEN_LABELS[allergen]}) - cannot be removed, part of pre-made mixture`
+    );
+    // Return NOT POSSIBLE messages first, then substitutable items
+    return [...notPossibleMessages, ...substitutions];
   }
 
   return substitutions;
@@ -1132,11 +1607,12 @@ export function checkDishSafety(
   allergies: Allergen[],
   customAllergies: string[] = []
 ): AllergyCheckResult {
-  const canModify = !isPreparedFood(dish) && !(dish.cannot_be_made_safe_notes && dish.cannot_be_made_safe_notes.trim() !== '');
-  
-  const perAllergy = allergies.map((allergen) => {
-    // For onion_garlic and tomato, check description only (no CSV column)
-    const isDescriptionOnly = allergen === 'onion_garlic' || allergen === 'tomato';
+  try {
+    const canModify = !isPreparedFood(dish) && !(dish.cannot_be_made_safe_notes && dish.cannot_be_made_safe_notes.trim() !== '');
+    
+    const perAllergy = allergies.map((allergen) => {
+    // For onion_garlic, tomato, and seed, check description only (no CSV column)
+    const isDescriptionOnly = allergen === 'onion_garlic' || allergen === 'tomato' || allergen === 'seed';
     
     let containsValue: 'Y' | 'N' | '' | null = null;
     let contains = false;
@@ -1144,7 +1620,8 @@ export function checkDishSafety(
     
     if (isDescriptionOnly) {
       // Check description for these allergens
-      foundIngredients = findAllergenIngredients(dish.description, allergen);
+      const foundInDescription = findAllergenIngredients(dish.description, allergen);
+      foundIngredients = [...foundInDescription]; // Create a new mutable array
       contains = foundIngredients.length > 0;
       containsValue = contains ? 'Y' : 'N';
     } else {
@@ -1155,7 +1632,23 @@ export function checkDishSafety(
         contains = containsValue === 'Y';
         // Also find ingredients in description for display
         if (contains) {
-          foundIngredients = findAllergenIngredients(dish.description, allergen);
+          const foundInDescription = findAllergenIngredients(dish.description || '', allergen);
+          foundIngredients = [...foundInDescription]; // Create a new mutable array
+          // Also check dish.ingredients array for direct matches (e.g., "flour" in ingredients list)
+          if (dish.ingredients && dish.ingredients.length > 0 && allergen === 'gluten') {
+            const glutenIngredientTerms = allergenIngredients.gluten || [];
+            dish.ingredients.forEach(ing => {
+              if (ing && typeof ing === 'string') {
+                const ingLower = ing.toLowerCase();
+                const matchesGluten = glutenIngredientTerms.some(term => 
+                  ingLower.includes(term.toLowerCase()) || term.toLowerCase().includes(ingLower)
+                );
+                if (matchesGluten && !foundIngredients.some(f => f.toLowerCase() === ingLower)) {
+                  foundIngredients.push(ing);
+                }
+              }
+            });
+          }
         }
       }
     }
@@ -1172,6 +1665,53 @@ export function checkDishSafety(
             foundIngredients.push(composite);
           }
         });
+      }
+      
+      // Also check for direct allergen ingredients in dish.ingredients (e.g., "flour" for gluten, "house oil" for seed)
+      // This ensures we catch ingredients that are in the ingredients list but might not be in the description
+      // For description-only allergens (seed, onion_garlic, tomato), always check dish.ingredients
+      // For other allergens, only check if already found
+      const shouldCheckIngredients = contains || isDescriptionOnly;
+      if (shouldCheckIngredients && allergenIngredients[allergen]) {
+        const allergenTerms = allergenIngredients[allergen];
+        let foundInIngredients = false;
+        const ingredientsToAdd: string[] = [];
+        
+        dish.ingredients.forEach(ing => {
+          if (ing && typeof ing === 'string') {
+            const ingLower = ing.toLowerCase();
+            const matchesAllergen = allergenTerms.some(term => {
+              const termLower = term.toLowerCase();
+              // Use word boundary matching for more accurate detection
+              // For multi-word terms like "house oil", check if the ingredient contains the full phrase
+              if (termLower.includes(' ')) {
+                // Multi-word term: check if ingredient contains the full phrase
+                return ingLower.includes(termLower);
+              } else {
+                // Single word: use word boundary matching
+                const regex = new RegExp(`\\b${termLower.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'i');
+                return regex.test(ingLower) || ingLower === termLower;
+              }
+            });
+            if (matchesAllergen) {
+              foundInIngredients = true;
+              if (!foundIngredients.some(f => f.toLowerCase() === ingLower) &&
+                  !ingredientsToAdd.some(f => f.toLowerCase() === ingLower)) {
+                ingredientsToAdd.push(ing);
+              }
+            }
+          }
+        });
+        
+        // Set contains if we found a match (for description-only allergens)
+        if (foundInIngredients) {
+          if (isDescriptionOnly && !contains) {
+            contains = true;
+            containsValue = 'Y';
+          }
+          // Add ingredients to foundIngredients array
+          foundIngredients.push(...ingredientsToAdd);
+        }
       }
     }
 
@@ -1218,18 +1758,148 @@ export function checkDishSafety(
 
   // Check custom allergens
   const customAllergyResults = customAllergies.map((customAllergen) => {
-    const foundIngredients = findCustomAllergenIngredients(dish.description, customAllergen);
-    const contains = foundIngredients.length > 0;
-    const status: 'safe' | 'unsafe' = contains ? 'unsafe' : 'safe';
+    // Check both description and ingredients array
+    const foundInDescription = findCustomAllergenIngredients(dish.description || '', customAllergen);
+    const foundInIngredients = dish.ingredients && Array.isArray(dish.ingredients) ? findCustomAllergenIngredients(dish.ingredients.join(' '), customAllergen) : [];
+    
+    // Also check ingredients array directly for exact matches (more specific)
+    const allergenLower = customAllergen.toLowerCase().trim();
+    const directIngredientMatches: string[] = [];
+    if (dish.ingredients && Array.isArray(dish.ingredients) && dish.ingredients.length > 0) {
+      for (const ingredient of dish.ingredients) {
+        if (!ingredient || typeof ingredient !== 'string') continue;
+        const ingLower = ingredient.toLowerCase();
+        // Check for exact match or if ingredient contains the allergen
+        if (ingLower === allergenLower || 
+            ingLower.includes(allergenLower) || 
+            allergenLower.includes(ingLower)) {
+          // For "black pepper" or "red pepper", prefer the more specific match
+          if (allergenLower.includes('black pepper') && ingLower.includes('black') && ingLower.includes('pepper')) {
+            directIngredientMatches.push(ingredient);
+          } else if (allergenLower.includes('red pepper') && ingLower.includes('red') && ingLower.includes('pepper')) {
+            directIngredientMatches.push(ingredient);
+          } else if (!allergenLower.includes('pepper') || !ingLower.includes('pepper')) {
+            // For non-pepper allergens, use simple match
+            directIngredientMatches.push(ingredient);
+          }
+        }
+      }
+    }
+    
+    // Combine and deduplicate found ingredients, preferring more specific matches from ingredients array
+    const allFound = [...foundInDescription, ...foundInIngredients, ...directIngredientMatches].filter(v => v && typeof v === 'string');
+    const foundIngredients = allFound.filter((value, index, self) => {
+      if (!value || typeof value !== 'string') return false;
+      const valueLower = value.toLowerCase();
+      // Remove duplicates
+      const firstIndex = self.findIndex(v => v && typeof v === 'string' && v.toLowerCase() === valueLower);
+      if (firstIndex !== index) return false;
+      
+      // For pepper-related, prefer more specific (e.g., "black pepper" over "pepper")
+      if (valueLower.includes('black pepper') || valueLower.includes('red pepper')) {
+        return true; // Keep the more specific one
+      }
+      // If we have a generic "pepper" but also have a specific one, remove the generic
+      if (valueLower === 'pepper' || valueLower === 'peppers') {
+        const hasSpecific = self.some(v => 
+          v && typeof v === 'string' && (
+            v.toLowerCase().includes('black pepper') || 
+            v.toLowerCase().includes('red pepper')
+          )
+        );
+        return !hasSpecific;
+      }
+      return true;
+    });
+    
+    let contains = foundIngredients.length > 0;
+    
+    // For "onion" or "garlic" custom allergens, also check composite ingredients
+    // (similar to how standard allergens check composite ingredients)
+    // Note: allergenLower is already declared above
+    if ((allergenLower === 'onion' || allergenLower === 'onions') && dish.ingredients && dish.ingredients.length > 0) {
+      // Check composite ingredients for onion
+      const compositeWithOnion = dish.ingredients.filter(ing => {
+        const ingLower = ing.toLowerCase().trim();
+        return compositeIngredients[ingLower] && compositeContainsOnion(ingLower);
+      });
+      if (compositeWithOnion.length > 0) {
+        contains = true;
+        compositeWithOnion.forEach(composite => {
+          if (!foundIngredients.some(ing => ing.toLowerCase() === composite.toLowerCase())) {
+            foundIngredients.push(composite);
+          }
+        });
+      }
+    } else if (allergenLower === 'garlic' && dish.ingredients && dish.ingredients.length > 0) {
+      // Check composite ingredients for garlic
+      const compositeWithGarlic = dish.ingredients.filter(ing => {
+        const ingLower = ing.toLowerCase().trim();
+        return compositeIngredients[ingLower] && compositeContainsGarlic(ingLower);
+      });
+      if (compositeWithGarlic.length > 0) {
+        contains = true;
+        compositeWithGarlic.forEach(composite => {
+          if (!foundIngredients.some(ing => ing.toLowerCase() === composite.toLowerCase())) {
+            foundIngredients.push(composite);
+          }
+        });
+      }
+    }
+    
+    // Check if this is a pre-prepared dish
+    const isPrepared = isPreparedFood(dish);
+    
+    // Check if the allergen is only in garnish
+    const garnishIngredients = foundIngredients.filter(ing => isGarnishIngredient(dish, ing));
+    const isOnlyGarnish = garnishIngredients.length > 0 && garnishIngredients.length === foundIngredients.length;
+    
+    // Special case: chives allergy - check if dish contains onions/garlic (related ingredients)
+    // If dish has onions/garlic in main mixture, chives cannot be made safe even if chives are garnish
+    let hasRelatedMainIngredient = false;
+    if (customAllergen.toLowerCase() === 'chives' || customAllergen.toLowerCase().includes('chive')) {
+      // Check if dish contains onions or garlic in the main description (not just garnish)
+      const descriptionLower = dish.description.toLowerCase();
+      const hasOnions = descriptionLower.includes('onion') && !isGarnishIngredient(dish, 'onion');
+      const hasGarlic = descriptionLower.includes('garlic') && !isGarnishIngredient(dish, 'garlic');
+      // Check ingredients array for onions/garlic that are not garnish
+      const hasOnionsInIngredients = dish.ingredients?.some(ing => {
+        const ingLower = ing.toLowerCase();
+        return (ingLower.includes('onion') || ingLower.includes('garlic')) && 
+               !isGarnishIngredient(dish, ing);
+      });
+      hasRelatedMainIngredient = hasOnions || hasGarlic || !!hasOnionsInIngredients;
+    }
+    
+    // Determine status and modifiability
+    let status: 'safe' | 'unsafe' = contains ? 'unsafe' : 'safe';
+    let actualCanBeModified = canModify;
+    
+    // For pre-prepared dishes with garnish-only allergens (and no related main ingredients)
+    if (isPrepared && isOnlyGarnish && !hasRelatedMainIngredient) {
+      // Garnish can be removed even from pre-prepared dishes
+      actualCanBeModified = true;
+    } else if (isPrepared && contains && !isOnlyGarnish) {
+      // Allergen is in main mixture, cannot be removed
+      actualCanBeModified = false;
+    } else if (isPrepared && hasRelatedMainIngredient) {
+      // Related ingredient in main mixture (e.g., chives + onions), cannot be made safe
+      actualCanBeModified = false;
+    }
     
     // Generate descriptive substitutions using most specific ingredient names
     let substitutions: string[] = [];
     if (status === 'unsafe') {
-      if (!canModify) {
-        substitutions = [`NOT POSSIBLE - Cannot remove ${customAllergen} - dish cannot be modified`];
+      if (!actualCanBeModified) {
+        if (hasRelatedMainIngredient) {
+          substitutions = [`NOT POSSIBLE - Cannot remove ${customAllergen} - dish contains related ingredients in main mixture`];
+        } else {
+          substitutions = [`NOT POSSIBLE - Cannot remove ${customAllergen} - dish cannot be modified`];
+        }
       } else {
         // Use most descriptive ingredient names from dish.ingredients
-        const descriptiveNames = foundIngredients.map(ing => {
+        const ingredientsToProcess = isPrepared && isOnlyGarnish ? garnishIngredients : foundIngredients;
+        const descriptiveNames = ingredientsToProcess.map(ing => {
           if (dish.ingredients && dish.ingredients.length > 0) {
             const foundLower = ing.toLowerCase();
             const specificMatch = dish.ingredients.find(dishIng => {
@@ -1251,7 +1921,7 @@ export function checkDishSafety(
       allergen: customAllergen,
       contains,
       status,
-      canBeModified: canModify,
+      canBeModified: actualCanBeModified,
       substitutions,
       foundIngredients: foundIngredients.length > 0 ? foundIngredients : undefined,
     };
@@ -1275,14 +1945,21 @@ export function checkDishSafety(
     globalMessage = 'No Changes';
   }
 
-  return {
-    dish,
-    selectedAllergies: allergies,
-    customAllergies,
-    overallStatus,
-    perAllergy: allPerAllergy,
-    globalMessage,
-  };
+    return {
+      dish,
+      selectedAllergies: allergies,
+      customAllergies,
+      overallStatus,
+      perAllergy: allPerAllergy,
+      globalMessage,
+    };
+  } catch (error) {
+    console.error('Error in checkDishSafety:', error);
+    console.error('Dish:', dish?.dish_name);
+    console.error('Allergies:', allergies);
+    console.error('Custom Allergies:', customAllergies);
+    throw error; // Re-throw to be caught by the component's try-catch
+  }
 }
 
 

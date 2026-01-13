@@ -287,3 +287,4 @@ describe('AllergyChecker Component', () => {
 });
 
 
+

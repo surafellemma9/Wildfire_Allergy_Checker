@@ -192,30 +192,84 @@ describe('Comprehensive Allergy Checker Tests', () => {
     describe('Shrimp and Crab Bisque', () => {
       const dish = menuItems.find(d => d.id === 'shrimp_and_crab_bisque')!;
 
-      it('should detect dairy allergen', () => {
+      it('should detect dairy allergen and show NOT POSSIBLE (pre-prepared)', () => {
         const result = checkDishSafety(dish, ['dairy'], []);
         expect(result.overallStatus).toBe('unsafe');
         expect(result.perAllergy[0].status).toBe('unsafe');
+        expect(result.perAllergy[0].canBeModified).toBe(false);
         expect(result.perAllergy[0].substitutions.some(sub => 
-          sub.includes('NOT POSSIBLE') || sub.includes('bisque')
+          sub.includes('NOT POSSIBLE')
         )).toBe(true);
       });
 
-      it('should detect shellfish allergen', () => {
+      it('should detect shellfish allergen and show NOT POSSIBLE (main ingredient)', () => {
         const result = checkDishSafety(dish, ['shellfish'], []);
         expect(result.overallStatus).toBe('unsafe');
         expect(result.perAllergy[0].status).toBe('unsafe');
+        expect(result.perAllergy[0].canBeModified).toBe(false);
         expect(result.perAllergy[0].substitutions.some(sub => 
-          sub.includes('NOT POSSIBLE') || sub.includes('shrimp') || sub.includes('crab')
+          sub.includes('NOT POSSIBLE')
         )).toBe(true);
       });
 
-      it('should handle gluten allergen', () => {
+      it('should detect gluten allergen and show NOT POSSIBLE (pre-prepared)', () => {
         const result = checkDishSafety(dish, ['gluten'], []);
-        // Bisque contains flour, so gluten should be detected
-        expect(result.perAllergy[0].allergen).toBe('gluten');
-        // The actual status depends on whether modification is possible
-        // (bisque is pre-prepared, so likely not modifiable)
+        expect(result.overallStatus).toBe('unsafe');
+        expect(result.perAllergy[0].status).toBe('unsafe');
+        expect(result.perAllergy[0].canBeModified).toBe(false);
+        expect(result.perAllergy[0].substitutions.some(sub => 
+          sub.includes('NOT POSSIBLE')
+        )).toBe(true);
+      });
+
+      it('should allow removal of corn garnish (custom allergen)', () => {
+        const result = checkDishSafety(dish, [], ['corn']);
+        // Corn is in the garnish, so it should be safe (garnish can be removed)
+        expect(result.overallStatus).toBe('safe');
+        const cornResult = result.perAllergy.find(r => r.allergen === 'corn');
+        expect(cornResult?.status).toBe('safe');
+        // Or if detected, should allow substitution
+        if (cornResult && cornResult.status === 'unsafe') {
+          expect(cornResult.substitutions.some(sub => 
+            sub.includes('NO corn') || sub.includes('corn')
+          )).toBe(true);
+        }
+      });
+
+      it('should allow removal of chives garnish (custom allergen)', () => {
+        const result = checkDishSafety(dish, [], ['chives']);
+        // Chives are in the garnish, so it should be safe (garnish can be removed)
+        expect(result.overallStatus).toBe('safe');
+        const chivesResult = result.perAllergy.find(r => r.allergen === 'chives');
+        expect(chivesResult?.status).toBe('safe');
+        // Or if detected, should allow substitution
+        if (chivesResult && chivesResult.status === 'unsafe') {
+          expect(chivesResult.substitutions.some(sub => 
+            sub.includes('NO chives') || sub.includes('chives')
+          )).toBe(true);
+        }
+      });
+
+      it('should allow removal of red peppers garnish (custom allergen)', () => {
+        const result = checkDishSafety(dish, [], ['red peppers']);
+        // Red peppers are in the garnish, so it should be safe (garnish can be removed)
+        expect(result.overallStatus).toBe('safe');
+        const peppersResult = result.perAllergy.find(r => r.allergen === 'red peppers');
+        expect(peppersResult?.status).toBe('safe');
+        // Or if detected, should allow substitution
+        if (peppersResult && peppersResult.status === 'unsafe') {
+          expect(peppersResult.substitutions.some(sub => 
+            sub.includes('NO red peppers') || sub.includes('red peppers')
+          )).toBe(true);
+        }
+      });
+
+      it('should have cannot_be_made_safe_notes indicating garnish can be removed', () => {
+        expect(dish.cannot_be_made_safe_notes).toBeTruthy();
+        expect(dish.cannot_be_made_safe_notes).toContain('pre-prepared');
+        expect(dish.cannot_be_made_safe_notes).toContain('garnish');
+        expect(dish.cannot_be_made_safe_notes).toContain('corn');
+        expect(dish.cannot_be_made_safe_notes).toContain('chives');
       });
     });
 
