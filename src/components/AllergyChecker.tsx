@@ -3,10 +3,32 @@ import { GlowingEffect } from '@/components/ui/glowing-effect';
 import { ScrollIndicator } from '@/components/ui/scroll-indicator';
 import { AnimatedBackground } from '@/components/ui/animated-background';
 import { cn } from '@/lib/utils';
-import { useMemo, useState } from 'react';
-import { menuItems } from '../data/menu-items';
+import { useMemo, useState, useEffect, Suspense } from 'react';
 import type { Allergen, MenuItem } from '../types';
 import { checkDishSafety } from '../utils/allergy-checker';
+
+// Lazy load menu items to reduce initial bundle size
+let menuItemsCache: MenuItem[] | null = null;
+let menuItemsPromise: Promise<MenuItem[]> | null = null;
+
+async function loadMenuItems(): Promise<MenuItem[]> {
+  if (menuItemsCache) {
+    return menuItemsCache;
+  }
+  if (menuItemsPromise) {
+    return menuItemsPromise;
+  }
+  
+  const startTime = performance.now();
+  menuItemsPromise = import('../data/menu-items').then((module) => {
+    menuItemsCache = module.menuItems;
+    const loadTime = performance.now() - startTime;
+    console.log(`[Performance] Menu items loaded in ${loadTime.toFixed(2)}ms`);
+    return module.menuItems;
+  });
+  
+  return menuItemsPromise;
+}
 
 // Data timestamp
 const DATA_TIMESTAMP = 'January 5, 2025';
@@ -44,6 +66,8 @@ const ALLERGEN_LABELS: Record<Allergen, string> = {
 };
 
 export function AllergyChecker() {
+  const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
+  const [menuItemsLoading, setMenuItemsLoading] = useState(true);
   const [selectedDishId, setSelectedDishId] = useState<string>('');
   const [selectedSideDishId, setSelectedSideDishId] = useState<string>('');
   const [selectedCrusts, setSelectedCrusts] = useState<Set<string>>(new Set());
@@ -66,13 +90,29 @@ export function AllergyChecker() {
   const [showSideDishSuggestions, setShowSideDishSuggestions] = useState(false);
   const [highlightedSideDishIndex, setHighlightedSideDishIndex] = useState(-1);
 
+  // Load menu items asynchronously
+  useEffect(() => {
+    const startTime = performance.now();
+    loadMenuItems()
+      .then((items) => {
+        setMenuItems(items);
+        setMenuItemsLoading(false);
+        const loadTime = performance.now() - startTime;
+        console.log(`[Performance] Menu items loaded and rendered in ${loadTime.toFixed(2)}ms`);
+      })
+      .catch((error) => {
+        console.error('[Error] Failed to load menu items:', error);
+        setMenuItemsLoading(false);
+      });
+  }, []);
+
   const selectedDish = useMemo(() => {
     return menuItems.find((item) => item.id === selectedDishId) || null;
-  }, [selectedDishId]);
+  }, [selectedDishId, menuItems]);
 
   const selectedSideDish = useMemo(() => {
     return selectedSideDishId ? menuItems.find((item) => item.id === selectedSideDishId) || null : null;
-  }, [selectedSideDishId]);
+  }, [selectedSideDishId, menuItems]);
 
   // Check if selected dish can have a side dish (all dishes except Appetizers and Sides)
   const canHaveSideDish = useMemo(() => {
@@ -119,7 +159,7 @@ export function AllergyChecker() {
   // Get all side dishes
   const sideDishes = useMemo(() => {
     return menuItems.filter((item) => item.category === 'Sides');
-  }, []);
+  }, [menuItems]);
 
   // Filter side dishes based on search term
   const filteredSideDishes = useMemo(() => {
@@ -218,7 +258,7 @@ export function AllergyChecker() {
       .slice(0, 10); // Show top 10 matches
     
     return matches;
-  }, [searchTerm]);
+  }, [searchTerm, menuItems]);
 
   // Filter allergens based on search term
   const filteredAllergens = useMemo(() => {
@@ -635,7 +675,7 @@ export function AllergyChecker() {
     });
 
     return categories;
-  }, [showBrowseMode, selectedAllergies, customAllergies]);
+  }, [showBrowseMode, selectedAllergies, customAllergies, menuItems]);
 
   return (
     <div className="min-h-screen relative overflow-hidden">
