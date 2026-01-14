@@ -315,6 +315,14 @@ function analyzeModificationPossibility(dish: MenuItem, allergen: Allergen): {
   const dishName = dish.dish_name.toLowerCase();
   const description = dish.description.toLowerCase();
   
+  // Check if dish has cannot_be_made_safe_notes - if so, it cannot be modified
+  if (dish.cannot_be_made_safe_notes && dish.cannot_be_made_safe_notes.trim() !== '') {
+    return {
+      modifiable: false,
+      reason: dish.cannot_be_made_safe_notes.trim()
+    };
+  }
+  
   // NO MODIFICATIONS POSSIBLE scenarios:
   
   // Main protein IS the allergen

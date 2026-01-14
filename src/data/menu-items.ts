@@ -3077,10 +3077,10 @@ export const menuItems: MenuItem[] = [
     "contains_sesame": "N",
     "contains_msg": "N",
     "contains_peanuts": "N",
-    "contains_tree_nuts": "N",
+    "contains_tree_nuts": "Y",
     "notes": "",
     "mod_notes": "",
-    "cannot_be_made_safe_notes": ""
+    "cannot_be_made_safe_notes": "Contains almond extract in the filling which cannot be removed"
   },
   {
     "id": "key_lime_pie",
