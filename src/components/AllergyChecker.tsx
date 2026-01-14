@@ -1,6 +1,5 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { GlowingEffect } from '@/components/ui/glowing-effect';
-import { ScrollIndicator } from '@/components/ui/scroll-indicator';
 import { AnimatedBackground } from '@/components/ui/animated-background';
 import { cn } from '@/lib/utils';
 import { useMemo, useState, useEffect } from 'react';
@@ -32,6 +31,79 @@ async function loadMenuItems(): Promise<MenuItem[]> {
 
 // Data timestamp
 const DATA_TIMESTAMP = 'January 5, 2025';
+
+/**
+ * Fix spacing in ingredient names by adding spaces between common concatenated words
+ */
+function fixIngredientSpacing(ingredient: string): string {
+  let fixed = ingredient;
+  
+  // Common ingredient word pairs that should have spaces
+  const spacingFixes = [
+    // Meat + seasoning/spice
+    { pattern: /beefsalt/gi, replacement: 'beef salt' },
+    { pattern: /chickensalt/gi, replacement: 'chicken salt' },
+    { pattern: /porksalt/gi, replacement: 'pork salt' },
+    
+    // Pepper variations
+    { pattern: /blackpepper/gi, replacement: 'black pepper' },
+    { pattern: /cayennepepper/gi, replacement: 'cayenne pepper' },
+    { pattern: /redpepper/gi, replacement: 'red pepper' },
+    { pattern: /whitepepper/gi, replacement: 'white pepper' },
+    { pattern: /greenpepper/gi, replacement: 'green pepper' },
+    
+    // Salt + pepper
+    { pattern: /saltpepper/gi, replacement: 'salt pepper' },
+    
+    // Oil variations
+    { pattern: /oliveoil/gi, replacement: 'olive oil' },
+    { pattern: /vegetableoil/gi, replacement: 'vegetable oil' },
+    { pattern: /canolaoil/gi, replacement: 'canola oil' },
+    { pattern: /houseoil/gi, replacement: 'house oil' },
+    { pattern: /housoil/gi, replacement: 'house oil' },
+    
+    // Cheese variations
+    { pattern: /bluecheese/gi, replacement: 'blue cheese' },
+    { pattern: /goatcheese/gi, replacement: 'goat cheese' },
+    { pattern: /creamcheese/gi, replacement: 'cream cheese' },
+    
+    // Cream variations
+    { pattern: /heavycream/gi, replacement: 'heavy cream' },
+    { pattern: /whippingcream/gi, replacement: 'whipping cream' },
+    { pattern: /sourcream/gi, replacement: 'sour cream' },
+    
+    // Wine variations
+    { pattern: /whitewine/gi, replacement: 'white wine' },
+    { pattern: /redwine/gi, replacement: 'red wine' },
+    
+    // Stock/broth variations
+    { pattern: /chickenstock/gi, replacement: 'chicken stock' },
+    { pattern: /beefstock/gi, replacement: 'beef stock' },
+    { pattern: /vegetablestock/gi, replacement: 'vegetable stock' },
+    
+    // Paste/paste variations
+    { pattern: /tomatopaste/gi, replacement: 'tomato paste' },
+    
+    // Other common combinations
+    { pattern: /extravirginoliveoil/gi, replacement: 'extra virgin olive oil' },
+    { pattern: /extravirgin/gi, replacement: 'extra virgin' },
+    { pattern: /boiledegg/gi, replacement: 'boiled egg' },
+    { pattern: /hardboiled/gi, replacement: 'hard boiled' },
+    { pattern: /garliccrouton/gi, replacement: 'garlic crouton' },
+    { pattern: /yogurtsauce/gi, replacement: 'yogurt sauce' },
+    { pattern: /chickenjus/gi, replacement: 'chicken jus' },
+    { pattern: /lobsterbase/gi, replacement: 'lobster base' },
+    { pattern: /shrimppoaching/gi, replacement: 'shrimp poaching' },
+    { pattern: /clamjuice/gi, replacement: 'clam juice' },
+  ];
+  
+  // Apply all spacing fixes
+  for (const fix of spacingFixes) {
+    fixed = fixed.replace(fix.pattern, fix.replacement);
+  }
+  
+  return fixed;
+}
 
 const ALL_ALLERGENS: Allergen[] = [
   'dairy',
@@ -185,29 +257,29 @@ export function AllergyChecker() {
     return matches;
   }, [sideDishSearchTerm, sideDishes]);
 
-  // Check if selected dish can have crust (steaks, lamb chops, pork chops, or Basil Hayden Tenderloin Tips)
+  // Helper function to check if a dish can have crust (only specific dishes)
+  const dishCanHaveCrust = (dishName: string): boolean => {
+    const name = dishName.toLowerCase();
+    
+    // Check for specific dishes that can have crust:
+    // New York Strip, Filet, Porterhouse, Prime Rib, Ribeye, Skirt Steak, Lambchop, Porkchop
+    return (
+      name.includes('new york strip') ||
+      (name.includes('filet') && !name.includes('sandwich')) ||
+      name.includes('porterhouse') ||
+      (name.includes('prime rib') && !name.includes('sandwich') && !name.includes('dip')) ||
+      name.includes('rib eye') ||
+      name.includes('ribeye') ||
+      name.includes('skirt steak') ||
+      (name.includes('lamb') && (name.includes('chop') || name.includes('porterhouse'))) ||
+      (name.includes('pork') && name.includes('chop'))
+    );
+  };
+
+  // Check if selected dish can have crust (only specific dishes)
   const canHaveCrust = useMemo(() => {
     if (!selectedDish) return false;
-    
-    const dishName = selectedDish.dish_name.toLowerCase();
-    
-    // Special case: Basil Hayden's Tenderloin Tips can have crust (it's in Filet Mignon category)
-    if (dishName.includes('basil hayden') && dishName.includes('tenderloin tips')) {
-      return true;
-    }
-    
-    // Only check "Steaks And Chops" category for other dishes
-    if (selectedDish.category !== 'Steaks And Chops') return false;
-    
-    // Exclude other Basil Hayden dishes (but allow tenderloin tips which we already handled above)
-    if (dishName.includes('basil hayden')) return false;
-    
-    // Include all steaks, lamb chops, and pork chops
-    const isSteak = dishName.includes('steak') || dishName.includes('filet') || dishName.includes('porterhouse') || dishName.includes('rib') || dishName.includes('tenderloin');
-    const isLamb = dishName.includes('lamb');
-    const isPork = dishName.includes('pork') || dishName.includes('porkchop') || dishName.includes('pork chop');
-    
-    return isSteak || isLamb || isPork;
+    return dishCanHaveCrust(selectedDish.dish_name);
   }, [selectedDish]);
 
   // Crust options
@@ -266,23 +338,36 @@ export function AllergyChecker() {
     );
   }, [allergenSearchTerm]);
 
-  // Filter ingredients from selected dish for custom allergen selection
+  // Get all unique ingredients from all menu items
+  const allIngredients = useMemo(() => {
+    const ingredientSet = new Set<string>();
+    menuItems.forEach((item) => {
+      if (item.ingredients && Array.isArray(item.ingredients)) {
+        item.ingredients.forEach((ingredient) => {
+          if (typeof ingredient === 'string' && ingredient.trim()) {
+            // Fix spacing in ingredient names
+            const fixed = fixIngredientSpacing(ingredient);
+            ingredientSet.add(fixed);
+          }
+        });
+      }
+    });
+    return Array.from(ingredientSet).sort();
+  }, [menuItems]);
+
+  // Filter ingredients from all menu items for custom allergen selection
   const filteredIngredients = useMemo(() => {
-    if (!selectedDish || !selectedDish.ingredients || !Array.isArray(selectedDish.ingredients)) {
-      return [];
-    }
     if (!ingredientSearchTerm.trim()) return [];
     
     const term = ingredientSearchTerm.toLowerCase();
-    return selectedDish.ingredients
+    return allIngredients
       .filter((ingredient) => 
-        typeof ingredient === 'string' && 
         ingredient.toLowerCase().includes(term) &&
         !customAllergies.has(ingredient) &&
         !selectedAllergies.has(ingredient as Allergen)
       )
       .slice(0, 20); // Limit to 20 suggestions
-  }, [ingredientSearchTerm, selectedDish, customAllergies, selectedAllergies]);
+  }, [ingredientSearchTerm, allIngredients, customAllergies, selectedAllergies]);
 
   const handleAllergySelect = (allergen: Allergen) => {
     const newSet = new Set(selectedAllergies);
@@ -680,22 +765,6 @@ export function AllergyChecker() {
 
       {/* Content */}
       <div className="relative z-10">
-        {/* Hero Section */}
-        <div className="w-full border-b border-gray-700/30 bg-gray-900/40 backdrop-blur-sm relative">
-          <div className="flex justify-center">
-            <div className="w-full max-w-2xl mx-auto px-6 py-12 md:py-16">
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4 drop-shadow-lg text-center">
-                Allergy Safety Checker
-              </h1>
-              <p className="text-lg md:text-xl text-gray-300 text-center">
-                Check menu items for allergens and get modification suggestions
-              </p>
-            </div>
-          </div>
-          {/* Scroll Indicator */}
-          <ScrollIndicator targetId="main-content" />
-        </div>
-
       {(selectedAllergies.size > 0 || customAllergies.size > 0 || selectedDishId || selectedSideDishId) && (
         <div className="sticky top-0 z-50 w-full border-b bg-gray-900/80 backdrop-blur-md border-gray-700/30 shadow-lg">
           <div className="flex justify-center">
@@ -814,7 +883,7 @@ export function AllergyChecker() {
       )}
 
         {/* Step Indicator */}
-        <div id="main-content" className="flex justify-center py-6">
+        <div className="flex justify-center py-6">
           <div className="w-full max-w-2xl mx-auto px-6">
           <div className="flex items-center justify-center gap-4 md:gap-8">
             {[
@@ -949,14 +1018,7 @@ export function AllergyChecker() {
                           setSelectedSideDishId('');
                         }
                         // Reset crust if new dish cannot have crust
-                        const dishName = item.dish_name.toLowerCase();
-                        // Special case: Basil Hayden Tenderloin Tips can have crust
-                        const isBasilHaydenTips = dishName.includes('basil hayden') && dishName.includes('tenderloin tips');
-                        const canHaveCrust = isBasilHaydenTips || 
-                          (item.category === 'Steaks And Chops' && 
-                           !dishName.includes('basil hayden') &&
-                           (dishName.includes('steak') || dishName.includes('lamb') || dishName.includes('filet') || dishName.includes('porterhouse') || dishName.includes('rib') || dishName.includes('tenderloin') || dishName.includes('pork') || dishName.includes('porkchop') || dishName.includes('pork chop')));
-                        if (!canHaveCrust) {
+                        if (!dishCanHaveCrust(item.dish_name)) {
                           setSelectedCrusts(new Set());
                         }
                         // Reset protein if not Classic Breakfast
@@ -1023,14 +1085,7 @@ export function AllergyChecker() {
                   }
                   // Reset crust if dish cannot have crust
                   if (selected) {
-                    const dishName = selected.dish_name.toLowerCase();
-                    // Special case: Basil Hayden Tenderloin Tips can have crust
-                    const isBasilHaydenTips = dishName.includes('basil hayden') && dishName.includes('tenderloin tips');
-                    const canHaveCrust = isBasilHaydenTips || 
-                      (selected.category === 'Steaks And Chops' && 
-                       !dishName.includes('basil hayden') &&
-                       (dishName.includes('steak') || dishName.includes('lamb') || dishName.includes('filet') || dishName.includes('porterhouse') || dishName.includes('rib') || dishName.includes('tenderloin') || dishName.includes('pork') || dishName.includes('porkchop') || dishName.includes('pork chop')));
-                    if (!canHaveCrust) {
+                    if (!dishCanHaveCrust(selected.dish_name)) {
                       setSelectedCrusts(new Set());
                     }
                     // Reset protein if not Classic Breakfast
@@ -1170,10 +1225,10 @@ export function AllergyChecker() {
                   <>
                     {defaultDressing && (
                       <div className="mb-3 p-3 bg-[#1e3a5f]/10 rounded-lg border border-[#1e3a5f]/30">
-                        <div className="text-sm font-medium text-blue-900">
+                        <div className="text-sm font-medium text-white">
                           Default Dressing: {dressingOptions.find(d => d.value === defaultDressing)?.label || defaultDressing}
                         </div>
-                        <div className="text-xs text-blue-700 mt-1">
+                        <div className="text-xs text-white mt-1">
                           This salad comes with this dressing. Results will show analysis for this dressing.
                         </div>
                       </div>
@@ -1213,7 +1268,7 @@ export function AllergyChecker() {
             )}
             {canHaveSideDish && (
               <div className="mt-4">
-                <label className="block text-sm font-medium text-gray-200 mb-3 uppercase tracking-wider" style={{ fontFamily: "'Poppins', sans-serif", letterSpacing: '0.15em', fontWeight: 400 }}>
+                <label className="block text-base font-semibold text-white mb-3 uppercase tracking-wider" style={{ fontFamily: "'Poppins', sans-serif", letterSpacing: '0.15em', fontWeight: 600 }}>
                   Select Side Dish (Optional)
                 </label>
                 
@@ -1261,7 +1316,8 @@ export function AllergyChecker() {
                         setShowSideDishSuggestions(false);
                       }
                     }}
-                    className="w-full px-4 py-3 border-2 border-gray-600 rounded-lg bg-gray-800/80 text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                    className="w-full px-4 py-3 border-2 border-gray-600 rounded-lg bg-gray-800/80 text-white placeholder:text-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all font-medium"
+                    style={{ fontFamily: "'Poppins', sans-serif", fontSize: '16px', letterSpacing: '0.02em' }}
                   />
                   {showSideDishSuggestions && filteredSideDishes.length > 0 && (
                     <div className="absolute z-50 w-full mt-1 bg-gray-900/95 backdrop-blur-md border border-gray-700/50 rounded-md shadow-2xl max-h-60 overflow-y-auto">
@@ -1295,11 +1351,11 @@ export function AllergyChecker() {
 
                 {/* Dropdown for Side Dish */}
                 <div className="mt-6 pt-6 border-t border-gray-700/30">
-                  <div className="text-xs text-gray-400 mb-3 uppercase tracking-widest font-light text-center" style={{ fontFamily: "'Poppins', sans-serif", letterSpacing: '0.2em' }}>
+                  <div className="text-sm text-gray-300 mb-3 uppercase tracking-widest font-medium text-center" style={{ fontFamily: "'Poppins', sans-serif", letterSpacing: '0.2em' }}>
                     Or select from dropdown
                   </div>
                   <select
-                    className="dropdown-select w-full px-5 py-4 border border-gray-600/50 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-400/50 focus:border-blue-400/50 bg-gray-800/80 text-white font-light tracking-wide appearance-none cursor-pointer transition-all hover:border-gray-500/50"
+                    className="dropdown-select w-full px-5 py-4 border border-gray-600/50 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-400/50 focus:border-blue-400/50 bg-gray-800/80 text-white font-medium tracking-wide appearance-none cursor-pointer transition-all hover:border-gray-500/50"
                     value={selectedSideDishId}
                     onChange={(e) => {
                       setSelectedSideDishId(e.target.value);
@@ -1452,12 +1508,11 @@ export function AllergyChecker() {
               )}
             </div>
             
-            {/* Custom Ingredient Selection - Only show when a dish is selected */}
-            {selectedDish && (
-              <div className="mt-6 pt-6 border-t border-gray-700/30">
-                <div className="text-xs text-gray-400 mb-3 uppercase tracking-widest font-light" style={{ fontFamily: "'Poppins', sans-serif", letterSpacing: '0.2em' }}>
-                  Select Specific Ingredient (from {selectedDish.dish_name})
-                </div>
+            {/* Custom Ingredient Selection - Search all ingredients */}
+            <div className="mt-6 pt-6 border-t border-gray-700/30">
+              <div className="text-xs text-gray-400 mb-3 uppercase tracking-widest font-light" style={{ fontFamily: "'Poppins', sans-serif", letterSpacing: '0.2em' }}>
+                Select Specific Ingredient (from entire menu)
+              </div>
                 <div className="relative">
                   <input
                     type="text"
@@ -1507,7 +1562,6 @@ export function AllergyChecker() {
                   )}
                 </div>
               </div>
-            )}
             
             <div className="mt-6 pt-6 border-t border-gray-700/30">
               <div className="text-xs text-gray-400 mb-3 uppercase tracking-widest font-light text-center" style={{ fontFamily: "'Poppins', sans-serif", letterSpacing: '0.2em' }}>
@@ -1625,7 +1679,7 @@ export function AllergyChecker() {
           <div className="mt-8">
             <Card className="bg-gray-800/60 backdrop-blur-sm border-gray-700/50 shadow-xl">
               <CardHeader>
-                <CardTitle className="text-gray-900">Safe Dishes for Your Allergies (No Modifications Needed)</CardTitle>
+                <CardTitle className="text-white">Safe Dishes for Your Allergies (No Modifications Needed)</CardTitle>
                 <CardDescription className="text-gray-600">
                   These dishes are completely safe for your selected allergies and require no modifications.
                 </CardDescription>
@@ -1635,7 +1689,7 @@ export function AllergyChecker() {
                   if (dishes.length === 0) return null;
                   return (
                     <div key={category} className="space-y-3">
-                      <h3 className="text-xl font-bold text-gray-900 border-b-2 border-gray-300 pb-2">
+                      <h3 className="text-xl font-bold text-white border-b-2 border-gray-500 pb-2">
                         {category} ({dishes.length})
                       </h3>
                       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
@@ -1687,31 +1741,46 @@ export function AllergyChecker() {
             <>
             <Card
               className={cn(
-                "border-2 bg-white backdrop-blur-sm",
+                "backdrop-blur-sm shadow-2xl",
                 result.overallStatus === 'safe'
-                  ? "border-[#2d5016]/50 bg-[#2d5016]/10"
-                  : "border-[#991b1b]/50 bg-[#991b1b]/10"
+                  ? "border-4 border-[#2d5016] bg-gradient-to-br from-[#2d5016]/20 to-[#2d5016]/10"
+                  : "border-4 border-red-600 bg-gradient-to-br from-red-950/90 to-red-900/80 animate-pulse"
               )}
             >
-              <CardContent className="pt-6">
+              <CardContent className={cn(
+                "pt-8 pb-8 px-6",
+                result.overallStatus === 'unsafe' && "bg-red-950/30"
+              )}>
                 <div className="text-center">
                   <h2
                     className={cn(
-                      "text-2xl font-bold mb-2",
-                      result.overallStatus === 'safe' ? "text-[#2d5016]" : "text-[#991b1b]"
+                      "mb-4 font-black tracking-wider",
+                      result.overallStatus === 'safe' 
+                        ? "text-4xl text-[#2d5016]" 
+                        : "text-5xl text-red-500 drop-shadow-[0_0_8px_rgba(239,68,68,0.8)] font-extrabold"
                     )}
+                    style={result.overallStatus === 'unsafe' ? {
+                      textShadow: '0 0 20px rgba(239, 68, 68, 0.8), 0 0 40px rgba(239, 68, 68, 0.5)'
+                    } : {}}
                   >
                     {getStatusText(result.overallStatus)}
                   </h2>
                   <p
                     className={cn(
-                      "text-lg",
-                      result.overallStatus === 'safe' ? "text-[#2d5016]" : "text-[#991b1b]"
+                      "font-bold leading-relaxed",
+                      result.overallStatus === 'safe' 
+                        ? "text-xl text-[#2d5016]" 
+                        : "text-2xl text-red-200 font-semibold"
                     )}
                   >
                     {result.globalMessage}
                   </p>
-                  <p className="text-gray-500 text-xs mt-3 italic">
+                  <p className={cn(
+                    "mt-6 italic",
+                    result.overallStatus === 'safe' 
+                      ? "text-gray-500 text-xs" 
+                      : "text-red-300/70 text-sm"
+                  )}>
                     Source: Official Training Materials | Data Current as of: {DATA_TIMESTAMP}
                   </p>
                 </div>
