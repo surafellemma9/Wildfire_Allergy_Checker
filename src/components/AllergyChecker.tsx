@@ -3,7 +3,7 @@ import { GlowingEffect } from '@/components/ui/glowing-effect';
 import { ScrollIndicator } from '@/components/ui/scroll-indicator';
 import { AnimatedBackground } from '@/components/ui/animated-background';
 import { cn } from '@/lib/utils';
-import { useMemo, useState, useEffect, Suspense } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import type { Allergen, MenuItem } from '../types';
 import { checkDishSafety } from '../utils/allergy-checker';
 
@@ -67,7 +67,6 @@ const ALLERGEN_LABELS: Record<Allergen, string> = {
 
 export function AllergyChecker() {
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
-  const [menuItemsLoading, setMenuItemsLoading] = useState(true);
   const [selectedDishId, setSelectedDishId] = useState<string>('');
   const [selectedSideDishId, setSelectedSideDishId] = useState<string>('');
   const [selectedCrusts, setSelectedCrusts] = useState<Set<string>>(new Set());
@@ -96,13 +95,11 @@ export function AllergyChecker() {
     loadMenuItems()
       .then((items) => {
         setMenuItems(items);
-        setMenuItemsLoading(false);
         const loadTime = performance.now() - startTime;
         console.log(`[Performance] Menu items loaded and rendered in ${loadTime.toFixed(2)}ms`);
       })
       .catch((error) => {
         console.error('[Error] Failed to load menu items:', error);
-        setMenuItemsLoading(false);
       });
   }, []);
 
@@ -1481,7 +1478,7 @@ export function AllergyChecker() {
                   />
                   {showIngredientSuggestions && filteredIngredients.length > 0 && (
                     <div className="absolute z-50 w-full mt-1 bg-gray-900/95 backdrop-blur-md border border-gray-700/50 rounded-md shadow-2xl max-h-60 overflow-y-auto">
-                      {filteredIngredients.map((ingredient, index) => {
+                      {filteredIngredients.map((ingredient, _index) => {
                         const displayIndex = filteredIngredients.findIndex((ing) => ing === ingredient);
                         return (
                           <div
