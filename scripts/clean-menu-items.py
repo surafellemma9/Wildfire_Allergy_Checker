@@ -294,6 +294,12 @@ def main():
     with open(file_path, 'r', encoding='utf-8') as f:
         content = f.read()
     
+    # Extract existing metadata
+    version_match = re.search(r'export const MENU_DATA_VERSION = "([^"]+)"', content)
+    generated_match = re.search(r'export const MENU_DATA_GENERATED_AT = "([^"]+)"', content)
+    menu_data_version = version_match.group(1) if version_match else ''
+    menu_data_generated_at = generated_match.group(1) if generated_match else ''
+
     # Extract the JSON array from the file
     # Find the menuItems array
     match = re.search(r'export const menuItems: MenuItem\[\] = (\[[\s\S]*?\]) as MenuItem\[\];', content)
@@ -327,6 +333,9 @@ def main():
 // NOTE: This file has been cleaned to remove unnecessary adjectives and duplicates
 
 import type {{ MenuItem }} from '../types';
+
+export const MENU_DATA_VERSION = "{menu_data_version}";
+export const MENU_DATA_GENERATED_AT = "{menu_data_generated_at}";
 
 export const menuItems: MenuItem[] = {json.dumps(menu_items, indent=2, ensure_ascii=False)} as MenuItem[];
 """

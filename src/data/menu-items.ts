@@ -4,6 +4,9 @@
 
 import type { MenuItem } from '../types';
 
+export const MENU_DATA_VERSION = "legacy";
+export const MENU_DATA_GENERATED_AT = "2025-01-05T00:00:00.000Z";
+
 export const menuItems: MenuItem[] = [
   {
     "id": "shrimp_and_crab_bisque",

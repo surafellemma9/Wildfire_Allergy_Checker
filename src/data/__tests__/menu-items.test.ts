@@ -1,9 +1,17 @@
 import { describe, it, expect } from 'vitest';
-import { menuItems } from '../menu-items';
+import { MENU_DATA_GENERATED_AT, MENU_DATA_VERSION, menuItems } from '../menu-items';
 
 describe('Menu Items Data', () => {
   it('should have menu items', () => {
     expect(menuItems.length).toBeGreaterThan(0);
+  });
+
+  it('should expose menu data metadata', () => {
+    expect(typeof MENU_DATA_VERSION).toBe('string');
+    expect(MENU_DATA_VERSION.length).toBeGreaterThan(0);
+    expect(typeof MENU_DATA_GENERATED_AT).toBe('string');
+    expect(MENU_DATA_GENERATED_AT.length).toBeGreaterThan(0);
+    expect(Number.isNaN(Date.parse(MENU_DATA_GENERATED_AT))).toBe(false);
   });
 
   it('should have valid menu item structure', () => {

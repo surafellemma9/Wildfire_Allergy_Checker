@@ -3,6 +3,8 @@ import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { AllergyChecker } from '../AllergyChecker';
 
+const DISCLAIMER_STORAGE_KEY = 'wildfire_disclaimer_accepted';
+
 // Mock the menu items to avoid loading the full dataset
 vi.mock('../../data/menu-items', () => ({
   menuItems: [
@@ -79,9 +81,26 @@ vi.mock('../../data/menu-items', () => ({
 }));
 
 describe('AllergyChecker Component', () => {
+  beforeEach(() => {
+    localStorage.setItem(DISCLAIMER_STORAGE_KEY, 'true');
+  });
+
+  afterEach(() => {
+    localStorage.removeItem(DISCLAIMER_STORAGE_KEY);
+  });
+
   it('should render the component', () => {
     render(<AllergyChecker />);
     expect(screen.getByText('Allergy Safety Checker')).toBeInTheDocument();
+  });
+
+  it('should require disclaimer acknowledgement on first launch', async () => {
+    localStorage.removeItem(DISCLAIMER_STORAGE_KEY);
+    render(<AllergyChecker />);
+
+    expect(await screen.findByText('Before You Continue')).toBeInTheDocument();
+    expect(screen.getByText(/verify with restaurant staff/i)).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /continue/i })).toBeDisabled();
   });
 
   it('should allow selecting a dish', async () => {
@@ -255,7 +274,7 @@ describe('AllergyChecker Component', () => {
     
     // Should show results
     await waitFor(() => {
-      expect(screen.getByText(/SAFE|UNSAFE/i)).toBeInTheDocument();
+      expect(screen.getByText(/Potentially safe|Potentially unsafe/i)).toBeInTheDocument();
     });
   });
 

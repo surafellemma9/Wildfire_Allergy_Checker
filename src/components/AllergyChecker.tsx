@@ -1,18 +1,21 @@
+import { AnimatedBackground } from '@/components/ui/animated-background';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { GlowingEffect } from '@/components/ui/glowing-effect';
-import { AnimatedBackground } from '@/components/ui/animated-background';
 import { cn } from '@/lib/utils';
+import { Info, Search, ShieldCheck } from 'lucide-react';
 import { useMemo, useState, useEffect } from 'react';
 import type { Allergen, MenuItem } from '../types';
 import { checkDishSafety } from '../utils/allergy-checker';
+import { useOnlineStatus } from '../utils/use-online-status';
 
 // Lazy load menu items to reduce initial bundle size
-let menuItemsCache: MenuItem[] | null = null;
-let menuItemsPromise: Promise<MenuItem[]> | null = null;
+type MenuItemsModule = typeof import('../data/menu-items');
+let menuItemsModuleCache: MenuItemsModule | null = null;
+let menuItemsPromise: Promise<MenuItemsModule> | null = null;
 
-async function loadMenuItems(): Promise<MenuItem[]> {
-  if (menuItemsCache) {
-    return menuItemsCache;
+async function loadMenuItems(): Promise<MenuItemsModule> {
+  if (menuItemsModuleCache) {
+    return menuItemsModuleCache;
   }
   if (menuItemsPromise) {
     return menuItemsPromise;
@@ -20,10 +23,10 @@ async function loadMenuItems(): Promise<MenuItem[]> {
   
   const startTime = performance.now();
   menuItemsPromise = import('../data/menu-items').then((module) => {
-    menuItemsCache = module.menuItems;
+    menuItemsModuleCache = module;
     const loadTime = performance.now() - startTime;
     console.log(`[Performance] Menu items loaded in ${loadTime.toFixed(2)}ms`);
-    return module.menuItems;
+    return module;
   });
   
   return menuItemsPromise;
@@ -31,6 +34,12 @@ async function loadMenuItems(): Promise<MenuItem[]> {
 
 // Data timestamp
 const DATA_TIMESTAMP = 'January 5, 2025';
+const DISCLAIMER_STORAGE_KEY = 'wildfire_disclaimer_accepted';
+const DISCLAIMER_TEXT =
+  'This tool is an internal helper based on our ingredient book. It may not capture all cross-contact or kitchen changes.';
+const ALWAYS_VERIFY_TEXT =
+  'Always verify with restaurant staff. Cross-contact may occur.';
+const APP_TITLE = 'Allergy Safety Checker';
 
 /**
  * Fix spacing in ingredient names by adding spaces between common concatenated words
@@ -137,6 +146,22 @@ const ALLERGEN_LABELS: Record<Allergen, string> = {
   seed: 'Seed',
 };
 
+const ALLERGEN_ICONS: Record<Allergen, string> = {
+  dairy: '🥛',
+  egg: '🥚',
+  gluten: '🌾',
+  shellfish: '🦐',
+  fish: '🐟',
+  soy: '🫘',
+  peanuts: '🥜',
+  tree_nuts: '🌰',
+  sesame: '🫓',
+  msg: '🧂',
+  onion_garlic: '🧅',
+  tomato: '🍅',
+  seed: '🌱',
+};
+
 export function AllergyChecker() {
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
   const [selectedDishId, setSelectedDishId] = useState<string>('');
@@ -147,8 +172,6 @@ export function AllergyChecker() {
   const [selectedAllergies, setSelectedAllergies] = useState<Set<Allergen>>(new Set());
   const [customAllergies, setCustomAllergies] = useState<Set<string>>(new Set());
   const [allergenSearchTerm, setAllergenSearchTerm] = useState('');
-  const [showAllergenSuggestions, setShowAllergenSuggestions] = useState(false);
-  const [highlightedAllergenIndex, setHighlightedAllergenIndex] = useState(-1);
   const [ingredientSearchTerm, setIngredientSearchTerm] = useState('');
   const [showIngredientSuggestions, setShowIngredientSuggestions] = useState(false);
   const [highlightedIngredientIndex, setHighlightedIngredientIndex] = useState(-1);
@@ -160,19 +183,55 @@ export function AllergyChecker() {
   const [sideDishSearchTerm, setSideDishSearchTerm] = useState('');
   const [showSideDishSuggestions, setShowSideDishSuggestions] = useState(false);
   const [highlightedSideDishIndex, setHighlightedSideDishIndex] = useState(-1);
+  const [menuDataInfo, setMenuDataInfo] = useState({ version: '', generatedAt: '' });
+  const [disclaimerChecked, setDisclaimerChecked] = useState(false);
+  const [isDisclaimerOpen, setIsDisclaimerOpen] = useState(false);
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const isOnline = useOnlineStatus();
 
   // Load menu items asynchronously
   useEffect(() => {
     const startTime = performance.now();
     loadMenuItems()
-      .then((items) => {
-        setMenuItems(items);
+      .then((module) => {
+        setMenuItems(module.menuItems);
+        setMenuDataInfo({
+          version: module.MENU_DATA_VERSION || '',
+          generatedAt: module.MENU_DATA_GENERATED_AT || '',
+        });
         const loadTime = performance.now() - startTime;
         console.log(`[Performance] Menu items loaded and rendered in ${loadTime.toFixed(2)}ms`);
       })
       .catch((error) => {
         console.error('[Error] Failed to load menu items:', error);
       });
+  }, []);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const stored = window.localStorage.getItem(DISCLAIMER_STORAGE_KEY);
+    const accepted = stored === 'true';
+    setIsDisclaimerOpen(!accepted);
+  }, []);
+
+  useEffect(() => {
+    if (typeof window === 'undefined' || !window.visualViewport) return;
+
+    const updateKeyboardOffset = () => {
+      const viewport = window.visualViewport;
+      if (!viewport) return;
+      const offset = Math.max(0, window.innerHeight - viewport.height - viewport.offsetTop);
+      document.documentElement.style.setProperty('--keyboard-offset', `${offset}px`);
+    };
+
+    updateKeyboardOffset();
+    window.visualViewport.addEventListener('resize', updateKeyboardOffset);
+    window.visualViewport.addEventListener('scroll', updateKeyboardOffset);
+
+    return () => {
+      window.visualViewport?.removeEventListener('resize', updateKeyboardOffset);
+      window.visualViewport?.removeEventListener('scroll', updateKeyboardOffset);
+    };
   }, []);
 
   const selectedDish = useMemo(() => {
@@ -375,43 +434,35 @@ export function AllergyChecker() {
       newSet.add(allergen);
     setSelectedAllergies(newSet);
       setAllergenSearchTerm('');
-      setShowAllergenSuggestions(false);
       setShowResults(false);
     }
   };
 
+  const handleAllergyToggle = (allergen: Allergen) => {
+    const newSet = new Set(selectedAllergies);
+    if (newSet.has(allergen)) {
+      newSet.delete(allergen);
+    } else {
+      newSet.add(allergen);
+    }
+    setSelectedAllergies(newSet);
+    setShowResults(false);
+  };
+
   const handleAllergenInputChange = (value: string) => {
     setAllergenSearchTerm(value);
-    setShowAllergenSuggestions(true);
-    setHighlightedAllergenIndex(-1);
     setShowResults(false);
   };
 
   const handleAllergenInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    const availableAllergens = filteredAllergens.filter((a) => !selectedAllergies.has(a));
-    
-    if (e.key === 'ArrowDown') {
+    if (e.key === 'Enter') {
       e.preventDefault();
-      setHighlightedAllergenIndex((prev) => 
-        prev < availableAllergens.length - 1 ? prev + 1 : prev
-      );
-    } else if (e.key === 'ArrowUp') {
-      e.preventDefault();
-      setHighlightedAllergenIndex((prev) => (prev > 0 ? prev - 1 : -1));
-    } else if (e.key === 'Enter') {
-      e.preventDefault();
-      if (highlightedAllergenIndex >= 0 && highlightedAllergenIndex < availableAllergens.length) {
-        // Select from dropdown
-        handleAllergySelect(availableAllergens[highlightedAllergenIndex]);
-      } else if ((selectedAllergies.size > 0 || customAllergies.size > 0) && !selectedDishId) {
+      if ((selectedAllergies.size > 0 || customAllergies.size > 0) && !selectedDishId) {
         // If allergens are selected but no dish, trigger browse mode
         setShowBrowseMode(true);
         setShowResults(false);
         setAllergenSearchTerm('');
-        setShowAllergenSuggestions(false);
       }
-    } else if (e.key === 'Escape') {
-      setShowAllergenSuggestions(false);
     }
   };
 
@@ -631,7 +682,7 @@ export function AllergyChecker() {
         overallStatus,
         globalMessage: overallStatus === 'unsafe' 
           ? `This meal contains allergens. Please review the details for the entree, side dish, crust, and dressing below.`
-          : `This meal is safe for your selected allergies.`,
+          : `Potentially safe for your selected allergies.`,
         mainDishResult,
         sideDishResult,
         crustCheck,
@@ -654,7 +705,7 @@ export function AllergyChecker() {
       overallStatus,
       globalMessage: overallStatus === 'unsafe' 
         ? `This meal contains allergens. Please review the details for the entree, crust, and dressing below.`
-        : `This meal is safe for your selected allergies.`,
+        : `Potentially safe for your selected allergies.`,
       mainDishResult,
       sideDishResult: null,
       crustCheck,
@@ -683,11 +734,22 @@ export function AllergyChecker() {
   const getStatusText = (status: 'safe' | 'unsafe') => {
     switch (status) {
       case 'safe':
-        return 'SAFE - NO CHANGES';
+        return 'Potentially safe';
       case 'unsafe':
-        return 'UNSAFE';
+        return 'Potentially unsafe';
     }
   };
+
+  const getDisplayGlobalMessage = (status: 'safe' | 'unsafe', message: string) => {
+    if (status === 'safe') {
+      return 'Potentially safe for your selected allergies.';
+    }
+    return message;
+  };
+
+  const menuGeneratedAtLabel = menuDataInfo.generatedAt
+    ? new Date(menuDataInfo.generatedAt).toLocaleString()
+    : 'Unknown';
 
   // Filter safe dishes by category for browse mode
   const safeDishesByCategory = useMemo(() => {
@@ -759,30 +821,78 @@ export function AllergyChecker() {
     return categories;
   }, [showBrowseMode, selectedAllergies, customAllergies, menuItems]);
 
+  const handleDisclaimerContinue = () => {
+    if (typeof window === 'undefined') return;
+    window.localStorage.setItem(DISCLAIMER_STORAGE_KEY, 'true');
+    setIsDisclaimerOpen(false);
+    setDisclaimerChecked(false);
+  };
+
+  const handleDisclaimerReset = () => {
+    if (typeof window === 'undefined') return;
+    window.localStorage.removeItem(DISCLAIMER_STORAGE_KEY);
+    setIsDisclaimerOpen(true);
+    setDisclaimerChecked(false);
+  };
+
   return (
-    <div className="min-h-screen relative overflow-hidden">
+    <div className="min-h-screen relative overflow-x-hidden">
       <AnimatedBackground />
 
+      {!isOnline && (
+        <div className="fixed top-0 left-0 right-0 z-50 safe-area-top">
+          <div className="bg-amber-400 text-amber-950 text-xs font-semibold px-4 py-2 text-center shadow-md">
+            Offline mode: using on-device menu data.
+          </div>
+        </div>
+      )}
+
       {/* Content */}
-      <div className="relative z-10">
-      {(selectedAllergies.size > 0 || customAllergies.size > 0 || selectedDishId || selectedSideDishId) && (
-        <div className="sticky top-0 z-50 w-full border-b bg-gray-900/80 backdrop-blur-md border-gray-700/30 shadow-lg">
+      <div
+        className={cn('relative z-10 safe-area-top', !isOnline && 'pt-10')}
+        aria-hidden={isDisclaimerOpen}
+      >
+        <div className="w-full border-b border-slate-800 bg-slate-900/90 backdrop-blur">
           <div className="flex justify-center">
-            <div className="w-full max-w-2xl mx-auto px-6 py-3 flex items-center justify-between flex-wrap gap-3">
+            <div className="w-full max-w-5xl mx-auto px-6 md:px-10 py-4 md:py-5 flex items-center justify-between gap-4">
+              <div className="flex items-center gap-3 md:gap-4">
+                <div className="h-10 w-10 md:h-12 md:w-12 rounded-xl bg-blue-600/20 border border-blue-500/40 flex items-center justify-center">
+                  <ShieldCheck className="h-5 w-5 md:h-6 md:w-6 text-blue-300" />
+                </div>
+                <div className="text-white text-lg md:text-xl font-semibold tracking-wide">{APP_TITLE}</div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setIsSettingsOpen(true)}
+                className="min-h-[44px] min-w-[44px] rounded-full border border-slate-700/60 bg-slate-900/70 text-slate-200 hover:bg-slate-800/90 flex items-center justify-center transition-colors"
+                aria-label="About and settings"
+              >
+                <Info className="h-5 w-5" />
+              </button>
+            </div>
+          </div>
+        </div>
+      {(selectedAllergies.size > 0 || customAllergies.size > 0 || selectedDishId || selectedSideDishId) && (
+        <div className={cn(
+          "sticky top-0 z-50 w-full border-b bg-slate-900/90 backdrop-blur-md border-slate-800 shadow-lg",
+          !isOnline && "top-10"
+        )}>
+          <div className="flex justify-center">
+            <div className="w-full max-w-5xl mx-auto px-6 md:px-10 py-3 md:py-4 flex items-center justify-between flex-wrap gap-3">
             <div className="flex flex-wrap items-center gap-2">
               {(selectedAllergies.size > 0 || customAllergies.size > 0) && (
                 <>
-                  <span className="text-sm text-gray-700 font-medium">Selected:</span>
+                  <span className="text-sm text-slate-400 font-medium">Selected:</span>
                   {Array.from(selectedAllergies).map((allergen) => (
                     <span
                       key={allergen}
-                      className="inline-flex items-center gap-2 px-3 py-1 text-sm font-medium rounded-full bg-[#1e3a5f]/20 text-[#1e3a5f] border border-[#1e3a5f]/50"
+                      className="inline-flex items-center gap-2 px-3 py-1 text-sm font-medium rounded-full bg-blue-600/20 text-blue-200 border border-blue-500/50"
                     >
                       {ALLERGEN_LABELS[allergen]}
                       <button
                         type="button"
                         onClick={() => handleRemoveAllergen(allergen)}
-                        className="w-4 h-4 rounded-full hover:bg-[#1e3a5f]/30 flex items-center justify-center transition-colors text-blue-700 leading-none"
+                        className="w-4 h-4 rounded-full hover:bg-blue-500/30 flex items-center justify-center transition-colors text-blue-200 leading-none"
                         aria-label={`Remove ${ALLERGEN_LABELS[allergen]}`}
                       >
                         ×
@@ -792,13 +902,13 @@ export function AllergyChecker() {
                   {Array.from(customAllergies).map((allergen) => (
                     <span
                       key={allergen}
-                      className="inline-flex items-center gap-2 px-3 py-1 text-sm font-medium rounded-full bg-purple-500/20 text-purple-700 border border-purple-500/50"
+                      className="inline-flex items-center gap-2 px-3 py-1 text-sm font-medium rounded-full bg-slate-700/60 text-slate-200 border border-slate-600/60"
                     >
                       {allergen}
                       <button
                         type="button"
                         onClick={() => handleRemoveAllergen(allergen)}
-                        className="w-4 h-4 rounded-full hover:bg-purple-500/30 flex items-center justify-center transition-colors text-purple-700 leading-none"
+                        className="w-4 h-4 rounded-full hover:bg-slate-500/40 flex items-center justify-center transition-colors text-slate-200 leading-none"
                         aria-label={`Remove ${allergen}`}
                       >
                         ×
@@ -808,27 +918,27 @@ export function AllergyChecker() {
                 </>
               )}
               {selectedDish && (
-                <span className="px-3 py-1 text-sm font-medium rounded-full bg-[#991b1b]/20 text-[#991b1b] border border-[#991b1b]/50">
+                <span className="px-3 py-1 text-sm font-medium rounded-full bg-slate-800 text-slate-200 border border-slate-600">
                   {selectedDish.dish_name}
                 </span>
               )}
               {selectedSideDish && (
-                <span className="px-3 py-1 text-sm font-medium rounded-full bg-orange-500/20 text-orange-700 border border-orange-500/50">
+                <span className="px-3 py-1 text-sm font-medium rounded-full bg-slate-800 text-slate-200 border border-slate-600">
                   Side: {selectedSideDish.dish_name}
                 </span>
               )}
               {selectedCrusts && selectedCrusts.size > 0 && (
-                <span className="px-3 py-1 text-sm font-medium rounded-full bg-[#2d5016]/20 text-[#2d5016] border border-[#2d5016]/50">
+                <span className="px-3 py-1 text-sm font-medium rounded-full bg-slate-800 text-slate-200 border border-slate-600">
                   Crusts: {Array.from(selectedCrusts).map(c => crustOptions.find(opt => opt.value === c)?.label).filter(Boolean).join(', ')}
                 </span>
               )}
               {selectedProtein && (
-                <span className="px-3 py-1 text-sm font-medium rounded-full bg-purple-500/20 text-purple-700 border border-purple-500/50">
+                <span className="px-3 py-1 text-sm font-medium rounded-full bg-slate-800 text-slate-200 border border-slate-600">
                   Protein: {selectedProtein === 'bacon' ? 'Bacon' : 'Turkey Sausage'}
                 </span>
               )}
               {selectedDressing && (
-                <span className="px-3 py-1 text-sm font-medium rounded-full bg-indigo-500/20 text-indigo-700 border border-indigo-500/50">
+                <span className="px-3 py-1 text-sm font-medium rounded-full bg-slate-800 text-slate-200 border border-slate-600">
                   {defaultDressing && defaultDressing !== selectedDressing ? (
                     <>
                       Dressing: {dressingOptions.find(d => d.value === defaultDressing)?.label || defaultDressing} → {dressingOptions.find(d => d.value === selectedDressing)?.label || selectedDressing}
@@ -841,7 +951,7 @@ export function AllergyChecker() {
                 </span>
               )}
               {defaultDressing && !selectedDressing && (
-                <span className="px-3 py-1 text-sm font-medium rounded-full bg-[#1e3a5f]/20 text-[#1e3a5f] border border-[#1e3a5f]/50">
+                <span className="px-3 py-1 text-sm font-medium rounded-full bg-slate-800 text-slate-200 border border-slate-600">
                   Dressing: {dressingOptions.find(d => d.value === defaultDressing)?.label || defaultDressing} (Default)
                 </span>
               )}
@@ -856,7 +966,7 @@ export function AllergyChecker() {
                 borderWidth={2}
               />
               <button
-                className="relative px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors border border-gray-300"
+                className="relative px-4 py-2 min-h-[44px] text-sm font-medium text-slate-200 bg-slate-800 hover:bg-slate-700 rounded-lg transition-colors border border-slate-700"
                 onClick={() => {
                   setSelectedDishId('');
                   setSelectedSideDishId('');
@@ -883,22 +993,22 @@ export function AllergyChecker() {
       )}
 
         {/* Step Indicator */}
-        <div className="flex justify-center py-6">
-          <div className="w-full max-w-2xl mx-auto px-6">
-          <div className="flex items-center justify-center gap-4 md:gap-8">
-            {[
-              { num: 1, label: 'Select Allergies', active: selectedAllergies.size > 0 || customAllergies.size > 0 },
-              { num: 2, label: 'Choose Dish', active: !!selectedDishId },
-              { num: 3, label: 'Review Results', active: showResults },
-            ].map((step) => (
-              <div key={step.num} className="flex items-center gap-4">
-                <div className="flex flex-col items-center gap-2">
+        <div className="flex justify-center py-6 md:py-8">
+          <div className="w-full max-w-5xl mx-auto px-6 md:px-10">
+            <div className="relative flex items-start justify-between max-w-xl mx-auto">
+              <div className="absolute left-0 right-0 top-5 md:top-6 h-px bg-slate-700" />
+              {[
+                { num: 1, label: 'Select Allergies', active: selectedAllergies.size > 0 || customAllergies.size > 0 },
+                { num: 2, label: 'Choose Dish', active: !!selectedDishId },
+                { num: 3, label: 'Review Results', active: showResults },
+              ].map((step) => (
+                <div key={step.num} className="relative flex flex-col items-center gap-2 md:gap-3">
                   <div
                     className={cn(
-                      'w-10 h-10 rounded-full flex items-center justify-center font-semibold text-sm transition-all',
+                      'h-10 w-10 md:h-12 md:w-12 rounded-full flex items-center justify-center text-sm md:text-base font-semibold ring-2 ring-transparent transition-all',
                       step.active
-                        ? 'bg-blue-500 text-white shadow-lg scale-110 shadow-blue-500/50'
-                        : 'bg-gray-700 text-gray-300 border border-gray-600'
+                        ? 'bg-blue-600 text-white ring-blue-400/60 shadow-lg'
+                        : 'bg-slate-800 text-slate-400 ring-slate-700'
                     )}
                   >
                     {step.num}
@@ -906,43 +1016,41 @@ export function AllergyChecker() {
                   <span
                     className={cn(
                       'text-xs md:text-sm font-medium',
-                      step.active ? 'text-blue-400' : 'text-gray-400'
+                      step.active ? 'text-blue-300' : 'text-slate-500'
                     )}
                   >
                     {step.label}
                   </span>
                 </div>
-                {step.num < 3 && (
-                  <div
-                    className={cn(
-                      'w-8 md:w-16 h-0.5',
-                      step.active ? 'bg-blue-500' : 'bg-gray-600'
-                    )}
-                  />
-                )}
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
           </div>
         </div>
 
-        <div className="flex justify-center pb-12">
-          <div className="w-full max-w-2xl mx-auto px-6">
-        <Card className="mb-6 border-amber-500/50 bg-amber-900/30 backdrop-blur-sm">
-          <CardContent className="pt-6">
-            <p className="text-sm text-amber-200">
-                <strong>Disclaimer:</strong> This is an unofficial internal helper based on our ingredient book. For severe allergies, ALWAYS confirm with the chef/manager and follow full allergy protocol.
-              </p>
-            </CardContent>
-          </Card>
+        <div className="flex justify-center pb-24 md:pb-12">
+          <div className="w-full max-w-5xl mx-auto px-6 md:px-10">
+        <Card className="mb-6 md:mb-8 border border-amber-500/60 bg-amber-900/25 backdrop-blur-sm">
+          <CardContent className="pt-6 md:pt-8">
+            <div className="flex items-start gap-4 md:gap-5">
+              <div className="h-10 w-10 md:h-12 md:w-12 rounded-full bg-amber-500/20 border border-amber-400/60 flex items-center justify-center text-amber-300 text-lg md:text-xl font-bold shrink-0">
+                !
+              </div>
+              <div className="space-y-2 md:space-y-3">
+                <p className="text-sm md:text-base font-semibold text-amber-200">Important Safety Notice</p>
+                <p className="text-sm md:text-base text-amber-100">{DISCLAIMER_TEXT}</p>
+                <p className="text-xs md:text-sm text-amber-100">{ALWAYS_VERIFY_TEXT}</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
 
-        <Card className="mb-6 bg-gray-800/60 backdrop-blur-sm border-gray-700/50 shadow-xl">
-          <CardHeader className="pb-6">
-            <CardTitle className="text-white text-3xl font-serif font-light tracking-wide mb-2" style={{ fontFamily: "'Playfair Display', serif", letterSpacing: '0.05em' }}>
-              1. Select Dish
+        <Card className="mb-6 md:mb-8 bg-slate-900/80 backdrop-blur-sm border-slate-800/80 shadow-xl">
+          <CardHeader className="pb-6 md:pb-8">
+            <CardTitle className="text-white text-2xl md:text-3xl font-semibold tracking-wide">
+              Step 2: Choose Dish
             </CardTitle>
-            <CardDescription className="text-gray-300 text-sm font-light tracking-wider uppercase" style={{ fontFamily: "'Poppins', sans-serif", letterSpacing: '0.15em', fontWeight: 300 }}>
-              Search for a dish by name, ticket code, or category
+            <CardDescription className="text-slate-400 text-sm md:text-base">
+              Search for a dish by name, ticket code, or category.
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
@@ -994,19 +1102,18 @@ export function AllergyChecker() {
                     setShowSuggestions(false);
                   }
                 }}
-                className="w-full px-5 py-4 border border-gray-600/50 rounded-md bg-gray-800/80 text-white placeholder:text-gray-500 focus:outline-none focus:ring-1 focus:ring-blue-400/50 focus:border-blue-400/50 transition-all font-light tracking-wide"
-                style={{ fontFamily: "'Poppins', sans-serif", fontSize: '15px', letterSpacing: '0.02em' }}
+                className="w-full px-5 md:px-6 py-4 md:py-5 border border-slate-700 rounded-lg bg-slate-800 text-white text-base md:text-lg placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500/60 focus:border-blue-500/60 transition-all"
               />
               {showSuggestions && filteredDishes.length > 0 && (
-                <div className="absolute z-50 w-full mt-1 bg-gray-900/95 backdrop-blur-md border border-gray-700/50 rounded-md shadow-2xl max-h-60 overflow-y-auto">
+                <div className="absolute z-50 w-full mt-1 bg-slate-900/95 backdrop-blur-md border border-slate-700/70 rounded-lg shadow-2xl max-h-72 md:max-h-80 overflow-y-auto">
                   {filteredDishes.map((item, index) => (
                     <div
                       key={`dish-${index}-${item.id}`}
                       className={cn(
-                        "p-3 cursor-pointer transition-colors",
+                        "p-3 md:p-4 cursor-pointer transition-colors",
                         index === highlightedIndex
                           ? "bg-blue-500/20 border-l-2 border-blue-400"
-                          : "hover:bg-gray-800/50"
+                          : "hover:bg-slate-800/50"
                       )}
                       onClick={() => {
                         setSelectedDishId(item.id);
@@ -1037,27 +1144,27 @@ export function AllergyChecker() {
                       }}
                       onMouseEnter={() => setHighlightedIndex(index)}
                     >
-                      <div className="font-medium text-white text-base tracking-wide" style={{ fontFamily: "'Playfair Display', serif", letterSpacing: '0.02em' }}>{item.dish_name}</div>
+                      <div className="font-medium text-white text-base md:text-lg tracking-wide">{item.dish_name}</div>
                       {item.ticket_code && (
-                        <div className="text-xs text-gray-200 mt-1 uppercase tracking-wider font-light" style={{ fontFamily: "'Poppins', sans-serif", letterSpacing: '0.15em' }}>{item.ticket_code}</div>
+                        <div className="text-xs md:text-sm text-slate-300 mt-1 uppercase tracking-wider">{item.ticket_code}</div>
                       )}
-                      <div className="text-xs text-gray-300 mt-1 font-light uppercase tracking-widest" style={{ fontFamily: "'Poppins', sans-serif", letterSpacing: '0.1em' }}>{item.category}</div>
+                      <div className="text-xs md:text-sm text-slate-400 mt-1 uppercase tracking-widest">{item.category}</div>
                     </div>
                   ))}
                 </div>
               )}
               {showSuggestions && searchTerm.trim() && filteredDishes.length === 0 && (
-                <div className="absolute z-50 w-full mt-1 bg-gray-900/95 backdrop-blur-md border border-gray-700/50 rounded-md shadow-2xl p-3">
-                  <div className="text-gray-300 italic">No dishes found matching "{searchTerm}"</div>
+                <div className="absolute z-50 w-full mt-1 bg-slate-900/95 backdrop-blur-md border border-slate-700/70 rounded-md shadow-2xl p-3">
+                  <div className="text-slate-300 italic">No dishes found matching "{searchTerm}"</div>
                 </div>
               )}
             </div>
             <div className="mt-6 pt-6 border-t border-gray-700/30">
-              <div className="text-xs text-gray-400 mb-3 uppercase tracking-widest font-light text-center" style={{ fontFamily: "'Poppins', sans-serif", letterSpacing: '0.2em' }}>
+              <div className="text-xs text-slate-400 mb-3 uppercase tracking-widest text-center">
                 Or select from dropdown
               </div>
               <select
-                className="dropdown-select w-full px-5 py-4 border border-gray-600/50 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-400/50 focus:border-blue-400/50 bg-gray-800/80 text-white font-light tracking-wide appearance-none cursor-pointer transition-all hover:border-gray-500/50"
+                className="dropdown-select w-full px-5 md:px-6 py-4 md:py-5 border border-slate-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/60 focus:border-blue-500/60 bg-slate-800 text-white text-base md:text-lg appearance-none cursor-pointer transition-all hover:border-slate-600"
                 value={selectedDishId}
                 onChange={(e) => {
                   setSelectedDishId(e.target.value);
@@ -1099,9 +1206,8 @@ export function AllergyChecker() {
                   setShowResults(false);
                   setShowSuggestions(false);
                 }}
-                style={{ fontFamily: "'Poppins', sans-serif", fontSize: '15px', letterSpacing: '0.02em', color: '#ffffff' }}
               >
-                <option value="" className="bg-gray-800 text-gray-400">Select a dish...</option>
+                <option value="" className="bg-slate-800 text-slate-400">Select a dish...</option>
               {useMemo(() => {
                 // Sort menu items to put "Pork Chop" items right after "Mushroom Crusted Pork Chop"
                 const sortedItems = [...menuItems].sort((a, b) => {
@@ -1149,17 +1255,17 @@ export function AllergyChecker() {
                 
                 return sortedItems;
               }, []).map((item, index) => (
-                <option key={`option-${index}-${item.id}`} value={item.id} className="bg-gray-800 text-white">
+                <option key={`option-${index}-${item.id}`} value={item.id} className="bg-slate-800 text-white">
                   {item.dish_name} {item.ticket_code && `(${item.ticket_code})`}
                 </option>
               ))}
                 </select>
               </div>
             {selectedDish && (
-              <div className="p-5 bg-gray-900/40 backdrop-blur-sm rounded-md border border-gray-700/30">
-                <div className="font-medium text-white text-lg tracking-wide mb-1" style={{ fontFamily: "'Playfair Display', serif", letterSpacing: '0.03em' }}>{selectedDish.dish_name}</div>
+              <div className="p-5 bg-slate-900/40 backdrop-blur-sm rounded-md border border-slate-700/40">
+                <div className="font-medium text-white text-lg tracking-wide mb-1">{selectedDish.dish_name}</div>
                 {selectedDish.ticket_code && (
-                  <div className="text-xs text-gray-400 mt-2 uppercase tracking-widest font-light" style={{ fontFamily: "'Poppins', sans-serif", letterSpacing: '0.2em' }}>Ticket: {selectedDish.ticket_code}</div>
+                  <div className="text-xs text-slate-400 mt-2 uppercase tracking-widest">Ticket: {selectedDish.ticket_code}</div>
                 )}
               </div>
             )}
@@ -1444,185 +1550,167 @@ export function AllergyChecker() {
           </CardContent>
         </Card>
 
-        <Card className="mb-6 bg-gray-800/60 backdrop-blur-sm border-gray-700/50 shadow-xl">
-          <CardHeader className="pb-6">
-            <CardTitle className="text-white text-3xl font-serif font-light tracking-wide mb-2" style={{ fontFamily: "'Playfair Display', serif", letterSpacing: '0.05em' }}>
-              2. Select Allergies (one or more)
+        <Card className="mb-6 md:mb-8 bg-slate-900/80 backdrop-blur-sm border-slate-800/80 shadow-xl">
+          <CardHeader className="pb-6 md:pb-8">
+            <CardTitle className="text-white text-2xl md:text-3xl font-semibold tracking-wide">
+              Step 1: Select Allergies
             </CardTitle>
-            <CardDescription className="text-gray-300 text-sm font-light tracking-wider uppercase" style={{ fontFamily: "'Poppins', sans-serif", letterSpacing: '0.15em', fontWeight: 300 }}>
-              Search for common allergens
+            <CardDescription className="text-slate-400 text-sm md:text-base">
+              Search or select allergens to check against menu items.
               {selectedAllergies.size > 0 || customAllergies.size > 0 ? (
-                <span className="block mt-2 text-blue-400 font-normal normal-case" style={{ letterSpacing: '0.05em' }}>
-                  💡 Tip: Press Enter (with no dish selected) to browse all safe dishes for your allergies
+                <span className="block mt-2 text-blue-300 font-normal">
+                  💡 Tip: Press Enter (with no dish selected) to browse all potentially safe dishes for your allergies
                 </span>
               ) : null}
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
-            <div className="relative">
+            <div className="space-y-2 md:space-y-3">
+              <label className="text-xs md:text-sm uppercase tracking-wider text-slate-400">
+                Search or select allergens
+              </label>
+              <div className="relative">
                 <input
-                id="allergen-search"
+                  id="allergen-search"
                   type="text"
-                placeholder="Start typing allergen name (e.g., 'dairy', 'gluten')..."
-                value={allergenSearchTerm}
-                onChange={(e) => handleAllergenInputChange(e.target.value)}
-                onFocus={() => {
-                  if (allergenSearchTerm.trim()) {
-                    setShowAllergenSuggestions(true);
-                  }
-                }}
-                onBlur={() => {
-                  setTimeout(() => setShowAllergenSuggestions(false), 200);
-                }}
-                onKeyDown={handleAllergenInputKeyDown}
-                className="w-full px-5 py-4 border border-gray-600/50 rounded-md bg-gray-800/80 text-white placeholder:text-gray-500 focus:outline-none focus:ring-1 focus:ring-blue-400/50 focus:border-blue-400/50 transition-all font-light tracking-wide"
-                style={{ fontFamily: "'Poppins', sans-serif", fontSize: '15px', letterSpacing: '0.02em' }}
-              />
-              {showAllergenSuggestions && filteredAllergens.length > 0 && (
-                <div className="absolute z-50 w-full mt-1 bg-gray-900/95 backdrop-blur-md border border-gray-700/50 rounded-md shadow-2xl max-h-60 overflow-y-auto">
-                  {filteredAllergens
-                    .filter((allergen) => !selectedAllergies.has(allergen))
-                    .map((allergen) => {
-                      const displayIndex = filteredAllergens
-                        .filter((a) => !selectedAllergies.has(a))
-                        .findIndex((a) => a === allergen);
-                      return (
-                        <div
-                  key={allergen}
-                  className={cn(
-                            "p-3 cursor-pointer transition-colors",
-                            displayIndex === highlightedAllergenIndex
-                              ? "bg-blue-500/20 border-l-2 border-blue-400"
-                              : "hover:bg-gray-800/50"
-                          )}
-                          onClick={() => {
-                            handleAllergySelect(allergen);
-                          }}
-                          onMouseEnter={() => setHighlightedAllergenIndex(displayIndex)}
-                        >
-                          <div className="font-medium text-white">{ALLERGEN_LABELS[allergen]}</div>
-                        </div>
-                      );
-                    })}
-                </div>
-              )}
+                  placeholder="Type to search (e.g., dairy, gluten, nuts...)"
+                  value={allergenSearchTerm}
+                  onChange={(e) => handleAllergenInputChange(e.target.value)}
+                  onKeyDown={handleAllergenInputKeyDown}
+                  className="w-full px-4 md:px-5 py-3 md:py-4 pr-10 md:pr-12 border border-slate-700 rounded-lg bg-slate-800 text-white text-base md:text-lg placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500/60 focus:border-blue-500/60 transition-all"
+                />
+                <Search className="absolute right-3 md:right-4 top-1/2 -translate-y-1/2 h-5 w-5 md:h-6 md:w-6 text-slate-500" />
+              </div>
+            </div>
+
+            <div className="space-y-3 md:space-y-4">
+              <div className="text-xs md:text-sm uppercase tracking-wider text-slate-400">
+                Common allergens
+              </div>
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4">
+                {filteredAllergens.map((allergen) => {
+                  const isSelected = selectedAllergies.has(allergen);
+                  return (
+                    <button
+                      key={allergen}
+                      type="button"
+                      onClick={() => handleAllergyToggle(allergen)}
+                      className={cn(
+                        "flex items-center justify-between gap-2 md:gap-3 rounded-xl border px-3 md:px-4 py-3 md:py-4 text-left transition-all min-h-[60px] md:min-h-[72px]",
+                        isSelected
+                          ? "bg-blue-600/30 border-blue-400/70 text-white shadow-lg ring-1 ring-blue-400/40"
+                          : "bg-slate-800/70 border-slate-700 text-slate-200 hover:border-blue-400/60 hover:bg-slate-800"
+                      )}
+                    >
+                      <div className="flex items-center gap-2 md:gap-3">
+                        <span className={cn(
+                          "inline-flex h-10 w-10 md:h-12 md:w-12 items-center justify-center rounded-full text-xl md:text-2xl shrink-0",
+                          isSelected ? "bg-blue-500 text-white" : "bg-slate-700 text-slate-200"
+                        )}>
+                          {ALLERGEN_ICONS[allergen]}
+                        </span>
+                        <div className="font-medium text-sm md:text-base">{ALLERGEN_LABELS[allergen]}</div>
+                      </div>
+                      <span
+                        className={cn(
+                          "h-6 w-6 md:h-7 md:w-7 rounded-md border text-sm flex items-center justify-center shrink-0",
+                          isSelected ? "bg-blue-500 border-blue-400 text-white" : "border-slate-500 text-slate-400"
+                        )}
+                      >
+                        {isSelected ? '✓' : ''}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
             </div>
             
             {/* Custom Ingredient Selection - Search all ingredients */}
-            <div className="mt-6 pt-6 border-t border-gray-700/30">
-              <div className="text-xs text-gray-400 mb-3 uppercase tracking-widest font-light" style={{ fontFamily: "'Poppins', sans-serif", letterSpacing: '0.2em' }}>
-                Select Specific Ingredient (from entire menu)
+            <div className="mt-6 md:mt-8 pt-6 md:pt-8 border-t border-slate-800">
+              <div className="text-xs md:text-sm text-slate-400 mb-3 md:mb-4 uppercase tracking-widest">
+                Select Specific Ingredient (advanced)
               </div>
-                <div className="relative">
-                  <input
-                    type="text"
-                    placeholder="Start typing ingredient name (e.g., 'black pepper', 'onions')..."
-                    value={ingredientSearchTerm}
-                    onChange={(e) => handleIngredientInputChange(e.target.value)}
-                    onFocus={() => {
-                      if (ingredientSearchTerm.trim()) {
-                        setShowIngredientSuggestions(true);
-                      }
-                    }}
-                    onBlur={() => {
-                      setTimeout(() => setShowIngredientSuggestions(false), 200);
-                    }}
-                    onKeyDown={handleIngredientInputKeyDown}
-                    className="w-full px-5 py-4 border border-gray-600/50 rounded-md bg-gray-800/80 text-white placeholder:text-gray-500 focus:outline-none focus:ring-1 focus:ring-purple-400/50 focus:border-purple-400/50 transition-all font-light tracking-wide"
-                    style={{ fontFamily: "'Poppins', sans-serif", fontSize: '15px', letterSpacing: '0.02em' }}
-                  />
-                  {showIngredientSuggestions && filteredIngredients.length > 0 && (
-                    <div className="absolute z-50 w-full mt-1 bg-gray-900/95 backdrop-blur-md border border-gray-700/50 rounded-md shadow-2xl max-h-60 overflow-y-auto">
-                      {filteredIngredients.map((ingredient, _index) => {
-                        const displayIndex = filteredIngredients.findIndex((ing) => ing === ingredient);
-                        return (
-                          <div
-                            key={ingredient}
-                            className={cn(
-                              "p-3 cursor-pointer transition-colors",
-                              displayIndex === highlightedIngredientIndex
-                                ? "bg-purple-500/20 border-l-2 border-purple-400"
-                                : "hover:bg-gray-800/50"
-                            )}
-                            onClick={() => handleIngredientSelect(ingredient)}
-                            onMouseEnter={() => setHighlightedIngredientIndex(displayIndex)}
-                          >
-                            <div className="font-medium text-white">{ingredient}</div>
-                          </div>
-                        );
-                      })}
+              <div className="relative">
+                <input
+                  type="text"
+                  placeholder="Start typing ingredient name (e.g., black pepper, onions)..."
+                  value={ingredientSearchTerm}
+                  onChange={(e) => handleIngredientInputChange(e.target.value)}
+                  onFocus={() => {
+                    if (ingredientSearchTerm.trim()) {
+                      setShowIngredientSuggestions(true);
+                    }
+                  }}
+                  onBlur={() => {
+                    setTimeout(() => setShowIngredientSuggestions(false), 200);
+                  }}
+                  onKeyDown={handleIngredientInputKeyDown}
+                  className="w-full px-5 md:px-6 py-4 md:py-5 border border-slate-700 rounded-lg bg-slate-800 text-white text-base md:text-lg placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-purple-400/50 focus:border-purple-400/50 transition-all"
+                />
+                {showIngredientSuggestions && filteredIngredients.length > 0 && (
+                  <div className="absolute z-50 w-full mt-1 bg-slate-900/95 backdrop-blur-md border border-slate-700/70 rounded-md shadow-2xl max-h-60 overflow-y-auto">
+                    {filteredIngredients.map((ingredient, _index) => {
+                      const displayIndex = filteredIngredients.findIndex((ing) => ing === ingredient);
+                      return (
+                        <div
+                          key={ingredient}
+                          className={cn(
+                            "p-3 cursor-pointer transition-colors",
+                            displayIndex === highlightedIngredientIndex
+                              ? "bg-purple-500/20 border-l-2 border-purple-400"
+                              : "hover:bg-slate-800/50"
+                          )}
+                          onClick={() => handleIngredientSelect(ingredient)}
+                          onMouseEnter={() => setHighlightedIngredientIndex(displayIndex)}
+                        >
+                          <div className="font-medium text-white">{ingredient}</div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+                {showIngredientSuggestions && ingredientSearchTerm.trim() && filteredIngredients.length === 0 && (
+                  <div className="absolute z-50 w-full mt-1 bg-slate-900/95 backdrop-blur-md border border-slate-700/70 rounded-md shadow-2xl p-3">
+                    <div className="text-slate-300 italic">
+                      No ingredients found matching "{ingredientSearchTerm}". Please select from the suggestions above.
                     </div>
-                  )}
-                  {showIngredientSuggestions && ingredientSearchTerm.trim() && filteredIngredients.length === 0 && (
-                    <div className="absolute z-50 w-full mt-1 bg-gray-900/95 backdrop-blur-md border border-gray-700/50 rounded-md shadow-2xl p-3">
-                      <div className="text-gray-300 italic">
-                        No ingredients found matching "{ingredientSearchTerm}". Please select from the suggestions above.
-                      </div>
-                    </div>
-                  )}
-                </div>
+                  </div>
+                )}
               </div>
-            
-            <div className="mt-6 pt-6 border-t border-gray-700/30">
-              <div className="text-xs text-gray-400 mb-3 uppercase tracking-widest font-light text-center" style={{ fontFamily: "'Poppins', sans-serif", letterSpacing: '0.2em' }}>
-                Or select from dropdown
-              </div>
-              <select
-                className="dropdown-select w-full px-5 py-4 border border-gray-600/50 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-400/50 focus:border-blue-400/50 bg-gray-800/80 text-white font-light tracking-wide appearance-none cursor-pointer transition-all hover:border-gray-500/50"
-                value=""
-                onChange={(e) => {
-                  if (e.target.value) {
-                    const allergen = e.target.value as Allergen;
-                    handleAllergySelect(allergen);
-                    e.target.value = '';
-                  }
-                }}
-                style={{ fontFamily: "'Poppins', sans-serif", fontSize: '15px', letterSpacing: '0.02em', color: '#ffffff' }}
-              >
-                <option value="" className="bg-gray-800 text-gray-400">Select an allergen...</option>
-              {ALL_ALLERGENS.filter((a) => !selectedAllergies.has(a)).map((allergen) => (
-                <option key={allergen} value={allergen} className="bg-gray-800 text-white">
-                    {ALLERGEN_LABELS[allergen]}
-                </option>
-              ))}
-              </select>
             </div>
             
-            {/* Selected Allergies Display */}
             {(selectedAllergies.size > 0 || customAllergies.size > 0) && (
-              <div className="pt-6 border-t border-gray-700/30">
-                <div className="text-xs text-gray-400 mb-3 uppercase tracking-widest font-light" style={{ fontFamily: "'Poppins', sans-serif", letterSpacing: '0.2em' }}>
-                  Selected Allergies
+              <div className="pt-6 md:pt-8 border-t border-slate-800">
+                <div className="text-xs md:text-sm uppercase tracking-wider text-slate-400 mb-3 md:mb-4">
+                  Selected allergens
                 </div>
-                <div className="flex flex-wrap gap-2">
+                <div className="flex flex-wrap gap-2 md:gap-3">
                   {Array.from(selectedAllergies).map((allergen) => (
                     <span
                       key={allergen}
-                      className="inline-flex items-center gap-2 px-4 py-2 bg-blue-500/20 text-blue-200 rounded-md text-sm font-light tracking-wide border border-blue-400/30"
-                      style={{ fontFamily: "'Poppins', sans-serif", letterSpacing: '0.02em' }}
+                      className="inline-flex items-center gap-2 md:gap-3 px-3 md:px-4 py-2 md:py-2.5 text-sm md:text-base font-medium rounded-full bg-blue-600/20 text-blue-200 border border-blue-500/50"
                     >
-                      {ALLERGEN_LABELS[allergen]}
-                  <button
-                    type="button"
+                      <span className="text-base md:text-lg">{ALLERGEN_ICONS[allergen]}</span> {ALLERGEN_LABELS[allergen]}
+                      <button
+                        type="button"
                         onClick={() => handleRemoveAllergen(allergen)}
-                        className="w-5 h-5 rounded-full hover:bg-blue-400/30 flex items-center justify-center transition-colors text-blue-200 hover:text-white"
+                        className="w-5 h-5 md:w-6 md:h-6 rounded-full hover:bg-blue-400/30 flex items-center justify-center transition-colors text-blue-200 leading-none"
                         aria-label={`Remove ${ALLERGEN_LABELS[allergen]}`}
                       >
                         ×
-                  </button>
+                      </button>
                     </span>
                   ))}
                   {Array.from(customAllergies).map((allergen) => (
                     <span
                       key={allergen}
-                      className="inline-flex items-center gap-2 px-4 py-2 bg-purple-500/20 text-purple-200 rounded-md text-sm font-light tracking-wide border border-purple-400/30"
-                      style={{ fontFamily: "'Poppins', sans-serif", letterSpacing: '0.02em' }}
+                      className="inline-flex items-center gap-2 md:gap-3 px-3 md:px-4 py-2 md:py-2.5 text-sm md:text-base font-medium rounded-full bg-slate-700/60 text-slate-200 border border-slate-600/60"
                     >
                       {allergen}
                       <button
                         type="button"
                         onClick={() => handleRemoveAllergen(allergen)}
-                        className="w-5 h-5 rounded-full hover:bg-purple-400/30 flex items-center justify-center transition-colors text-purple-200 hover:text-white"
+                        className="w-5 h-5 md:w-6 md:h-6 rounded-full hover:bg-slate-500/40 flex items-center justify-center transition-colors text-slate-200 leading-none"
                         aria-label={`Remove ${allergen}`}
                       >
                         ×
@@ -1630,48 +1718,48 @@ export function AllergyChecker() {
                     </span>
                   ))}
                 </div>
-                </div>
-              )}
+              </div>
+            )}
             {(selectedAllergies.size > 0 || customAllergies.size > 0) && !selectedDishId && (
-              <div className="mt-6 pt-6 border-t border-gray-700/30">
+              <div className="mt-6 md:mt-8 pt-6 md:pt-8 border-t border-slate-800">
                 <button
                   onClick={() => {
                     setShowBrowseMode(true);
                     setShowResults(false);
                     setAllergenSearchTerm('');
-                    setShowAllergenSuggestions(false);
                   }}
-                  className="w-full px-5 py-4 bg-blue-500 hover:bg-blue-600 text-white font-light tracking-wide rounded-md transition-all shadow-lg hover:shadow-xl"
-                  style={{ fontFamily: "'Poppins', sans-serif", letterSpacing: '0.05em' }}
+                  className="w-full px-5 md:px-6 py-4 md:py-5 bg-blue-600 hover:bg-blue-500 text-white text-base md:text-lg font-medium rounded-xl transition-all shadow-lg hover:shadow-xl"
                 >
-                  Browse All Safe Dishes (or press Enter)
+                  Browse Potentially Safe Dishes (or press Enter)
                 </button>
             </div>
             )}
           </CardContent>
         </Card>
 
-        <div className="relative">
-          <GlowingEffect
-            spread={40}
-            glow={true}
-            disabled={!selectedDish || (selectedAllergies.size === 0 && customAllergies.size === 0) || (isClassicBreakfast && !selectedProtein) || (isFieldSalad && !selectedDressing)}
-            proximity={80}
-            inactiveZone={0.2}
-            borderWidth={3}
-          />
-          <button
-            onClick={handleCheckSafety}
-            disabled={!selectedDish || (selectedAllergies.size === 0 && customAllergies.size === 0) || (isClassicBreakfast && !selectedProtein) || (isFieldSalad && !selectedDressing)}
-            className={cn(
-              "relative w-full py-4 px-6 text-lg font-semibold rounded-lg transition-all border-2",
-              !selectedDish || (selectedAllergies.size === 0 && customAllergies.size === 0) || (isClassicBreakfast && !selectedProtein) || (isFieldSalad && !selectedDressing)
-                ? "bg-gray-300 text-gray-600 cursor-not-allowed border-gray-400"
-                : "bg-[#1e3a5f] text-white hover:bg-[#2d3748] shadow-lg hover:shadow-xl transform hover:scale-[1.02] border-[#1e3a5f]"
-            )}
-          >
-            Check Safety
-          </button>
+        <div className="sticky bottom-0 z-40 mt-6 md:static md:mt-6 safe-area-bottom">
+          <div className="relative pt-4 bg-gradient-to-t from-gray-900/80 via-gray-900/40 to-transparent md:bg-none">
+            <GlowingEffect
+              spread={40}
+              glow={true}
+              disabled={!selectedDish || (selectedAllergies.size === 0 && customAllergies.size === 0) || (isClassicBreakfast && !selectedProtein) || (isFieldSalad && !selectedDressing)}
+              proximity={80}
+              inactiveZone={0.2}
+              borderWidth={3}
+            />
+            <button
+              onClick={handleCheckSafety}
+              disabled={!selectedDish || (selectedAllergies.size === 0 && customAllergies.size === 0) || (isClassicBreakfast && !selectedProtein) || (isFieldSalad && !selectedDressing)}
+              className={cn(
+                "relative w-full py-4 md:py-5 px-6 text-lg md:text-xl font-semibold rounded-xl transition-all border-2 min-h-[56px] md:min-h-[64px]",
+                !selectedDish || (selectedAllergies.size === 0 && customAllergies.size === 0) || (isClassicBreakfast && !selectedProtein) || (isFieldSalad && !selectedDressing)
+                  ? "bg-gray-300 text-gray-600 cursor-not-allowed border-gray-400"
+                  : "bg-blue-600 text-white hover:bg-blue-500 shadow-lg hover:shadow-xl transform hover:scale-[1.02] border-blue-600"
+              )}
+            >
+              Check Safety
+            </button>
+          </div>
         </div>
 
         {/* Browse Safe Dishes Mode - Show below Check Safety button */}
@@ -1679,9 +1767,9 @@ export function AllergyChecker() {
           <div className="mt-8">
             <Card className="bg-gray-800/60 backdrop-blur-sm border-gray-700/50 shadow-xl">
               <CardHeader>
-                <CardTitle className="text-white">Safe Dishes for Your Allergies (No Modifications Needed)</CardTitle>
+                <CardTitle className="text-white">Potentially Safe Dishes for Your Allergies (No Modifications Needed)</CardTitle>
                 <CardDescription className="text-gray-600">
-                  These dishes are completely safe for your selected allergies and require no modifications.
+                  These dishes are potentially safe for your selected allergies and require no modifications.
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">
@@ -1716,7 +1804,7 @@ export function AllergyChecker() {
                 })}
                 {Object.values(safeDishesByCategory).every(cat => cat.length === 0) && (
                   <div className="text-center py-8 text-gray-500">
-                    <p className="text-lg font-medium">No safe dishes found for the selected allergies.</p>
+                    <p className="text-lg font-medium">No potentially safe dishes found for the selected allergies.</p>
                     <p className="text-sm mt-2">Please try selecting different allergies or check with the chef for modifications.</p>
                   </div>
                 )}
@@ -1726,7 +1814,7 @@ export function AllergyChecker() {
         )}
 
         {showResults && (
-          <div className="mt-8 space-y-6">
+          <div className="mt-8 md:mt-10 space-y-6 md:space-y-8">
             {!result ? (
               <Card className="bg-red-50 border-red-500 border-2">
                 <CardContent className="pt-6">
@@ -1748,16 +1836,16 @@ export function AllergyChecker() {
               )}
             >
               <CardContent className={cn(
-                "pt-8 pb-8 px-6",
+                "pt-8 md:pt-12 pb-8 md:pb-12 px-6 md:px-10",
                 result.overallStatus === 'unsafe' && "bg-red-950/30"
               )}>
                 <div className="text-center">
                   <h2
                     className={cn(
-                      "mb-4 font-black tracking-wider",
+                      "mb-4 md:mb-6 font-black tracking-wider",
                       result.overallStatus === 'safe' 
-                        ? "text-4xl text-[#2d5016]" 
-                        : "text-5xl text-red-500 drop-shadow-[0_0_8px_rgba(239,68,68,0.8)] font-extrabold"
+                        ? "text-4xl md:text-5xl text-[#2d5016]" 
+                        : "text-5xl md:text-6xl text-red-500 drop-shadow-[0_0_8px_rgba(239,68,68,0.8)] font-extrabold"
                     )}
                     style={result.overallStatus === 'unsafe' ? {
                       textShadow: '0 0 20px rgba(239, 68, 68, 0.8), 0 0 40px rgba(239, 68, 68, 0.5)'
@@ -1769,17 +1857,20 @@ export function AllergyChecker() {
                     className={cn(
                       "font-bold leading-relaxed",
                       result.overallStatus === 'safe' 
-                        ? "text-xl text-[#2d5016]" 
-                        : "text-2xl text-red-200 font-semibold"
+                        ? "text-xl md:text-2xl text-[#2d5016]" 
+                        : "text-2xl md:text-3xl text-red-200 font-semibold"
                     )}
                   >
-                    {result.globalMessage}
+                    {getDisplayGlobalMessage(result.overallStatus, result.globalMessage)}
+                  </p>
+                  <p className="mt-4 md:mt-6 text-xs md:text-sm text-gray-500 font-medium">
+                    {ALWAYS_VERIFY_TEXT}
                   </p>
                   <p className={cn(
-                    "mt-6 italic",
+                    "mt-6 md:mt-8 italic",
                     result.overallStatus === 'safe' 
-                      ? "text-gray-500 text-xs" 
-                      : "text-red-300/70 text-sm"
+                      ? "text-gray-500 text-xs md:text-sm" 
+                      : "text-red-300/70 text-sm md:text-base"
                   )}>
                     Source: Official Training Materials | Data Current as of: {DATA_TIMESTAMP}
                   </p>
@@ -1840,7 +1931,7 @@ export function AllergyChecker() {
                           : "bg-[#991b1b]/20 text-[#991b1b] border border-[#991b1b]/50"
                       )}
                     >
-                      {result.mainDishResult.overallStatus === 'safe' ? 'SAFE' : 'UNSAFE'}
+                      {getStatusText(result.mainDishResult.overallStatus)}
                     </span>
                   </div>
 
@@ -1871,7 +1962,7 @@ export function AllergyChecker() {
                                       : "bg-[#991b1b]/20 text-[#991b1b] border border-[#991b1b]/50"
                                   )}
                                 >
-                                  {item.status === 'safe' ? 'SAFE' : 'UNSAFE'}
+                                  {getStatusText(item.status)}
                                 </span>
                               </div>
                               {item.foundIngredients && item.foundIngredients.length > 0 && (
@@ -1921,7 +2012,7 @@ export function AllergyChecker() {
                             : "bg-[#991b1b]/20 text-[#991b1b] border border-[#991b1b]/50"
                         )}
                       >
-                        {result.sideDishResult.overallStatus === 'safe' ? 'SAFE' : 'UNSAFE'}
+                    {getStatusText(result.sideDishResult.overallStatus)}
                       </span>
                     </div>
 
@@ -1952,7 +2043,7 @@ export function AllergyChecker() {
                                         : "bg-[#991b1b]/20 text-[#991b1b] border border-[#991b1b]/50"
                                 )}
                               >
-                                {item.status === 'safe' ? 'SAFE' : 'UNSAFE'}
+                                {getStatusText(item.status)}
                               </span>
                             </div>
                             {item.foundIngredients && item.foundIngredients.length > 0 && (
@@ -2005,7 +2096,7 @@ export function AllergyChecker() {
                             : "bg-[#991b1b]/20 text-[#991b1b] border border-[#991b1b]/50"
                         )}
                       >
-                        {result.crustCheck.status === 'safe' ? 'SAFE' : 'UNSAFE'}
+                    {getStatusText(result.crustCheck.status)}
                       </span>
                     </div>
 
@@ -2034,7 +2125,7 @@ export function AllergyChecker() {
                                     : "bg-[#991b1b]/20 text-[#991b1b] border border-[#991b1b]/50"
                                 )}
                               >
-                                {status === 'safe' ? 'SAFE' : 'UNSAFE'}
+                                {getStatusText(status)}
                               </span>
                             </div>
                             {result.crustCheck?.foundIngredients[allergen] && result.crustCheck.foundIngredients[allergen].length > 0 && (
@@ -2085,7 +2176,7 @@ export function AllergyChecker() {
                             : "bg-[#991b1b]/20 text-[#991b1b] border border-[#991b1b]/50"
                         )}
                       >
-                        {result.defaultDressingCheck.status === 'safe' ? 'SAFE' : 'UNSAFE'}
+                    {getStatusText(result.defaultDressingCheck.status)}
                       </span>
                     </div>
 
@@ -2114,7 +2205,7 @@ export function AllergyChecker() {
                                     : "bg-[#991b1b]/20 text-[#991b1b] border border-[#991b1b]/50"
                                 )}
                               >
-                                {status === 'safe' ? 'SAFE' : 'UNSAFE'}
+                                {getStatusText(status)}
                               </span>
                             </div>
                             {result.defaultDressingCheck?.foundIngredients[allergen] && result.defaultDressingCheck.foundIngredients[allergen].length > 0 && (
@@ -2165,7 +2256,7 @@ export function AllergyChecker() {
                             : "bg-[#991b1b]/20 text-[#991b1b] border border-[#991b1b]/50"
                         )}
                       >
-                        {result.selectedDressingCheck.status === 'safe' ? 'SAFE' : 'UNSAFE'}
+                    {getStatusText(result.selectedDressingCheck.status)}
                       </span>
                     </div>
 
@@ -2194,7 +2285,7 @@ export function AllergyChecker() {
                                     : "bg-[#991b1b]/20 text-[#991b1b] border border-[#991b1b]/50"
                                 )}
                               >
-                                {status === 'safe' ? 'SAFE' : 'UNSAFE'}
+                                {getStatusText(status)}
                               </span>
                             </div>
                             {result.selectedDressingCheck?.foundIngredients[allergen] && result.selectedDressingCheck.foundIngredients[allergen].length > 0 && (
@@ -2273,7 +2364,7 @@ export function AllergyChecker() {
                                   <div key={`entree-${idx}`} className="border border-gray-200 rounded-lg p-4 bg-gray-50">
                                     <div className="mb-3">
                                       <span className="px-2 py-1 rounded-full text-xs font-bold uppercase bg-[#991b1b]/20 text-[#991b1b] border border-[#991b1b]/50">
-                                        UNSAFE
+                                        Potentially unsafe
                                       </span>
                                     </div>
                                     
@@ -2387,7 +2478,7 @@ export function AllergyChecker() {
                                     <div key={`side-${idx}`} className="border border-gray-200 rounded-lg p-4 bg-gray-50">
                                       <div className="mb-3">
                                         <span className="px-2 py-1 rounded-full text-xs font-bold uppercase bg-[#991b1b]/20 text-[#991b1b] border border-[#991b1b]/50">
-                                          UNSAFE
+                                          Potentially unsafe
                                         </span>
                                       </div>
                                       
@@ -2609,6 +2700,94 @@ export function AllergyChecker() {
           </div>
         </div>
       </div>
+
+      {isSettingsOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-6 py-10">
+          <Card className="w-full max-w-lg bg-white shadow-2xl">
+            <CardHeader className="pb-2">
+              <div className="flex items-center justify-between">
+                <CardTitle className="text-gray-900">Settings & About</CardTitle>
+                <button
+                  type="button"
+                  onClick={() => setIsSettingsOpen(false)}
+                  className="min-h-[40px] min-w-[40px] rounded-full text-gray-500 hover:bg-gray-100"
+                  aria-label="Close settings"
+                >
+                  ×
+                </button>
+              </div>
+            </CardHeader>
+            <CardContent className="space-y-4 text-sm text-gray-700">
+              <div className="space-y-1">
+                <div className="text-xs uppercase tracking-wider text-gray-400">App Version</div>
+                <div className="font-medium text-gray-900">{__APP_VERSION__}</div>
+              </div>
+              <div className="space-y-1">
+                <div className="text-xs uppercase tracking-wider text-gray-400">Menu Data Version</div>
+                <div className="font-medium text-gray-900">{menuDataInfo.version || 'Unknown'}</div>
+              </div>
+              <div className="space-y-1">
+                <div className="text-xs uppercase tracking-wider text-gray-400">Last Updated</div>
+                <div className="font-medium text-gray-900">{menuGeneratedAtLabel}</div>
+              </div>
+              <div className="border-t border-gray-200 pt-4 space-y-2">
+                <div className="text-xs uppercase tracking-wider text-gray-400">Disclaimer</div>
+                <p>{DISCLAIMER_TEXT}</p>
+                <p className="font-semibold text-gray-700">{ALWAYS_VERIFY_TEXT}</p>
+              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  handleDisclaimerReset();
+                  setIsSettingsOpen(false);
+                }}
+                className="w-full min-h-[44px] rounded-md border border-gray-300 bg-white text-gray-900 hover:bg-gray-50 transition-colors"
+              >
+                Reset disclaimer acknowledgement
+              </button>
+            </CardContent>
+          </Card>
+        </div>
+      )}
+
+      {isDisclaimerOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 px-6 py-10">
+          <Card className="w-full max-w-lg bg-white shadow-2xl">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-gray-900">Before You Continue</CardTitle>
+              <CardDescription className="text-gray-600">
+                Please acknowledge the safety disclaimer.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4 text-sm text-gray-700">
+              <p>{DISCLAIMER_TEXT}</p>
+              <p className="font-semibold text-gray-700">{ALWAYS_VERIFY_TEXT}</p>
+              <label className="flex items-start gap-3 text-sm text-gray-800">
+                <input
+                  type="checkbox"
+                  checked={disclaimerChecked}
+                  onChange={(event) => setDisclaimerChecked(event.target.checked)}
+                  className="mt-1 h-5 w-5"
+                />
+                <span>I understand and will verify with staff.</span>
+              </label>
+              <button
+                type="button"
+                onClick={handleDisclaimerContinue}
+                disabled={!disclaimerChecked}
+                className={cn(
+                  'w-full min-h-[44px] rounded-md font-semibold transition-colors',
+                  disclaimerChecked
+                    ? 'bg-[#1e3a5f] text-white hover:bg-[#2d3748]'
+                    : 'bg-gray-200 text-gray-500 cursor-not-allowed'
+                )}
+              >
+                Continue
+              </button>
+            </CardContent>
+          </Card>
+        </div>
+      )}
     </div>
   );
 }

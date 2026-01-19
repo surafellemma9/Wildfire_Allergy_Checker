@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Wildfire Allergy Checker</string>
+    <string name="title_activity_main">Wildfire Allergy Checker</string>
+    <string name="package_name">com.wildfire.allergychecker</string>
+    <string name="custom_url_scheme">com.wildfire.allergychecker</string>
+</resources>

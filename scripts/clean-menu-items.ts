@@ -252,6 +252,12 @@ function main() {
   // Read the file
   const content = fs.readFileSync(filePath, 'utf-8');
   
+  // Extract existing metadata
+  const versionMatch = content.match(/export const MENU_DATA_VERSION = "([^"]+)"/);
+  const generatedAtMatch = content.match(/export const MENU_DATA_GENERATED_AT = "([^"]+)"/);
+  const menuDataVersion = versionMatch?.[1] || '';
+  const menuDataGeneratedAt = generatedAtMatch?.[1] || '';
+
   // Extract the JSON array from the file
   // Find the menuItems array
   const arrayMatch = content.match(/export const menuItems: MenuItem\[\] = (\[[\s\S]*\]) as MenuItem\[\];/);
@@ -283,6 +289,9 @@ function main() {
 // NOTE: This file has been cleaned to remove unnecessary adjectives and duplicates
 
 import type { MenuItem } from '../types';
+
+export const MENU_DATA_VERSION = "${menuDataVersion}";
+export const MENU_DATA_GENERATED_AT = "${menuDataGeneratedAt}";
 
 export const menuItems: MenuItem[] = ${JSON.stringify(menuItems, null, 2)} as MenuItem[];
 `;

@@ -1,6 +1,11 @@
 # Wildfire Allergy Safety Checker
 
-An internal web tool for restaurant managers to check allergy safety for menu items.
+An internal web tool and mobile app for restaurant managers to check allergy safety for menu items.
+
+Available as:
+- 🌐 **Web Application** - Accessible via browser
+- 📱 **iOS App** - Available in the App Store
+- 🤖 **Android App** - Available in Google Play Store
 
 ## Setup
 
@@ -34,11 +39,28 @@ The tool will show:
 
 ## Building for Production
 
+### Web Build
 ```bash
 npm run build
 ```
 
 The built files will be in the `dist` directory.
+
+### Mobile App Development
+
+This app uses Capacitor to build native iOS and Android apps. See [MOBILE_DEPLOYMENT.md](./MOBILE_DEPLOYMENT.md) for detailed instructions.
+
+**Quick Start for Mobile:**
+```bash
+# Build and sync to mobile platforms
+npm run cap:sync
+
+# Open in native IDEs
+npm run cap:ios      # Opens in Xcode
+npm run cap:android  # Opens in Android Studio
+```
+
+For complete mobile deployment instructions, see [MOBILE_DEPLOYMENT.md](./MOBILE_DEPLOYMENT.md).
 
 ## Important Notes
 

@@ -23,5 +23,19 @@ dist-ssr
 *.sln
 *.sw?
 
+# Capacitor / Mobile
+# Keep ios/ and android/ folders but ignore build artifacts
+ios/App/Pods/
+ios/App/build/
+ios/App/Package.resolved
+android/.gradle/
+android/app/build/
+android/.idea/
+android/local.properties
+*.apk
+*.aab
+*.ipa
+*.dSYM.zip
+
 
 

@@ -1,7 +1,20 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
+import { Capacitor } from '@capacitor/core'
 import App from './App.tsx'
 import './index.css'
+
+// Initialize Capacitor plugins for mobile
+if (Capacitor.isNativePlatform()) {
+  import('@capacitor/status-bar').then(({ StatusBar, Style }) => {
+    StatusBar.setStyle({ style: Style.Dark });
+    StatusBar.setBackgroundColor({ color: '#1e3a5f' });
+  });
+  
+  import('@capacitor/splash-screen').then(({ SplashScreen }) => {
+    SplashScreen.hide();
+  });
+}
 
 // Performance monitoring
 if (typeof window !== 'undefined') {

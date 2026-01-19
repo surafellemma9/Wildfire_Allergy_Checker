@@ -1,5 +1,6 @@
 import * as fs from 'fs';
 import * as path from 'path';
+import { createHash } from 'crypto';
 import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -398,6 +399,8 @@ const csvPath = path.join(__dirname, '..', 'wildfire_menu_allergens.csv');
 const outputPath = path.join(__dirname, '..', 'src', 'data', 'menu-items.ts');
 
 const csvContent = fs.readFileSync(csvPath, 'utf-8');
+const menuDataVersion = createHash('sha256').update(csvContent).digest('hex').slice(0, 12);
+const generatedAt = new Date().toISOString();
 const rows = parseCSV(csvContent);
 const menuItems = rows.map(convertToMenuItem).filter((item) => item.id && item.dish_name);
 
@@ -405,6 +408,9 @@ const output = `// This file is auto-generated from wildfire_menu_allergens.csv
 // Run: npm run generate-menu-data
 
 import type { MenuItem } from '../types';
+
+export const MENU_DATA_VERSION = "${menuDataVersion}";
+export const MENU_DATA_GENERATED_AT = "${generatedAt}";
 
 export const menuItems: MenuItem[] = ${JSON.stringify(menuItems, null, 2)} as MenuItem[];
 `;
