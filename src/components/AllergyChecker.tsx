@@ -428,16 +428,6 @@ export function AllergyChecker() {
       .slice(0, 20); // Limit to 20 suggestions
   }, [ingredientSearchTerm, allIngredients, customAllergies, selectedAllergies]);
 
-  const handleAllergySelect = (allergen: Allergen) => {
-    const newSet = new Set(selectedAllergies);
-    if (!newSet.has(allergen)) {
-      newSet.add(allergen);
-    setSelectedAllergies(newSet);
-      setAllergenSearchTerm('');
-      setShowResults(false);
-    }
-  };
-
   const handleAllergyToggle = (allergen: Allergen) => {
     const newSet = new Set(selectedAllergies);
     if (newSet.has(allergen)) {
