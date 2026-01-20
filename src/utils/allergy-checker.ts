@@ -228,7 +228,8 @@ const allergenToColumn: Partial<Record<Allergen, keyof MenuItem>> = {
 // Ingredients that contain each allergen (case-insensitive matching)
 const allergenIngredients: Record<Allergen, string[]> = {
   dairy: [
-    'butter', 'steak butter', 'pre-mark butter', 'premark butter', 'cream', 'cheese', 'milk', 'yogurt', 'sour cream', 'whipping cream',
+    'butter', 'buttered', 'steak butter', 'pre-mark butter', 'premark butter', 'pre-marking butter',
+    'garlic butter', 'cream', 'cheese', 'milk', 'yogurt', 'sour cream', 'whipping cream',
     'half and half', 'buttermilk', 'parmesan', 'asiago', 'swiss', 'cheddar',
     'mozzarella', 'feta', 'blue cheese', 'goat cheese', 'dairy', 'margarine',
     'heavy cream', 'whole milk', 'skim milk', 'cream cheese', 'ricotta'
@@ -901,18 +902,31 @@ function isSaladDish(dish: MenuItem): boolean {
 
 /**
  * Check if a composite ingredient contains an allergen by checking its sub-ingredients
+ * Uses strict matching to avoid false positives (e.g., 'garlic' matching 'garlic butter')
  */
 function compositeContainsAllergen(compositeIngredient: string, allergen: Allergen): boolean {
   const subIngredients = getSubIngredients(compositeIngredient);
   if (subIngredients.length === 0) return false;
   
   const allergenList = allergenIngredients[allergen];
-  return subIngredients.some(subIng => 
-    allergenList.some(allergenIng => 
-      subIng.toLowerCase().includes(allergenIng.toLowerCase()) ||
-      allergenIng.toLowerCase().includes(subIng.toLowerCase())
-    )
-  );
+  return subIngredients.some(subIng => {
+    const subIngLower = subIng.toLowerCase().trim();
+    return allergenList.some(allergenIng => {
+      const allergenIngLower = allergenIng.toLowerCase().trim();
+      // Check if sub-ingredient IS the allergen or contains the allergen term
+      // e.g., "blue cheese crumbles" contains "cheese" or "blue cheese"
+      if (subIngLower.includes(allergenIngLower)) return true;
+      
+      // Check for exact match
+      if (subIngLower === allergenIngLower) return true;
+      
+      // For compound allergen terms (e.g., "garlic butter"), only match if sub-ingredient
+      // contains the FULL compound term, not just part of it
+      // Do NOT use reverse match (allergenIng.includes(subIng)) as it causes false positives
+      // e.g., "garlic" should not match "garlic butter" because garlic alone is not dairy
+      return false;
+    });
+  });
 }
 
 /**
@@ -1048,14 +1062,17 @@ function generateSubstitutions(dish: MenuItem, allergen: Allergen, canModify: bo
   } else {
     // For non-prepared foods, check modification possibility first
     const modAnalysis = analyzeModificationPossibility(dish, allergen);
+    console.log('DEBUG: isPrepared=false, modAnalysis=', JSON.stringify(modAnalysis));
     
     // If modification is not possible, return the reason
-      if (!modAnalysis.modifiable) {
-        if (modAnalysis.reason) {
-          return [`NOT POSSIBLE - ${ALLERGEN_LABELS[allergen]} cannot be removed - ${modAnalysis.reason}`];
-        }
-        return [`NOT POSSIBLE - ${ALLERGEN_LABELS[allergen]} cannot be removed - this dish cannot be modified`];
+    if (!modAnalysis.modifiable) {
+      console.log('DEBUG: modifiable=false, returning NOT POSSIBLE');
+      if (modAnalysis.reason) {
+        return [`NOT POSSIBLE - ${ALLERGEN_LABELS[allergen]} cannot be removed - ${modAnalysis.reason}`];
       }
+      return [`NOT POSSIBLE - ${ALLERGEN_LABELS[allergen]} cannot be removed - this dish cannot be modified`];
+    }
+    console.log('DEBUG: modifiable=true, continuing...');
   }
   
   if (!canModify && !isPrepared) {
@@ -1115,12 +1132,17 @@ function generateSubstitutions(dish: MenuItem, allergen: Allergen, canModify: bo
       // Check for composite ingredients containing dairy
       for (const composite of compositeWithAllergen) {
         const subIngs = getSubIngredients(composite.toLowerCase());
-        const dairySubs = subIngs.filter(sub => 
-          allergenIngredients.dairy.some(dairyIng => 
-            sub.toLowerCase().includes(dairyIng.toLowerCase()) ||
-            dairyIng.toLowerCase().includes(sub.toLowerCase())
-          )
-        );
+        // Only match sub-ingredients that actually ARE dairy, not ones that happen
+        // to be part of a compound dairy term (e.g., "garlic" should not match "garlic butter")
+        const dairySubs = subIngs.filter(sub => {
+          const subLower = sub.toLowerCase().trim();
+          return allergenIngredients.dairy.some(dairyIng => {
+            const dairyIngLower = dairyIng.toLowerCase().trim();
+            // Check if sub-ingredient contains the dairy term (e.g., "greek yogurt" contains "yogurt")
+            // or if they're an exact match
+            return subLower.includes(dairyIngLower) || subLower === dairyIngLower;
+          });
+        });
         if (dairySubs.length > 0) {
           substitutions.push(`NO ${composite} (contains: ${dairySubs.join(', ')})`);
         } else {

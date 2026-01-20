@@ -2,11 +2,47 @@ import { AnimatedBackground } from '@/components/ui/animated-background';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { GlowingEffect } from '@/components/ui/glowing-effect';
 import { cn } from '@/lib/utils';
-import { Info, Search, ShieldCheck } from 'lucide-react';
+import { Info, Search, ShieldCheck, ChevronLeft, Grid3x3 } from 'lucide-react';
 import { useMemo, useState, useEffect } from 'react';
 import type { Allergen, MenuItem } from '../types';
 import { checkDishSafety } from '../utils/allergy-checker';
 import { useOnlineStatus } from '../utils/use-online-status';
+
+// POS Categories for tablet view
+const POS_CATEGORIES = [
+  { id: 'appetizers', label: 'Appetizers', icon: '🍤', color: 'from-amber-600 to-orange-700' },
+  { id: 'salads', label: 'Salads', icon: '🥗', color: 'from-green-600 to-emerald-700' },
+  { id: 'seafood', label: 'Fresh Seafood', icon: '🐟', color: 'from-cyan-600 to-blue-700' },
+  { id: 'burgers', label: 'Burgers & Sandwiches', icon: '🍔', color: 'from-red-600 to-rose-700' },
+  { id: 'steaks', label: 'Steaks & Chops', icon: '🥩', color: 'from-red-800 to-red-900' },
+  { id: 'chicken', label: 'Chicken & BBQ', icon: '🍗', color: 'from-orange-600 to-amber-700' },
+  { id: 'brunch', label: 'Brunch', icon: '🍳', color: 'from-yellow-500 to-amber-600' },
+  { id: 'desserts', label: 'Desserts', icon: '🍰', color: 'from-pink-600 to-rose-700' },
+  { id: 'sides', label: 'Sides', icon: '🥔', color: 'from-slate-600 to-slate-700' },
+  { id: 'kids', label: "Kid's Menu", icon: '👶', color: 'from-purple-600 to-indigo-700' },
+] as const;
+
+// Map menu categories to POS categories
+function getPosCategory(menuCategory: string): string {
+  const cat = menuCategory.toLowerCase();
+  if (cat.includes('appetizer')) return 'appetizers';
+  if (cat.includes('salad')) return 'salads';
+  if (cat.includes('fish') || cat.includes('seafood')) return 'seafood';
+  if (cat.includes('burger') || cat.includes('sandwich') || cat.includes('signature')) return 'burgers';
+  if (cat.includes('steak') || cat.includes('chop') || cat.includes('filet') || cat.includes('prime rib')) return 'steaks';
+  if (cat.includes('chicken') || cat.includes('bbq') || cat.includes('barbecue') || cat.includes('bone bowl')) return 'chicken';
+  if (cat.includes('brunch') || cat.includes('breakfast')) return 'brunch';
+  if (cat.includes('dessert')) return 'desserts';
+  if (cat.includes('side')) return 'sides';
+  if (cat.includes('kid')) return 'kids';
+  if (cat.includes('nightly') || cat.includes('special')) return 'steaks'; // Put specials with steaks
+  return 'appetizers'; // Default fallback
+}
+
+// Check if a category is an "entree" that should flip to sides
+function isEntreeCategory(posCategory: string): boolean {
+  return ['seafood', 'burgers', 'steaks', 'chicken', 'brunch'].includes(posCategory);
+}
 
 // Lazy load menu items to reduce initial bundle size
 type MenuItemsModule = typeof import('../data/menu-items');
@@ -188,6 +224,27 @@ export function AllergyChecker() {
   const [isDisclaimerOpen, setIsDisclaimerOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const isOnline = useOnlineStatus();
+  
+  // POS mode state (for tablets)
+  const [selectedPosCategory, setSelectedPosCategory] = useState<string | null>(null);
+  const [showPosSidesPanel, setShowPosSidesPanel] = useState(false);
+  // Detect tablet/desktop mode (768px+ width) - initialize with actual value
+  const [isTablet, setIsTablet] = useState(() => {
+    if (typeof window === 'undefined') return false;
+    return window.innerWidth >= 768;
+  });
+  
+  // Listen for resize events
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    
+    const checkWidth = () => {
+      setIsTablet(window.innerWidth >= 768);
+    };
+    
+    window.addEventListener('resize', checkWidth);
+    return () => window.removeEventListener('resize', checkWidth);
+  }, []);
 
   // Load menu items asynchronously
   useEffect(() => {
@@ -428,6 +485,110 @@ export function AllergyChecker() {
       .slice(0, 20); // Limit to 20 suggestions
   }, [ingredientSearchTerm, allIngredients, customAllergies, selectedAllergies]);
 
+  // Group menu items by POS category for tablet view
+  const dishesByPosCategory = useMemo(() => {
+    const grouped: Record<string, MenuItem[]> = {};
+    POS_CATEGORIES.forEach(cat => {
+      grouped[cat.id] = [];
+    });
+    
+    menuItems.forEach(item => {
+      const posCategory = getPosCategory(item.category);
+      if (grouped[posCategory]) {
+        grouped[posCategory].push(item);
+      }
+    });
+    
+    // Sort dishes within each category by name
+    Object.keys(grouped).forEach(key => {
+      grouped[key].sort((a, b) => a.dish_name.localeCompare(b.dish_name));
+    });
+    
+    return grouped;
+  }, [menuItems]);
+
+  // Get sides dishes for the flip panel
+  const sidesDishes = useMemo(() => {
+    return menuItems.filter(item => getPosCategory(item.category) === 'sides');
+  }, [menuItems]);
+
+  // Sorted menu items for dropdown (keeps Pork Chop items grouped)
+  const sortedMenuItems = useMemo(() => {
+    return [...menuItems].sort((a, b) => {
+      const aName = a.dish_name.toLowerCase();
+      const bName = b.dish_name.toLowerCase();
+      
+      const aIsMushroomPork = aName.includes('mushroom') && (aName.includes('pork') || aName.includes('porkchop') || aName.includes('pork chop'));
+      const bIsMushroomPork = bName.includes('mushroom') && (bName.includes('pork') || bName.includes('porkchop') || bName.includes('pork chop'));
+      
+      const aIsPorkChop = (aName.includes('porkchop') || aName.includes('pork chop') || (aName.includes('pork') && aName.includes('chop'))) && !aIsMushroomPork;
+      const bIsPorkChop = (bName.includes('porkchop') || bName.includes('pork chop') || (bName.includes('pork') && bName.includes('chop'))) && !bIsMushroomPork;
+      
+      if (aIsMushroomPork && !bIsMushroomPork) return -1;
+      if (!aIsMushroomPork && bIsMushroomPork) return 1;
+      
+      if (aIsPorkChop && !bIsPorkChop && !bIsMushroomPork) {
+        const mushroomPorkItems = menuItems.filter(item => {
+          const name = item.dish_name.toLowerCase();
+          return name.includes('mushroom') && (name.includes('pork') || name.includes('porkchop') || name.includes('pork chop'));
+        });
+        if (mushroomPorkItems.length > 0) {
+          const mushroomPorkName = mushroomPorkItems[0].dish_name.toLowerCase();
+          if (bName < mushroomPorkName) return 1;
+        }
+        return -1;
+      }
+      if (!aIsPorkChop && bIsPorkChop && !aIsMushroomPork) return 1;
+      
+      if ((aIsMushroomPork && bIsMushroomPork) || (aIsPorkChop && bIsPorkChop)) {
+        return a.dish_name.localeCompare(b.dish_name);
+      }
+      
+      return a.dish_name.localeCompare(b.dish_name);
+    });
+  }, [menuItems]);
+
+  // Handle POS dish selection
+  const handlePosDishSelect = (dish: MenuItem) => {
+    setSelectedDishId(dish.id);
+    setSearchTerm(dish.dish_name);
+    setShowBrowseMode(false);
+    setShowResults(false);
+    
+    // Reset options
+    if (!dishCanHaveCrust(dish.dish_name)) {
+      setSelectedCrusts(new Set());
+    }
+    if (!dish.dish_name.toLowerCase().includes('classic breakfast')) {
+      setSelectedProtein('');
+    }
+    const isDishSalad = dish.category.toLowerCase().includes('salad');
+    const isFieldSaladDish = dish.dish_name.toLowerCase().includes('field salad');
+    if (!isDishSalad || (isDishSalad && !isFieldSaladDish)) {
+      setSelectedDressing('');
+    }
+    
+    // If it's an entree category, flip to sides panel
+    const posCategory = getPosCategory(dish.category);
+    if (isEntreeCategory(posCategory)) {
+      setShowPosSidesPanel(true);
+    }
+  };
+
+  // Handle POS side dish selection
+  const handlePosSideSelect = (side: MenuItem) => {
+    setSelectedSideDishId(side.id);
+    setSideDishSearchTerm(side.dish_name);
+    setShowPosSidesPanel(false);
+    setSelectedPosCategory(null);
+  };
+
+  // Go back from sides panel to categories
+  const handlePosBackToCategories = () => {
+    setShowPosSidesPanel(false);
+    setSelectedPosCategory(null);
+  };
+
   const handleAllergyToggle = (allergen: Allergen) => {
     const newSet = new Set(selectedAllergies);
     if (newSet.has(allergen)) {
@@ -436,7 +597,7 @@ export function AllergyChecker() {
       newSet.add(allergen);
     }
     setSelectedAllergies(newSet);
-    setShowResults(false);
+      setShowResults(false);
   };
 
   const handleAllergenInputChange = (value: string) => {
@@ -862,13 +1023,14 @@ export function AllergyChecker() {
             </div>
           </div>
         </div>
-      {(selectedAllergies.size > 0 || customAllergies.size > 0 || selectedDishId || selectedSideDishId) && (
+      {/* PHONE: Sticky top bar for selections */}
+      {!isTablet && (selectedAllergies.size > 0 || customAllergies.size > 0 || selectedDishId || selectedSideDishId) && (
         <div className={cn(
           "sticky top-0 z-50 w-full border-b bg-slate-900/90 backdrop-blur-md border-slate-800 shadow-lg",
           !isOnline && "top-10"
         )}>
           <div className="flex justify-center">
-            <div className="w-full max-w-5xl mx-auto px-6 md:px-10 py-3 md:py-4 flex items-center justify-between flex-wrap gap-3">
+            <div className="w-full max-w-5xl mx-auto px-6 py-3 flex items-center justify-between flex-wrap gap-3">
             <div className="flex flex-wrap items-center gap-2">
               {(selectedAllergies.size > 0 || customAllergies.size > 0) && (
                 <>
@@ -917,46 +1079,171 @@ export function AllergyChecker() {
                   Side: {selectedSideDish.dish_name}
                 </span>
               )}
-              {selectedCrusts && selectedCrusts.size > 0 && (
-                <span className="px-3 py-1 text-sm font-medium rounded-full bg-slate-800 text-slate-200 border border-slate-600">
-                  Crusts: {Array.from(selectedCrusts).map(c => crustOptions.find(opt => opt.value === c)?.label).filter(Boolean).join(', ')}
+            </div>
+            <button
+              className="px-4 py-2 min-h-[44px] text-sm font-medium text-slate-200 bg-slate-800 hover:bg-slate-700 rounded-lg transition-colors border border-slate-700"
+              onClick={() => {
+                setSelectedDishId('');
+                setSelectedSideDishId('');
+                setSelectedCrusts(new Set());
+                setSelectedProtein('');
+                setSelectedDressing('');
+                setSelectedAllergies(new Set());
+                setCustomAllergies(new Set());
+                setAllergenSearchTerm('');
+                setSearchTerm('');
+                setSideDishSearchTerm('');
+                setShowResults(false);
+                setShowSuggestions(false);
+                setShowSideDishSuggestions(false);
+                setShowBrowseMode(false);
+                setSelectedPosCategory(null);
+                setShowPosSidesPanel(false);
+              }}
+            >
+              Reset
+            </button>
+          </div>
+          </div>
+        </div>
+      )}
+
+      {/* TABLET: Fixed right sidebar for selections */}
+      {isTablet && (selectedAllergies.size > 0 || customAllergies.size > 0 || selectedDishId || selectedSideDishId) && (
+        <div className="fixed right-0 top-0 bottom-0 w-72 lg:w-80 z-40 bg-slate-900/95 backdrop-blur-md border-l border-slate-800 shadow-2xl flex flex-col">
+          <div className="p-4 border-b border-slate-800">
+            <h3 className="text-white font-semibold text-lg">Current Order</h3>
+          </div>
+          
+          <div className="flex-1 overflow-y-auto p-4 space-y-4">
+            {/* Selected Allergies */}
+            {(selectedAllergies.size > 0 || customAllergies.size > 0) && (
+              <div className="space-y-2">
+                <div className="text-xs uppercase tracking-wider text-slate-400 font-medium">Allergies</div>
+                <div className="flex flex-wrap gap-2">
+                  {Array.from(selectedAllergies).map((allergen) => (
+                    <span
+                      key={allergen}
+                      className="inline-flex items-center gap-1.5 px-2.5 py-1.5 text-sm font-medium rounded-lg bg-blue-600/20 text-blue-200 border border-blue-500/50"
+                    >
+                      {ALLERGEN_ICONS[allergen]} {ALLERGEN_LABELS[allergen]}
+                      <button
+                        type="button"
+                        onClick={() => handleRemoveAllergen(allergen)}
+                        className="w-4 h-4 rounded-full hover:bg-blue-500/30 flex items-center justify-center transition-colors text-blue-200 leading-none ml-1"
+                        aria-label={`Remove ${ALLERGEN_LABELS[allergen]}`}
+                      >
+                        ×
+                      </button>
                 </span>
-              )}
-              {selectedProtein && (
-                <span className="px-3 py-1 text-sm font-medium rounded-full bg-slate-800 text-slate-200 border border-slate-600">
-                  Protein: {selectedProtein === 'bacon' ? 'Bacon' : 'Turkey Sausage'}
-                </span>
-              )}
-              {selectedDressing && (
-                <span className="px-3 py-1 text-sm font-medium rounded-full bg-slate-800 text-slate-200 border border-slate-600">
-                  {defaultDressing && defaultDressing !== selectedDressing ? (
-                    <>
-                      Dressing: {dressingOptions.find(d => d.value === defaultDressing)?.label || defaultDressing} → {dressingOptions.find(d => d.value === selectedDressing)?.label || selectedDressing}
-                    </>
-                  ) : (
-                    <>
-                      Dressing: {dressingOptions.find(d => d.value === selectedDressing)?.label || selectedDressing}
-                    </>
+                  ))}
+                  {Array.from(customAllergies).map((allergen) => (
+                    <span
+                      key={allergen}
+                      className="inline-flex items-center gap-1.5 px-2.5 py-1.5 text-sm font-medium rounded-lg bg-slate-700/60 text-slate-200 border border-slate-600/60"
+                    >
+                      {allergen}
+                      <button
+                        type="button"
+                        onClick={() => handleRemoveAllergen(allergen)}
+                        className="w-4 h-4 rounded-full hover:bg-slate-500/40 flex items-center justify-center transition-colors text-slate-200 leading-none ml-1"
+                        aria-label={`Remove ${allergen}`}
+                      >
+                        ×
+                      </button>
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Selected Dish */}
+            {selectedDish && (
+              <div className="space-y-2">
+                <div className="text-xs uppercase tracking-wider text-slate-400 font-medium">Entree</div>
+                <div className="p-3 bg-slate-800/70 rounded-lg border border-slate-700">
+                  <div className="text-white font-medium">{selectedDish.dish_name}</div>
+                  {selectedDish.ticket_code && (
+                    <div className="text-slate-400 text-xs mt-1 uppercase">{selectedDish.ticket_code}</div>
                   )}
-                </span>
-              )}
-              {defaultDressing && !selectedDressing && (
-                <span className="px-3 py-1 text-sm font-medium rounded-full bg-slate-800 text-slate-200 border border-slate-600">
-                  Dressing: {dressingOptions.find(d => d.value === defaultDressing)?.label || defaultDressing} (Default)
-                </span>
+                </div>
+              </div>
+            )}
+
+            {/* Selected Side */}
+            {selectedSideDish && (
+              <div className="space-y-2">
+                <div className="text-xs uppercase tracking-wider text-slate-400 font-medium">Side</div>
+                <div className="p-3 bg-slate-800/70 rounded-lg border border-slate-700">
+                  <div className="text-white font-medium">{selectedSideDish.dish_name}</div>
+                  {selectedSideDish.ticket_code && (
+                    <div className="text-slate-400 text-xs mt-1 uppercase">{selectedSideDish.ticket_code}</div>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {/* Crusts */}
+            {selectedCrusts && selectedCrusts.size > 0 && (
+              <div className="space-y-2">
+                <div className="text-xs uppercase tracking-wider text-slate-400 font-medium">Crusts</div>
+                <div className="p-3 bg-slate-800/70 rounded-lg border border-slate-700">
+                  <div className="text-white text-sm">
+                    {Array.from(selectedCrusts).map(c => crustOptions.find(opt => opt.value === c)?.label).filter(Boolean).join(', ')}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Protein */}
+              {selectedProtein && (
+              <div className="space-y-2">
+                <div className="text-xs uppercase tracking-wider text-slate-400 font-medium">Protein</div>
+                <div className="p-3 bg-slate-800/70 rounded-lg border border-slate-700">
+                  <div className="text-white text-sm">{selectedProtein === 'bacon' ? 'Bacon' : 'Turkey Sausage'}</div>
+                </div>
+              </div>
+            )}
+
+            {/* Dressing */}
+            {(selectedDressing || defaultDressing) && (
+              <div className="space-y-2">
+                <div className="text-xs uppercase tracking-wider text-slate-400 font-medium">Dressing</div>
+                <div className="p-3 bg-slate-800/70 rounded-lg border border-slate-700">
+                  <div className="text-white text-sm">
+                    {selectedDressing ? (
+                      defaultDressing && defaultDressing !== selectedDressing ? (
+                        <>{dressingOptions.find(d => d.value === defaultDressing)?.label} → {dressingOptions.find(d => d.value === selectedDressing)?.label}</>
+                      ) : (
+                        dressingOptions.find(d => d.value === selectedDressing)?.label
+                      )
+                    ) : (
+                      <>{dressingOptions.find(d => d.value === defaultDressing)?.label} (Default)</>
+                    )}
+                  </div>
+                </div>
+              </div>
               )}
             </div>
-            <div className="relative">
-              <GlowingEffect
-                spread={30}
-                glow={true}
-                disabled={false}
-                proximity={64}
-                inactiveZone={0.3}
-                borderWidth={2}
-              />
+
+          {/* Actions */}
+          <div className="p-4 border-t border-slate-800 space-y-3">
+            {selectedDish && (selectedAllergies.size > 0 || customAllergies.size > 0) && !showResults && (
               <button
-                className="relative px-4 py-2 min-h-[44px] text-sm font-medium text-slate-200 bg-slate-800 hover:bg-slate-700 rounded-lg transition-colors border border-slate-700"
+                onClick={handleCheckSafety}
+                disabled={(isClassicBreakfast && !selectedProtein) || (isFieldSalad && !selectedDressing)}
+                className={cn(
+                  "w-full py-3 px-4 text-base font-semibold rounded-lg transition-all",
+                  (isClassicBreakfast && !selectedProtein) || (isFieldSalad && !selectedDressing)
+                    ? "bg-slate-700 text-slate-400 cursor-not-allowed"
+                    : "bg-blue-600 text-white hover:bg-blue-500"
+                )}
+              >
+                Check Safety
+              </button>
+            )}
+            <button
+              className="w-full py-3 px-4 text-sm font-medium text-slate-300 bg-slate-800 hover:bg-slate-700 rounded-lg transition-colors border border-slate-700"
                 onClick={() => {
                   setSelectedDishId('');
                   setSelectedSideDishId('');
@@ -972,12 +1259,12 @@ export function AllergyChecker() {
                   setShowSuggestions(false);
                   setShowSideDishSuggestions(false);
                   setShowBrowseMode(false);
+                setSelectedPosCategory(null);
+                setShowPosSidesPanel(false);
                 }}
               >
-                Reset
+              Reset All
               </button>
-            </div>
-          </div>
           </div>
         </div>
       )}
@@ -987,11 +1274,11 @@ export function AllergyChecker() {
           <div className="w-full max-w-5xl mx-auto px-6 md:px-10">
             <div className="relative flex items-start justify-between max-w-xl mx-auto">
               <div className="absolute left-0 right-0 top-5 md:top-6 h-px bg-slate-700" />
-              {[
-                { num: 1, label: 'Select Allergies', active: selectedAllergies.size > 0 || customAllergies.size > 0 },
-                { num: 2, label: 'Choose Dish', active: !!selectedDishId },
-                { num: 3, label: 'Review Results', active: showResults },
-              ].map((step) => (
+            {[
+              { num: 1, label: 'Select Allergies', active: selectedAllergies.size > 0 || customAllergies.size > 0 },
+              { num: 2, label: 'Choose Dish', active: !!selectedDishId },
+              { num: 3, label: 'Review Results', active: showResults },
+            ].map((step) => (
                 <div key={step.num} className="relative flex flex-col items-center gap-2 md:gap-3">
                   <div
                     className={cn(
@@ -1011,13 +1298,16 @@ export function AllergyChecker() {
                   >
                     {step.label}
                   </span>
-                </div>
-              ))}
-            </div>
+              </div>
+            ))}
+          </div>
           </div>
         </div>
 
-        <div className="flex justify-center pb-24 md:pb-12">
+        <div className={cn(
+          "flex justify-center pb-24 md:pb-12 transition-all duration-300",
+          isTablet && (selectedAllergies.size > 0 || customAllergies.size > 0 || selectedDishId || selectedSideDishId) && "pr-72 lg:pr-80"
+        )}>
           <div className="w-full max-w-5xl mx-auto px-6 md:px-10">
         <Card className="mb-6 md:mb-8 border border-amber-500/60 bg-amber-900/25 backdrop-blur-sm">
           <CardContent className="pt-6 md:pt-8">
@@ -1031,9 +1321,11 @@ export function AllergyChecker() {
                 <p className="text-xs md:text-sm text-amber-100">{ALWAYS_VERIFY_TEXT}</p>
               </div>
             </div>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
 
+        {/* PHONE VIEW: Search-based dish selection */}
+        {!isTablet && (
         <Card className="mb-6 md:mb-8 bg-slate-900/80 backdrop-blur-sm border-slate-800/80 shadow-xl">
           <CardHeader className="pb-6 md:pb-8">
             <CardTitle className="text-white text-2xl md:text-3xl font-semibold tracking-wide">
@@ -1198,54 +1490,8 @@ export function AllergyChecker() {
                 }}
               >
                 <option value="" className="bg-slate-800 text-slate-400">Select a dish...</option>
-              {useMemo(() => {
-                // Sort menu items to put "Pork Chop" items right after "Mushroom Crusted Pork Chop"
-                const sortedItems = [...menuItems].sort((a, b) => {
-                  const aName = a.dish_name.toLowerCase();
-                  const bName = b.dish_name.toLowerCase();
-                  
-                  // Check if either is "Mushroom Crusted Pork Chop"
-                  const aIsMushroomPork = aName.includes('mushroom') && (aName.includes('pork') || aName.includes('porkchop') || aName.includes('pork chop'));
-                  const bIsMushroomPork = bName.includes('mushroom') && (bName.includes('pork') || bName.includes('porkchop') || bName.includes('pork chop'));
-                  
-                  // Check if either is a pork chop (but not mushroom crusted)
-                  const aIsPorkChop = (aName.includes('porkchop') || aName.includes('pork chop') || (aName.includes('pork') && aName.includes('chop'))) && !aIsMushroomPork;
-                  const bIsPorkChop = (bName.includes('porkchop') || bName.includes('pork chop') || (bName.includes('pork') && bName.includes('chop'))) && !bIsMushroomPork;
-                  
-                  // Priority 1: Mushroom Crusted Pork Chop comes first
-                  if (aIsMushroomPork && !bIsMushroomPork) return -1;
-                  if (!aIsMushroomPork && bIsMushroomPork) return 1;
-                  
-                  // Priority 2: Other pork chops come right after mushroom pork
-                  if (aIsPorkChop && !bIsPorkChop && !bIsMushroomPork) {
-                    // Check if b should come before mushroom pork alphabetically
-                    const mushroomPorkItems = menuItems.filter(item => {
-                      const name = item.dish_name.toLowerCase();
-                      return name.includes('mushroom') && (name.includes('pork') || name.includes('porkchop') || name.includes('pork chop'));
-                    });
-                    if (mushroomPorkItems.length > 0) {
-                      const mushroomPorkName = mushroomPorkItems[0].dish_name.toLowerCase();
-                      // If b comes before mushroom pork alphabetically, let it
-                      if (bName < mushroomPorkName) return 1;
-                    }
-                    return -1;
-                  }
-                  if (!aIsPorkChop && bIsPorkChop && !aIsMushroomPork) {
-                    return 1;
-                  }
-                  
-                  // If both are the same type, sort alphabetically
-                  if ((aIsMushroomPork && bIsMushroomPork) || (aIsPorkChop && bIsPorkChop)) {
-                    return a.dish_name.localeCompare(b.dish_name);
-                  }
-                  
-                  // Default alphabetical sort
-                  return a.dish_name.localeCompare(b.dish_name);
-                });
-                
-                return sortedItems;
-              }, []).map((item, index) => (
-                <option key={`option-${index}-${item.id}`} value={item.id} className="bg-slate-800 text-white">
+                {sortedMenuItems.map((item, index) => (
+                  <option key={`option-${index}-${item.id}`} value={item.id} className="bg-slate-800 text-white">
                   {item.dish_name} {item.ticket_code && `(${item.ticket_code})`}
                 </option>
               ))}
@@ -1539,6 +1785,137 @@ export function AllergyChecker() {
             )}
           </CardContent>
         </Card>
+        )}
+
+        {/* TABLET VIEW: POS-style category grid */}
+        {isTablet && (
+          <Card className="mb-6 md:mb-8 bg-slate-900/80 backdrop-blur-sm border-slate-800/80 shadow-xl">
+            <CardHeader className="pb-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <CardTitle className="text-white text-2xl md:text-3xl font-semibold tracking-wide flex items-center gap-3">
+                    <Grid3x3 className="h-7 w-7 text-blue-400" />
+                    Step 2: Choose Dish
+            </CardTitle>
+                  <CardDescription className="text-slate-400 text-sm md:text-base mt-1">
+                    {showPosSidesPanel 
+                      ? 'Select a side dish for your entree'
+                      : selectedPosCategory 
+                        ? `Select a dish from ${POS_CATEGORIES.find(c => c.id === selectedPosCategory)?.label}`
+                        : 'Tap a category to see dishes'}
+                  </CardDescription>
+                </div>
+                {(selectedPosCategory || showPosSidesPanel) && (
+                  <button
+                    onClick={handlePosBackToCategories}
+                    className="flex items-center gap-2 px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg transition-colors"
+                  >
+                    <ChevronLeft className="h-5 w-5" />
+                    Back
+                  </button>
+                )}
+              </div>
+            </CardHeader>
+            <CardContent>
+              {/* Category Grid */}
+              {!selectedPosCategory && !showPosSidesPanel && (
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 md:gap-4">
+                  {POS_CATEGORIES.map((category) => {
+                    const dishCount = dishesByPosCategory[category.id]?.length || 0;
+                    if (dishCount === 0) return null;
+                    return (
+                      <button
+                        key={category.id}
+                        onClick={() => setSelectedPosCategory(category.id)}
+                        className={cn(
+                          "relative flex flex-col items-center justify-center p-4 md:p-6 rounded-xl border-2 transition-all min-h-[120px] md:min-h-[140px]",
+                          "bg-gradient-to-br border-slate-700/50 hover:border-slate-500 hover:scale-[1.02] active:scale-[0.98]",
+                          category.color
+                        )}
+                      >
+                        <span className="text-4xl md:text-5xl mb-2">{category.icon}</span>
+                        <span className="text-white font-semibold text-sm md:text-base text-center">{category.label}</span>
+                        <span className="text-white/70 text-xs mt-1">{dishCount} items</span>
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
+
+              {/* Dishes Grid for Selected Category */}
+              {selectedPosCategory && !showPosSidesPanel && (
+                <div className="space-y-4">
+                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+                    {dishesByPosCategory[selectedPosCategory]?.map((dish) => {
+                      const isSelected = selectedDishId === dish.id;
+                      return (
+                        <button
+                          key={dish.id}
+                          onClick={() => handlePosDishSelect(dish)}
+                          className={cn(
+                            "flex flex-col items-start p-4 rounded-xl border-2 transition-all text-left min-h-[100px]",
+                            isSelected
+                              ? "bg-blue-600/30 border-blue-400 ring-2 ring-blue-400/50"
+                              : "bg-slate-800/70 border-slate-700 hover:border-slate-500 hover:bg-slate-800"
+                          )}
+                        >
+                          <span className="text-white font-medium text-sm md:text-base leading-tight">{dish.dish_name}</span>
+                          {dish.ticket_code && (
+                            <span className="text-slate-400 text-xs mt-1 uppercase">{dish.ticket_code}</span>
+                          )}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+
+              {/* Sides Panel (auto-shown after entree selection) */}
+              {showPosSidesPanel && (
+                <div className="space-y-4">
+                  <div className="bg-blue-600/20 border border-blue-400/50 rounded-lg p-4 mb-4">
+                    <p className="text-blue-200 text-sm">
+                      <strong>Selected:</strong> {selectedDish?.dish_name}
+                      {selectedDish?.ticket_code && <span className="text-blue-300 ml-2">({selectedDish.ticket_code})</span>}
+                    </p>
+                  </div>
+                  <p className="text-slate-300 text-sm font-medium mb-3">Choose a side dish:</p>
+                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+                    {sidesDishes.map((side) => {
+                      const isSelected = selectedSideDishId === side.id;
+                      return (
+                        <button
+                          key={side.id}
+                          onClick={() => handlePosSideSelect(side)}
+                          className={cn(
+                            "flex flex-col items-start p-4 rounded-xl border-2 transition-all text-left min-h-[80px]",
+                            isSelected
+                              ? "bg-green-600/30 border-green-400 ring-2 ring-green-400/50"
+                              : "bg-slate-800/70 border-slate-700 hover:border-slate-500 hover:bg-slate-800"
+                          )}
+                        >
+                          <span className="text-white font-medium text-sm">{side.dish_name}</span>
+                          {side.ticket_code && (
+                            <span className="text-slate-400 text-xs mt-1 uppercase">{side.ticket_code}</span>
+                          )}
+                        </button>
+                      );
+                    })}
+                  </div>
+                  <button
+                    onClick={() => {
+                      setShowPosSidesPanel(false);
+                      setSelectedPosCategory(null);
+                    }}
+                    className="w-full mt-4 px-4 py-3 bg-slate-700 hover:bg-slate-600 text-white rounded-lg transition-colors"
+                  >
+                    Skip Side Dish
+                  </button>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        )}
 
         <Card className="mb-6 md:mb-8 bg-slate-900/80 backdrop-blur-sm border-slate-800/80 shadow-xl">
           <CardHeader className="pb-6 md:pb-8">
@@ -1559,14 +1936,14 @@ export function AllergyChecker() {
               <label className="text-xs md:text-sm uppercase tracking-wider text-slate-400">
                 Search or select allergens
               </label>
-              <div className="relative">
+            <div className="relative">
                 <input
-                  id="allergen-search"
+                id="allergen-search"
                   type="text"
                   placeholder="Type to search (e.g., dairy, gluten, nuts...)"
-                  value={allergenSearchTerm}
-                  onChange={(e) => handleAllergenInputChange(e.target.value)}
-                  onKeyDown={handleAllergenInputKeyDown}
+                value={allergenSearchTerm}
+                onChange={(e) => handleAllergenInputChange(e.target.value)}
+                onKeyDown={handleAllergenInputKeyDown}
                   className="w-full px-4 md:px-5 py-3 md:py-4 pr-10 md:pr-12 border border-slate-700 rounded-lg bg-slate-800 text-white text-base md:text-lg placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500/60 focus:border-blue-500/60 transition-all"
                 />
                 <Search className="absolute right-3 md:right-4 top-1/2 -translate-y-1/2 h-5 w-5 md:h-6 md:w-6 text-slate-500" />
@@ -1580,12 +1957,12 @@ export function AllergyChecker() {
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4">
                 {filteredAllergens.map((allergen) => {
                   const isSelected = selectedAllergies.has(allergen);
-                  return (
+                      return (
                     <button
-                      key={allergen}
+                  key={allergen}
                       type="button"
                       onClick={() => handleAllergyToggle(allergen)}
-                      className={cn(
+                  className={cn(
                         "flex items-center justify-between gap-2 md:gap-3 rounded-xl border px-3 md:px-4 py-3 md:py-4 text-left transition-all min-h-[60px] md:min-h-[72px]",
                         isSelected
                           ? "bg-blue-600/30 border-blue-400/70 text-white shadow-lg ring-1 ring-blue-400/40"
@@ -1600,7 +1977,7 @@ export function AllergyChecker() {
                           {ALLERGEN_ICONS[allergen]}
                         </span>
                         <div className="font-medium text-sm md:text-base">{ALLERGEN_LABELS[allergen]}</div>
-                      </div>
+                        </div>
                       <span
                         className={cn(
                           "h-6 w-6 md:h-7 md:w-7 rounded-md border text-sm flex items-center justify-center shrink-0",
@@ -1610,9 +1987,9 @@ export function AllergyChecker() {
                         {isSelected ? '✓' : ''}
                       </span>
                     </button>
-                  );
-                })}
-              </div>
+                      );
+                    })}
+                </div>
             </div>
             
             {/* Custom Ingredient Selection - Search all ingredients */}
@@ -1620,54 +1997,54 @@ export function AllergyChecker() {
               <div className="text-xs md:text-sm text-slate-400 mb-3 md:mb-4 uppercase tracking-widest">
                 Select Specific Ingredient (advanced)
               </div>
-              <div className="relative">
-                <input
-                  type="text"
+                <div className="relative">
+                  <input
+                    type="text"
                   placeholder="Start typing ingredient name (e.g., black pepper, onions)..."
-                  value={ingredientSearchTerm}
-                  onChange={(e) => handleIngredientInputChange(e.target.value)}
-                  onFocus={() => {
-                    if (ingredientSearchTerm.trim()) {
-                      setShowIngredientSuggestions(true);
-                    }
-                  }}
-                  onBlur={() => {
-                    setTimeout(() => setShowIngredientSuggestions(false), 200);
-                  }}
-                  onKeyDown={handleIngredientInputKeyDown}
+                    value={ingredientSearchTerm}
+                    onChange={(e) => handleIngredientInputChange(e.target.value)}
+                    onFocus={() => {
+                      if (ingredientSearchTerm.trim()) {
+                        setShowIngredientSuggestions(true);
+                      }
+                    }}
+                    onBlur={() => {
+                      setTimeout(() => setShowIngredientSuggestions(false), 200);
+                    }}
+                    onKeyDown={handleIngredientInputKeyDown}
                   className="w-full px-5 md:px-6 py-4 md:py-5 border border-slate-700 rounded-lg bg-slate-800 text-white text-base md:text-lg placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-purple-400/50 focus:border-purple-400/50 transition-all"
-                />
-                {showIngredientSuggestions && filteredIngredients.length > 0 && (
+                  />
+                  {showIngredientSuggestions && filteredIngredients.length > 0 && (
                   <div className="absolute z-50 w-full mt-1 bg-slate-900/95 backdrop-blur-md border border-slate-700/70 rounded-md shadow-2xl max-h-60 overflow-y-auto">
-                    {filteredIngredients.map((ingredient, _index) => {
-                      const displayIndex = filteredIngredients.findIndex((ing) => ing === ingredient);
-                      return (
-                        <div
-                          key={ingredient}
-                          className={cn(
-                            "p-3 cursor-pointer transition-colors",
-                            displayIndex === highlightedIngredientIndex
-                              ? "bg-purple-500/20 border-l-2 border-purple-400"
+                      {filteredIngredients.map((ingredient, _index) => {
+                        const displayIndex = filteredIngredients.findIndex((ing) => ing === ingredient);
+                        return (
+                          <div
+                            key={ingredient}
+                            className={cn(
+                              "p-3 cursor-pointer transition-colors",
+                              displayIndex === highlightedIngredientIndex
+                                ? "bg-purple-500/20 border-l-2 border-purple-400"
                               : "hover:bg-slate-800/50"
-                          )}
-                          onClick={() => handleIngredientSelect(ingredient)}
-                          onMouseEnter={() => setHighlightedIngredientIndex(displayIndex)}
-                        >
-                          <div className="font-medium text-white">{ingredient}</div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                )}
-                {showIngredientSuggestions && ingredientSearchTerm.trim() && filteredIngredients.length === 0 && (
+                            )}
+                            onClick={() => handleIngredientSelect(ingredient)}
+                            onMouseEnter={() => setHighlightedIngredientIndex(displayIndex)}
+                          >
+                            <div className="font-medium text-white">{ingredient}</div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
+                  {showIngredientSuggestions && ingredientSearchTerm.trim() && filteredIngredients.length === 0 && (
                   <div className="absolute z-50 w-full mt-1 bg-slate-900/95 backdrop-blur-md border border-slate-700/70 rounded-md shadow-2xl p-3">
                     <div className="text-slate-300 italic">
-                      No ingredients found matching "{ingredientSearchTerm}". Please select from the suggestions above.
+                        No ingredients found matching "{ingredientSearchTerm}". Please select from the suggestions above.
+                      </div>
                     </div>
-                  </div>
-                )}
+                  )}
+                </div>
               </div>
-            </div>
             
             {(selectedAllergies.size > 0 || customAllergies.size > 0) && (
               <div className="pt-6 md:pt-8 border-t border-slate-800">
@@ -1681,14 +2058,14 @@ export function AllergyChecker() {
                       className="inline-flex items-center gap-2 md:gap-3 px-3 md:px-4 py-2 md:py-2.5 text-sm md:text-base font-medium rounded-full bg-blue-600/20 text-blue-200 border border-blue-500/50"
                     >
                       <span className="text-base md:text-lg">{ALLERGEN_ICONS[allergen]}</span> {ALLERGEN_LABELS[allergen]}
-                      <button
-                        type="button"
+                  <button
+                    type="button"
                         onClick={() => handleRemoveAllergen(allergen)}
                         className="w-5 h-5 md:w-6 md:h-6 rounded-full hover:bg-blue-400/30 flex items-center justify-center transition-colors text-blue-200 leading-none"
                         aria-label={`Remove ${ALLERGEN_LABELS[allergen]}`}
                       >
                         ×
-                      </button>
+                  </button>
                     </span>
                   ))}
                   {Array.from(customAllergies).map((allergen) => (
@@ -1708,8 +2085,8 @@ export function AllergyChecker() {
                     </span>
                   ))}
                 </div>
-              </div>
-            )}
+                </div>
+              )}
             {(selectedAllergies.size > 0 || customAllergies.size > 0) && !selectedDishId && (
               <div className="mt-6 md:mt-8 pt-6 md:pt-8 border-t border-slate-800">
                 <button
@@ -1729,26 +2106,26 @@ export function AllergyChecker() {
 
         <div className="sticky bottom-0 z-40 mt-6 md:static md:mt-6 safe-area-bottom">
           <div className="relative pt-4 bg-gradient-to-t from-gray-900/80 via-gray-900/40 to-transparent md:bg-none">
-            <GlowingEffect
-              spread={40}
-              glow={true}
-              disabled={!selectedDish || (selectedAllergies.size === 0 && customAllergies.size === 0) || (isClassicBreakfast && !selectedProtein) || (isFieldSalad && !selectedDressing)}
-              proximity={80}
-              inactiveZone={0.2}
-              borderWidth={3}
-            />
-            <button
-              onClick={handleCheckSafety}
-              disabled={!selectedDish || (selectedAllergies.size === 0 && customAllergies.size === 0) || (isClassicBreakfast && !selectedProtein) || (isFieldSalad && !selectedDressing)}
-              className={cn(
+          <GlowingEffect
+            spread={40}
+            glow={true}
+            disabled={!selectedDish || (selectedAllergies.size === 0 && customAllergies.size === 0) || (isClassicBreakfast && !selectedProtein) || (isFieldSalad && !selectedDressing)}
+            proximity={80}
+            inactiveZone={0.2}
+            borderWidth={3}
+          />
+          <button
+            onClick={handleCheckSafety}
+            disabled={!selectedDish || (selectedAllergies.size === 0 && customAllergies.size === 0) || (isClassicBreakfast && !selectedProtein) || (isFieldSalad && !selectedDressing)}
+            className={cn(
                 "relative w-full py-4 md:py-5 px-6 text-lg md:text-xl font-semibold rounded-xl transition-all border-2 min-h-[56px] md:min-h-[64px]",
-                !selectedDish || (selectedAllergies.size === 0 && customAllergies.size === 0) || (isClassicBreakfast && !selectedProtein) || (isFieldSalad && !selectedDressing)
-                  ? "bg-gray-300 text-gray-600 cursor-not-allowed border-gray-400"
+              !selectedDish || (selectedAllergies.size === 0 && customAllergies.size === 0) || (isClassicBreakfast && !selectedProtein) || (isFieldSalad && !selectedDressing)
+                ? "bg-gray-300 text-gray-600 cursor-not-allowed border-gray-400"
                   : "bg-blue-600 text-white hover:bg-blue-500 shadow-lg hover:shadow-xl transform hover:scale-[1.02] border-blue-600"
-              )}
-            >
-              Check Safety
-            </button>
+            )}
+          >
+            Check Safety
+          </button>
           </div>
         </div>
 
