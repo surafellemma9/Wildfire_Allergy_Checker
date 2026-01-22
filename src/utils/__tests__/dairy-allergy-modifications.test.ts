@@ -337,16 +337,19 @@ describe('Wildfire Dairy Allergy Modifications', () => {
   });
 
   describe('NIGHTLY SPECIALS', () => {
-    it('Wednesday: Spit Roasted Half Long Island Duck - should require NO cherry glaze, NO wild rice (contains butter)', () => {
+    it('Wednesday: Spit Roasted Half Long Island Duck - should require NO cherry glaze, NO wild rice', () => {
       const result = checkDairy('Long Island Duck');
       expect(result).not.toBeNull();
-      if (result && result.overallStatus === 'unsafe') {
-        expect(
-          hasModification(result, 'cherry') || 
-          hasModification(result, 'glaze') ||
-          hasModification(result, 'butter') ||
-          hasModification(result, 'wild rice')
-        ).toBe(true);
+      if (result) {
+        expect(result.overallStatus).toBe('unsafe');
+        // Should have exactly these modifications from the restaurant specifications
+        const dairyResult = result.perAllergy.find(r => r.allergen === 'dairy');
+        expect(dairyResult).toBeDefined();
+        if (dairyResult) {
+          expect(dairyResult.canBeModified).toBe(true);
+          expect(dairyResult.substitutions).toContain('NO cherry glaze');
+          expect(dairyResult.substitutions).toContain('NO wild rice');
+        }
       }
     });
   });

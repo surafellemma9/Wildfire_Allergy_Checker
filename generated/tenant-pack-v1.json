@@ -1,0 +1,5668 @@
+{
+  "tenantId": "wildfire_tysons",
+  "conceptName": "Wildfire",
+  "locationName": "Tyson's Corner",
+  "version": 1,
+  "generatedAt": "2026-01-22T05:49:45.221Z",
+  "allergens": [
+    {
+      "id": "dairy",
+      "name": "Dairy",
+      "icon": "🥛"
+    },
+    {
+      "id": "gluten",
+      "name": "Gluten",
+      "icon": "🌾"
+    },
+    {
+      "id": "shellfish",
+      "name": "Shellfish",
+      "icon": "🦐"
+    },
+    {
+      "id": "fish",
+      "name": "Fish",
+      "icon": "🐟"
+    },
+    {
+      "id": "egg",
+      "name": "Egg",
+      "icon": "🥚"
+    },
+    {
+      "id": "soy",
+      "name": "Soy",
+      "icon": "🫘"
+    },
+    {
+      "id": "peanuts",
+      "name": "Peanuts",
+      "icon": "🥜"
+    },
+    {
+      "id": "tree_nuts",
+      "name": "Tree Nuts",
+      "icon": "🌰"
+    },
+    {
+      "id": "sesame",
+      "name": "Sesame",
+      "icon": "⚪"
+    },
+    {
+      "id": "msg",
+      "name": "MSG",
+      "icon": "🧂"
+    },
+    {
+      "id": "onion_garlic",
+      "name": "Onion & Garlic",
+      "icon": "🧄"
+    },
+    {
+      "id": "tomato",
+      "name": "Tomato",
+      "icon": "🍅"
+    },
+    {
+      "id": "seed",
+      "name": "Seeds",
+      "icon": "🌻"
+    }
+  ],
+  "categories": [
+    {
+      "id": "appetizers",
+      "name": "Appetizers",
+      "sortOrder": 1
+    },
+    {
+      "id": "salads",
+      "name": "Salads",
+      "sortOrder": 2
+    },
+    {
+      "id": "fresh_seafood",
+      "name": "Fresh Seafood",
+      "sortOrder": 3
+    },
+    {
+      "id": "sandwiches",
+      "name": "Burgers & Sandwiches",
+      "sortOrder": 4
+    },
+    {
+      "id": "steaks",
+      "name": "Steaks & Chops",
+      "sortOrder": 5
+    },
+    {
+      "id": "nightly",
+      "name": "Nightly Specials",
+      "sortOrder": 9
+    },
+    {
+      "id": "sides",
+      "name": "Sides",
+      "sortOrder": 10
+    },
+    {
+      "id": "desserts",
+      "name": "Desserts",
+      "sortOrder": 11
+    },
+    {
+      "id": "kids",
+      "name": "Kids Menu",
+      "sortOrder": 12
+    },
+    {
+      "id": "brunch",
+      "name": "Brunch",
+      "sortOrder": 13
+    },
+    {
+      "id": "specials",
+      "name": "Specials",
+      "sortOrder": 14
+    }
+  ],
+  "items": [
+    {
+      "id": "shrimp_and_crab_bisque",
+      "name": "Shrimp and Crab Bisque",
+      "categoryId": "appetizers",
+      "ticketCode": "CUP BISQUE/BOWL BISQUE",
+      "description": "A mixture of shrimp, crab, onions, carrots, celery, house oil , thyme, garlic, bay leaves, sherry, butter, flour, shrimp poaching liquid , clam juice, lobster base , heavy cream, tomato paste, Old Bay s easoning , salt and pepper. Garnished with corn, red peppers  and chives.  We offer both a bowl and a cup of soup.",
+      "allergenRules": {
+        "dairy": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "egg": {
+          "status": "SAFE"
+        },
+        "gluten": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "shellfish": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "fish": {
+          "status": "SAFE"
+        },
+        "soy": {
+          "status": "SAFE"
+        },
+        "peanuts": {
+          "status": "SAFE"
+        },
+        "tree_nuts": {
+          "status": "SAFE"
+        },
+        "sesame": {
+          "status": "SAFE"
+        },
+        "msg": {
+          "status": "SAFE"
+        }
+      }
+    },
+    {
+      "id": "baked_french_onion_soup",
+      "name": "Baked French Onion Soup",
+      "categoryId": "appetizers",
+      "ticketCode": "CUP ONION SOUP/ONION SOUP",
+      "description": "Caramelized onions and butter simmered with white wine, chicken stock , sugar, house oil , salt, and pepper.  Topped with garlic crouton  and covered with Swiss and Asiago cheese s.  We offer both a bowl and a cup of soup.",
+      "allergenRules": {
+        "dairy": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "egg": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "gluten": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "shellfish": {
+          "status": "SAFE"
+        },
+        "fish": {
+          "status": "SAFE"
+        },
+        "soy": {
+          "status": "SAFE"
+        },
+        "peanuts": {
+          "status": "SAFE"
+        },
+        "tree_nuts": {
+          "status": "SAFE"
+        },
+        "sesame": {
+          "status": "SAFE"
+        },
+        "msg": {
+          "status": "SAFE"
+        }
+      }
+    },
+    {
+      "id": "mediterranean_chicken_skewers",
+      "name": "Mediterranean Chicken Skewers",
+      "categoryId": "appetizers",
+      "ticketCode": "CHICKEN SKEWERS",
+      "description": "Two skewers of chicken breast pieces (5 pieces each on each; equaling about 10 oz. total), marinated in Mediterranean marinade .  Served with a drizzle of yogurt sauce , chicken jus  and a ramekin of yogurt sauce .",
+      "allergenRules": {
+        "dairy": {
+          "status": "MODIFY",
+          "substitutions": [
+            "NO yogurt sauce"
+          ]
+        },
+        "egg": {
+          "status": "SAFE"
+        },
+        "gluten": {
+          "status": "SAFE"
+        },
+        "shellfish": {
+          "status": "SAFE"
+        },
+        "fish": {
+          "status": "SAFE"
+        },
+        "soy": {
+          "status": "SAFE"
+        },
+        "peanuts": {
+          "status": "SAFE"
+        },
+        "tree_nuts": {
+          "status": "SAFE"
+        },
+        "sesame": {
+          "status": "SAFE"
+        },
+        "msg": {
+          "status": "SAFE"
+        }
+      }
+    },
+    {
+      "id": "bison_meatballs",
+      "name": "Bison Meatballs",
+      "categoryId": "appetizers",
+      "ticketCode": "BISON MEATBALLS",
+      "description": "Six bison meatballs heated up in garlic butter, then tossed with chicken jus, tomato jam and tomato basil sauce. Garnished with Asiago cheese and parsley. Served on top of a garlic crouton.",
+      "allergenRules": {
+        "dairy": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "egg": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "gluten": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "shellfish": {
+          "status": "SAFE"
+        },
+        "fish": {
+          "status": "SAFE"
+        },
+        "soy": {
+          "status": "SAFE"
+        },
+        "peanuts": {
+          "status": "SAFE"
+        },
+        "tree_nuts": {
+          "status": "SAFE"
+        },
+        "sesame": {
+          "status": "SAFE"
+        },
+        "msg": {
+          "status": "SAFE"
+        }
+      }
+    },
+    {
+      "id": "baked_goat_cheese",
+      "name": "Baked Goat Cheese",
+      "categoryId": "appetizers",
+      "ticketCode": "GOAT CHEEZ",
+      "description": "Two 2 oz . balls of domestic goat cheese (Wisconsin) with tomato basil sauce , topped with Japanese breadcrumbs and parsley.  Baked in the oven.  Served with flatbread ( flatbread  brushed with garlic puree , sprinkled with Asiago cheese  and parsley) and baked in the oven.",
+      "allergenRules": {
+        "dairy": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "egg": {
+          "status": "SAFE"
+        },
+        "gluten": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "shellfish": {
+          "status": "SAFE"
+        },
+        "fish": {
+          "status": "SAFE"
+        },
+        "soy": {
+          "status": "SAFE"
+        },
+        "peanuts": {
+          "status": "SAFE"
+        },
+        "tree_nuts": {
+          "status": "SAFE"
+        },
+        "sesame": {
+          "status": "SAFE"
+        },
+        "msg": {
+          "status": "SAFE"
+        }
+      }
+    },
+    {
+      "id": "crispy_fried_calamari",
+      "name": "Crispy Fried Calamari",
+      "categoryId": "appetizers",
+      "ticketCode": "CALAMARI",
+      "description": "10 oz. calamari (squid) marinated in buttermilk then coated with seasoned flour  and deep fried.  Served on top of a garlic crouton  with a ramekin of ranch dressing  and a ramekin of cocktail sauce .  Garnished with a lemon wedge.",
+      "allergenRules": {
+        "dairy": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "egg": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "gluten": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "shellfish": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "fish": {
+          "status": "SAFE"
+        },
+        "soy": {
+          "status": "SAFE"
+        },
+        "peanuts": {
+          "status": "SAFE"
+        },
+        "tree_nuts": {
+          "status": "SAFE"
+        },
+        "sesame": {
+          "status": "SAFE"
+        },
+        "msg": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        }
+      }
+    },
+    {
+      "id": "shrimp_cocktail",
+      "name": "Shrimp Cocktail",
+      "categoryId": "appetizers",
+      "ticketCode": "SHRIMP CKT",
+      "description": "Five 13 -15 count Gulf shrimp, poached in shrimp poaching liquid , then peeled and chilled.  Served with side of cocktail sauce  with a dollop of horseradish .  Garnished with lemon wedges.",
+      "allergenRules": {
+        "dairy": {
+          "status": "SAFE"
+        },
+        "egg": {
+          "status": "SAFE"
+        },
+        "gluten": {
+          "status": "SAFE"
+        },
+        "shellfish": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "fish": {
+          "status": "SAFE"
+        },
+        "soy": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "peanuts": {
+          "status": "SAFE"
+        },
+        "tree_nuts": {
+          "status": "SAFE"
+        },
+        "sesame": {
+          "status": "SAFE"
+        },
+        "msg": {
+          "status": "SAFE"
+        }
+      }
+    },
+    {
+      "id": "oven_roasted_lump_crab_cakes",
+      "name": "Oven Roasted Lump Crab Cakes",
+      "categoryId": "appetizers",
+      "ticketCode": "CRAB CAKES",
+      "description": "Two 3 oz. crab cakes roasted to a golden brown in the oven.  The crab cake consists  of a mixture of saltin e crackers , super lump crab meat, Old Bay seasoning , parsley, mayonnaise , egg, Dijon musta rd, lemon j uice, Worcestershire sauce  and salt .  Served with a ramekin of mustard mayonnaise.   Garnished with a lemon wedge.",
+      "allergenRules": {
+        "dairy": {
+          "status": "MODIFY",
+          "substitutions": [
+            "NO mustard mayonnaise"
+          ]
+        },
+        "egg": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "gluten": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "shellfish": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "fish": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "soy": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "peanuts": {
+          "status": "SAFE"
+        },
+        "tree_nuts": {
+          "status": "SAFE"
+        },
+        "sesame": {
+          "status": "SAFE"
+        },
+        "msg": {
+          "status": "SAFE"
+        }
+      }
+    },
+    {
+      "id": "applewood_smoked_bacon_wrapped_sea_scallops_skewers",
+      "name": "Applewood Smoked Bacon Wrapped Sea Scallops Skewers",
+      "categoryId": "appetizers",
+      "ticketCode": "SCAL SKEWR",
+      "description": "Two skewers  of 3 scallops each equaling about 7 or 8 oz., wrapped in bacon  and skewered.  Roasted in the oven with cooking spray .  Served with apricot dipping sauce .  Garnished with a lemon wedge and chives.",
+      "allergenRules": {
+        "dairy": {
+          "status": "SAFE"
+        },
+        "egg": {
+          "status": "SAFE"
+        },
+        "gluten": {
+          "status": "SAFE"
+        },
+        "shellfish": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "fish": {
+          "status": "SAFE"
+        },
+        "soy": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "peanuts": {
+          "status": "SAFE"
+        },
+        "tree_nuts": {
+          "status": "SAFE"
+        },
+        "sesame": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "msg": {
+          "status": "SAFE"
+        }
+      }
+    },
+    {
+      "id": "field_salad",
+      "name": "Field Salad",
+      "categoryId": "salads",
+      "ticketCode": "SIDE FIELD, SM FIELD, LG FIELD",
+      "description": "Field greens , sliced cucumbers, tomato wedges  and shredded carrots served with choice of dressing on side. Dressing choices: citrus lime vinaigrette , ranch , balsamic vinaigrette , red wine vinaigrett e, blue cheese dressing, lemon P armesan vinaigrette , lemon herb vinaigrette , or Caesar .",
+      "allergenRules": {
+        "dairy": {
+          "status": "SAFE"
+        },
+        "egg": {
+          "status": "SAFE"
+        },
+        "gluten": {
+          "status": "SAFE"
+        },
+        "shellfish": {
+          "status": "SAFE"
+        },
+        "fish": {
+          "status": "SAFE"
+        },
+        "soy": {
+          "status": "SAFE"
+        },
+        "peanuts": {
+          "status": "SAFE"
+        },
+        "tree_nuts": {
+          "status": "SAFE"
+        },
+        "sesame": {
+          "status": "SAFE"
+        },
+        "msg": {
+          "status": "SAFE"
+        }
+      }
+    },
+    {
+      "id": "caesar_salad",
+      "name": "Caesar  Salad",
+      "categoryId": "salads",
+      "ticketCode": "SIDE CAESAR/CAESAR/LG CAESAR",
+      "description": "Romaine lettuce tossed with croutons , Parmesan cheese and Caesar dressing (anchovy, garlic, lemon juice, Dijon mustard , Asiago cheese, pasteurized egg yolk, red wine vinegar, house oil , salt, pepper).  OFFER FRESH GROUND PEPPER.",
+      "allergenRules": {
+        "dairy": {
+          "status": "UNSAFE",
+          "notes": "This dish cannot be modified for dairy allergies"
+        },
+        "egg": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "gluten": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "shellfish": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "fish": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "soy": {
+          "status": "SAFE"
+        },
+        "peanuts": {
+          "status": "SAFE"
+        },
+        "tree_nuts": {
+          "status": "SAFE"
+        },
+        "sesame": {
+          "status": "SAFE"
+        },
+        "msg": {
+          "status": "SAFE"
+        }
+      }
+    },
+    {
+      "id": "tuscan_kale_and_spinach_salad",
+      "name": "Tuscan Kale and Spinach Salad",
+      "categoryId": "salads",
+      "ticketCode": "SIDE KALE/SM KALE/LG KALE",
+      "description": "Tuscan Kale and baby spinach tossed with Parmesan cheese, hard -boiled egg and lemon Parmesan v inaigrette (lemon juice, garlic, Dijon mustard , salt, pepper, hous e oil, extra virgin olive oil, P armesan cheese).  Sprinkled with spicy pumpkin seeds  (tossed house oil and black pepper, cumin, chili powder, cayenne pepper, salt, then roasted). OFFER FRESH GROUND PEPPER.",
+      "allergenRules": {
+        "dairy": {
+          "status": "MODIFY",
+          "substitutions": [
+            "NO cheese",
+            "NO dressing"
+          ]
+        },
+        "egg": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "gluten": {
+          "status": "SAFE"
+        },
+        "shellfish": {
+          "status": "SAFE"
+        },
+        "fish": {
+          "status": "SAFE"
+        },
+        "soy": {
+          "status": "SAFE"
+        },
+        "peanuts": {
+          "status": "SAFE"
+        },
+        "tree_nuts": {
+          "status": "SAFE"
+        },
+        "sesame": {
+          "status": "SAFE"
+        },
+        "msg": {
+          "status": "SAFE"
+        }
+      }
+    },
+    {
+      "id": "greek_salad",
+      "name": "Greek Salad",
+      "categoryId": "salads",
+      "ticketCode": "SIDE GREEK/SM GREEK/LG GREEK",
+      "description": "Chopped iceberg and romaine lettuces tossed with tomatoes, cucumbers, garbanzo beans, celery, red onion, Kalamata  olives, d ill, feta, chopped pepperoncini  and red wine  vinaigrette .  OFFER FRESH GROUND PEPPER.",
+      "allergenRules": {
+        "dairy": {
+          "status": "MODIFY",
+          "substitutions": [
+            "NO feta cheese",
+            "NO dressing"
+          ]
+        },
+        "egg": {
+          "status": "SAFE"
+        },
+        "gluten": {
+          "status": "SAFE"
+        },
+        "shellfish": {
+          "status": "SAFE"
+        },
+        "fish": {
+          "status": "SAFE"
+        },
+        "soy": {
+          "status": "SAFE"
+        },
+        "peanuts": {
+          "status": "SAFE"
+        },
+        "tree_nuts": {
+          "status": "SAFE"
+        },
+        "sesame": {
+          "status": "SAFE"
+        },
+        "msg": {
+          "status": "SAFE"
+        }
+      }
+    },
+    {
+      "id": "steak_and_blue_cheese_salad",
+      "name": "Steak and Blue Cheese Salad",
+      "categoryId": "salads",
+      "ticketCode": "STEAKHOUSE",
+      "description": "Field greens and romaine tossed with  tomatoes, cucumbers, scallions  and balsamic vinaigrette .  Topped with blue cheese crumbles, crispy onions  and a drizzle of ranch dressing .  Served with a  6 oz. Coulotte steak seasoned with garlic puree , olive oil  and Wildfire 8 spice  and broiled to medium rare to medium, then sliced.  OFFER FRESH GROUND PEPPER .",
+      "allergenRules": {
+        "dairy": {
+          "status": "MODIFY",
+          "substitutions": [
+            "NO cheese",
+            "NO crispy onions",
+            "NO ranch dressing"
+          ]
+        },
+        "egg": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "gluten": {
+          "status": "SAFE"
+        },
+        "shellfish": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "fish": {
+          "status": "SAFE"
+        },
+        "soy": {
+          "status": "SAFE"
+        },
+        "peanuts": {
+          "status": "SAFE"
+        },
+        "tree_nuts": {
+          "status": "SAFE"
+        },
+        "sesame": {
+          "status": "SAFE"
+        },
+        "msg": {
+          "status": "SAFE"
+        }
+      }
+    },
+    {
+      "id": "wildfire_chopped_salad",
+      "name": "Wildfire Chopped Salad",
+      "categoryId": "specials",
+      "ticketCode": "SM CHOP SALAD/LG CHOP SALAD",
+      "description": "Chopped iceberg and romaine lettuces with bacon , tomatoes, corn tortilla squares, blue cheese crumbles, scallions, chicken breast that has been marinated in herb chicken marinade  and roa sted and diced , fresh corn  and avoca do. Tossed in a citrus lime vinaigrette  (dry mustard, sugar, garlic, lime juice, red wine vinegar, oregano, al pastor marinade , kosher salt, house oil ).  OFFER FRESH GROUND PEPPER.",
+      "allergenRules": {
+        "dairy": {
+          "status": "MODIFY",
+          "substitutions": [
+            "NO marinated chicken",
+            "NO blue cheese",
+            "NO tortillas"
+          ]
+        },
+        "egg": {
+          "status": "SAFE"
+        },
+        "gluten": {
+          "status": "SAFE"
+        },
+        "shellfish": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "fish": {
+          "status": "SAFE"
+        },
+        "soy": {
+          "status": "SAFE"
+        },
+        "peanuts": {
+          "status": "SAFE"
+        },
+        "tree_nuts": {
+          "status": "SAFE"
+        },
+        "sesame": {
+          "status": "SAFE"
+        },
+        "msg": {
+          "status": "SAFE"
+        }
+      }
+    },
+    {
+      "id": "add_roasted_wild_mushrooms_or_applewood_smoked_bacon_to_any_burger_for_2_00_each_thick_prime_angus_burger_cheeseburger",
+      "name": "Add roasted wild mushrooms  or Applewood smoked bacon  to any burger for $2.00 each Thick Prime Angus Burger /Cheeseburger",
+      "categoryId": "sandwiches",
+      "ticketCode": "HAMBURGER/CH BURGER",
+      "description": "8 oz.  ground beef  seasoned with salt and pepper, then grilled to desired temperature.   Served on a buttered and toasted sesame seed bun  with lettuce and tomato.  Served with French fries, coleslaw  and a ramekin of ketchup. Choice of American, yellow cheddar, jalapeno jack, Swiss , blue cheese  crumbles  or white cheddar  for cheeseburger.",
+      "allergenRules": {
+        "dairy": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "egg": {
+          "status": "SAFE"
+        },
+        "gluten": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "shellfish": {
+          "status": "SAFE"
+        },
+        "fish": {
+          "status": "SAFE"
+        },
+        "soy": {
+          "status": "SAFE"
+        },
+        "peanuts": {
+          "status": "SAFE"
+        },
+        "tree_nuts": {
+          "status": "SAFE"
+        },
+        "sesame": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "msg": {
+          "status": "SAFE"
+        }
+      }
+    },
+    {
+      "id": "all_natural_turkey_burger",
+      "name": "All Natural Turkey Burger",
+      "categoryId": "sandwiches",
+      "ticketCode": "TURKEY BURGER",
+      "description": "5.33 oz. all natural ground turkey burger  seasoned with char-crust  and grilled.  Topped with white cheddar cheese and roasted onions .  Served on a buttered and toasted sesame seed bun  with yellow mustard  on the bottom of the bun, mayonnaise  on the top of the bun with lettuce and tomato.  Served with French fries, coleslaw  and a ramekin of ketchup.",
+      "allergenRules": {
+        "dairy": {
+          "status": "MODIFY",
+          "substitutions": [
+            "NO cheese",
+            "NO butter on bun"
+          ]
+        },
+        "egg": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "gluten": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "shellfish": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "fish": {
+          "status": "SAFE"
+        },
+        "soy": {
+          "status": "SAFE"
+        },
+        "peanuts": {
+          "status": "SAFE"
+        },
+        "tree_nuts": {
+          "status": "SAFE"
+        },
+        "sesame": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "msg": {
+          "status": "SAFE"
+        }
+      }
+    },
+    {
+      "id": "crispy_hot_honey_chicken_sandwich",
+      "name": "Crispy Hot Honey Chicken Sandwich",
+      "categoryId": "sandwiches",
+      "ticketCode": "HOT HONEY CHICK",
+      "description": "5-6 oz. chicken breast in fried chicken batter  and fried chicken flour , then fried.  Tossed in hot honey sauce .  Serv ed on a buttered and toasted sesame seed bun  with jalapeno jack cheese melted on bottom bun, lettuce, Bubbies  bread and butter pickles  with spicy mayo  on top half of bun.  Served with French fries, coleslaw and a ramekin of ketchup.",
+      "allergenRules": {
+        "dairy": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "egg": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "gluten": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "shellfish": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "fish": {
+          "status": "SAFE"
+        },
+        "soy": {
+          "status": "SAFE"
+        },
+        "peanuts": {
+          "status": "SAFE"
+        },
+        "tree_nuts": {
+          "status": "SAFE"
+        },
+        "sesame": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "msg": {
+          "status": "SAFE"
+        }
+      }
+    },
+    {
+      "id": "grilled_chicken_club",
+      "name": "Grilled Chicken Club",
+      "categoryId": "sandwiches",
+      "ticketCode": "CHIX CLUB",
+      "description": "5 oz. chicken breast brined  and marinated with mustard mayonnaise .  Then grilled and topped with avocado , bacon , jalapeno jack c heese  and mustard mayonnaise .  Served on a buttered and toasted sesame seed bun  with lettuce and tomato.  Served with French fries, coleslaw  and a ramekin of ketchup.",
+      "allergenRules": {
+        "dairy": {
+          "status": "MODIFY",
+          "substitutions": [
+            "SUB plain chicken",
+            "NO cheese",
+            "NO mustard mayonnaise",
+            "NO butter on bun",
+            "NO coleslaw",
+            "NO fries"
+          ]
+        },
+        "egg": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "gluten": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "shellfish": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "fish": {
+          "status": "SAFE"
+        },
+        "soy": {
+          "status": "SAFE"
+        },
+        "peanuts": {
+          "status": "SAFE"
+        },
+        "tree_nuts": {
+          "status": "SAFE"
+        },
+        "sesame": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "msg": {
+          "status": "SAFE"
+        }
+      }
+    },
+    {
+      "id": "roasted_prime_rib_french_dip",
+      "name": "Roasted Prime Rib French Dip",
+      "categoryId": "sandwiches",
+      "ticketCode": "FRENCH DIP",
+      "description": "6 oz. sliced Prime Rib (medium rare to medium) served on buttered and toasted buttery onion bun.  Served with a soup cup of au jus , horseradish cream sauce , coleslaw, French fries and a ramekin of ketchup.",
+      "allergenRules": {
+        "dairy": {
+          "status": "MODIFY",
+          "substitutions": [
+            "NO butter on bread",
+            "NO horseradish cream sauce",
+            "NO coleslaw",
+            "NO fries"
+          ]
+        },
+        "egg": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "gluten": {
+          "status": "SAFE"
+        },
+        "shellfish": {
+          "status": "SAFE"
+        },
+        "fish": {
+          "status": "SAFE"
+        },
+        "soy": {
+          "status": "SAFE"
+        },
+        "peanuts": {
+          "status": "SAFE"
+        },
+        "tree_nuts": {
+          "status": "SAFE"
+        },
+        "sesame": {
+          "status": "SAFE"
+        },
+        "msg": {
+          "status": "SAFE"
+        }
+      }
+    },
+    {
+      "id": "blackened_new_york_strip_steak_sandwich",
+      "name": "Blackened New York Strip Steak Sandwich",
+      "categoryId": "sandwiches",
+      "ticketCode": "STEAK SAND",
+      "description": "6 oz. New York s trip pounded and brushed with melted butter and seasoned with blackening spice  then grilled medium rare to medium.  Served on butter ed and toasted buttery onion bun  with white cheddar cheese, arugula, ancho mayo  and tomatoes.  Served with French fries, coleslaw  and a ramekin of ketchup.",
+      "allergenRules": {
+        "dairy": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "egg": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "gluten": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "shellfish": {
+          "status": "SAFE"
+        },
+        "fish": {
+          "status": "SAFE"
+        },
+        "soy": {
+          "status": "SAFE"
+        },
+        "peanuts": {
+          "status": "SAFE"
+        },
+        "tree_nuts": {
+          "status": "SAFE"
+        },
+        "sesame": {
+          "status": "SAFE"
+        },
+        "msg": {
+          "status": "SAFE"
+        }
+      }
+    },
+    {
+      "id": "sliced_turkey_sandwich",
+      "name": "Sliced Turkey Sandwich",
+      "categoryId": "sandwiches",
+      "ticketCode": "TURKEY SAND",
+      "description": "4 oz. of sliced turkey served on buttered and toasted multi -grain  bread  with honey Dijon mustard , arugul a, tomatoes, cucumbers, avocado  and white cheddar  cheese .  Served with French fries, coleslaw and a ramekin of ketchup.",
+      "allergenRules": {
+        "dairy": {
+          "status": "MODIFY",
+          "substitutions": [
+            "NO cheese",
+            "NO butter on bread"
+          ]
+        },
+        "egg": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "gluten": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "shellfish": {
+          "status": "SAFE"
+        },
+        "fish": {
+          "status": "SAFE"
+        },
+        "soy": {
+          "status": "SAFE"
+        },
+        "peanuts": {
+          "status": "SAFE"
+        },
+        "tree_nuts": {
+          "status": "SAFE"
+        },
+        "sesame": {
+          "status": "SAFE"
+        },
+        "msg": {
+          "status": "SAFE"
+        }
+      }
+    },
+    {
+      "id": "center_cut_by_master_butchers_from_the_finest_midwestern_beef_tenderloin_basil_hayden_s_bourbon_marinated_tenderloin_tips",
+      "name": "Basil Hayden's Bourbon Marinated Tenderloin Tips",
+      "categoryId": "specials",
+      "ticketCode": "BASIL TIPS",
+      "description": "Tenderloin tips in a bourbon marinade .  Broiled to desired temperature.  Brushed with steak butter .  Two 4 oz. tips at lunch, three 4 oz. tips at dinner.  Served with au jus  and roasted onions .  Served with choice of side.",
+      "allergenRules": {
+        "dairy": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "egg": {
+          "status": "SAFE"
+        },
+        "gluten": {
+          "status": "SAFE"
+        },
+        "shellfish": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "fish": {
+          "status": "SAFE"
+        },
+        "soy": {
+          "status": "SAFE"
+        },
+        "peanuts": {
+          "status": "SAFE"
+        },
+        "tree_nuts": {
+          "status": "SAFE"
+        },
+        "sesame": {
+          "status": "SAFE"
+        },
+        "msg": {
+          "status": "SAFE"
+        }
+      }
+    },
+    {
+      "id": "petite_filet_mignon_filet_mignon",
+      "name": "Petite Filet Mignon/Filet Mignon",
+      "categoryId": "specials",
+      "ticketCode": "PETITE/FILET",
+      "description": "Filet mignon brushed with melted butter and seasoned with salt and pepper, then broiled to desired temperature. Topped with steak butter  and served on a garlic crouton  with au jus . The lunch and dinner petite filets are 7 oz. The dinner filet is 10 oz.  Served with choice of side.",
+      "allergenRules": {
+        "dairy": {
+          "status": "MODIFY",
+          "substitutions": [
+            "NO pre-marking butter",
+            "NO steak butter",
+            "NO garlic crouton"
+          ]
+        },
+        "egg": {
+          "status": "SAFE"
+        },
+        "gluten": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "shellfish": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "fish": {
+          "status": "SAFE"
+        },
+        "soy": {
+          "status": "SAFE"
+        },
+        "peanuts": {
+          "status": "SAFE"
+        },
+        "tree_nuts": {
+          "status": "SAFE"
+        },
+        "sesame": {
+          "status": "SAFE"
+        },
+        "msg": {
+          "status": "SAFE"
+        }
+      }
+    },
+    {
+      "id": "horseradish_crusted_filet",
+      "name": "Horseradish Crusted Filet",
+      "categoryId": "specials",
+      "ticketCode": "HORSE FILET",
+      "description": "Filet mignon brushed with melted butter and seasoned with salt and pepper.  Wrapped in bacon, broiled and topped with a horseradish crust .  Served on a garlic crouton  with au jus  and a side of horseradish cream sauce .  The dinner portion is a 10 oz. portion.  Served with choice of side.  Garnished with parsley.  A lunch portion is available with a 7 oz. filet.",
+      "allergenRules": {
+        "dairy": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "egg": {
+          "status": "SAFE"
+        },
+        "gluten": {
+          "status": "SAFE"
+        },
+        "shellfish": {
+          "status": "SAFE"
+        },
+        "fish": {
+          "status": "SAFE"
+        },
+        "soy": {
+          "status": "SAFE"
+        },
+        "peanuts": {
+          "status": "SAFE"
+        },
+        "tree_nuts": {
+          "status": "SAFE"
+        },
+        "sesame": {
+          "status": "SAFE"
+        },
+        "msg": {
+          "status": "SAFE"
+        }
+      }
+    },
+    {
+      "id": "filet_medallion_duo_filet_medallion_trio",
+      "name": "Filet Medallion Duo/Filet Medallion Trio",
+      "categoryId": "specials",
+      "ticketCode": "DUO/TRIO",
+      "description": "3 oz. f ilet medallions brushed with melted butter and seasoned with salt and pepper.  Broiled to desired temperature and topped with the guest choice of crust s (two or t hree choices).  Crust choices are Horseradish , Blue Cheese , Parmesan , Mushroom , Garlic  (GF) or Peppercorn  (GF).  Duo = two filets.  Trio = three filets.  Served with au jus . Served with choice of side.",
+      "allergenRules": {
+        "dairy": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "egg": {
+          "status": "SAFE"
+        },
+        "gluten": {
+          "status": "SAFE"
+        },
+        "shellfish": {
+          "status": "SAFE"
+        },
+        "fish": {
+          "status": "SAFE"
+        },
+        "soy": {
+          "status": "SAFE"
+        },
+        "peanuts": {
+          "status": "SAFE"
+        },
+        "tree_nuts": {
+          "status": "SAFE"
+        },
+        "sesame": {
+          "status": "SAFE"
+        },
+        "msg": {
+          "status": "SAFE"
+        }
+      }
+    },
+    {
+      "id": "tenderness_and_taste_brushed_with_our_seasoning_blend_and_broiled_over_glowing_embers_to_your_preferred_temperature_mushroom_crusted_fancy_pork_chops",
+      "name": "Mushroom Crusted Fancy Pork Chops",
+      "categoryId": "steaks",
+      "ticketCode": "PORK CHOPS",
+      "description": "All natural boneless pork rib chops brined for 8 hours (sugar, salt, water, fresh oranges, garlic, rosemary, thyme, black peppercorns, crushed red chilies).  Broiled to medium and topped with mushroom crust  and browned under broiler.  The lunch portion is one 8 oz. chop.  The dinner portion is two 8 oz. chops.  Served with au jus  and a choice of side.",
+      "allergenRules": {
+        "dairy": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "egg": {
+          "status": "SAFE"
+        },
+        "gluten": {
+          "status": "SAFE"
+        },
+        "shellfish": {
+          "status": "SAFE"
+        },
+        "fish": {
+          "status": "SAFE"
+        },
+        "soy": {
+          "status": "SAFE"
+        },
+        "peanuts": {
+          "status": "SAFE"
+        },
+        "tree_nuts": {
+          "status": "SAFE"
+        },
+        "sesame": {
+          "status": "SAFE"
+        },
+        "msg": {
+          "status": "SAFE"
+        }
+      },
+      "isEntree": true,
+      "sides": [
+        {
+          "id": "french_fries",
+          "name": "French Fries"
+        },
+        {
+          "id": "red_skin_mashed_potatoes",
+          "name": "Red Skin Mashed Potatoes"
+        },
+        {
+          "id": "steamed_broccoli_with_lemon_vinaigrette",
+          "name": "Steamed Broccoli"
+        },
+        {
+          "id": "creamed_spinach",
+          "name": "Creamed Spinach"
+        },
+        {
+          "id": "au_gratin_potatoes",
+          "name": "Au Gratin Potatoes"
+        },
+        {
+          "id": "idaho_baked_potato",
+          "name": "Idaho Baked Potato"
+        },
+        {
+          "id": "bbq_rubbed_sweet_potato",
+          "name": "BBQ Rubbed Sweet Potato"
+        },
+        {
+          "id": "mac_and_cheese",
+          "name": "Mac and Cheese"
+        },
+        {
+          "id": "roasted_mushroom_caps",
+          "name": "Roasted Mushroom Caps"
+        },
+        {
+          "id": "roasted_market_vegetables",
+          "name": "Roasted Market Vegetables"
+        },
+        {
+          "id": "applesauce",
+          "name": "Applesauce"
+        },
+        {
+          "id": "homemade_coleslaw",
+          "name": "Homemade Coleslaw"
+        }
+      ]
+    },
+    {
+      "id": "new_york_strip_steak",
+      "name": "New York Strip Steak",
+      "categoryId": "steaks",
+      "ticketCode": "NEW YORK STRIP",
+      "description": "14 oz. New York strip brushed with melted butter and seasoned with salt and pepper, then broiled to desired temperature. Topped with steak butter and au jus. Served with choice of side.",
+      "allergenRules": {
+        "dairy": {
+          "status": "MODIFY",
+          "substitutions": [
+            "NO steak butter",
+            "NO pre-marking butter"
+          ]
+        },
+        "egg": {
+          "status": "SAFE"
+        },
+        "gluten": {
+          "status": "SAFE"
+        },
+        "shellfish": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "fish": {
+          "status": "SAFE"
+        },
+        "soy": {
+          "status": "SAFE"
+        },
+        "peanuts": {
+          "status": "SAFE"
+        },
+        "tree_nuts": {
+          "status": "SAFE"
+        },
+        "sesame": {
+          "status": "SAFE"
+        },
+        "msg": {
+          "status": "SAFE"
+        }
+      },
+      "isEntree": true,
+      "sides": [
+        {
+          "id": "french_fries",
+          "name": "French Fries"
+        },
+        {
+          "id": "red_skin_mashed_potatoes",
+          "name": "Red Skin Mashed Potatoes"
+        },
+        {
+          "id": "steamed_broccoli_with_lemon_vinaigrette",
+          "name": "Steamed Broccoli"
+        },
+        {
+          "id": "creamed_spinach",
+          "name": "Creamed Spinach"
+        },
+        {
+          "id": "au_gratin_potatoes",
+          "name": "Au Gratin Potatoes"
+        },
+        {
+          "id": "idaho_baked_potato",
+          "name": "Idaho Baked Potato"
+        },
+        {
+          "id": "bbq_rubbed_sweet_potato",
+          "name": "BBQ Rubbed Sweet Potato"
+        },
+        {
+          "id": "mac_and_cheese",
+          "name": "Mac and Cheese"
+        },
+        {
+          "id": "roasted_mushroom_caps",
+          "name": "Roasted Mushroom Caps"
+        },
+        {
+          "id": "roasted_market_vegetables",
+          "name": "Roasted Market Vegetables"
+        },
+        {
+          "id": "applesauce",
+          "name": "Applesauce"
+        },
+        {
+          "id": "homemade_coleslaw",
+          "name": "Homemade Coleslaw"
+        }
+      ],
+      "requiresCrust": true,
+      "crustOptions": [
+        {
+          "id": "peppercorn_crust",
+          "name": "Peppercorn Crust"
+        },
+        {
+          "id": "horseradish_crust",
+          "name": "Horseradish Crust"
+        },
+        {
+          "id": "blue_cheese_crust",
+          "name": "Blue Cheese Crust"
+        },
+        {
+          "id": "parmesan_crust",
+          "name": "Parmesan Crust"
+        },
+        {
+          "id": "mushroom_crust",
+          "name": "Mushroom Crust"
+        },
+        {
+          "id": "garlic_crust",
+          "name": "Garlic Crust"
+        }
+      ]
+    },
+    {
+      "id": "roumanian_skirt_steak",
+      "name": "Roumanian Skirt Steak",
+      "categoryId": "steaks",
+      "ticketCode": "SKIRT STEAK",
+      "description": "12 oz. c enter cut skirt steak marinated in steak marinade , then grilled to desired temperature.  Brushed with steak butter  and served with au jus.   Garnished with roasted red onions .  Served with choice of side.  L unch portion is available upon request with a 6 oz. pi ece.",
+      "allergenRules": {
+        "dairy": {
+          "status": "MODIFY",
+          "substitutions": [
+            "NO steak butter",
+            "NO pre-marking butter"
+          ]
+        },
+        "egg": {
+          "status": "SAFE"
+        },
+        "gluten": {
+          "status": "SAFE"
+        },
+        "shellfish": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "fish": {
+          "status": "SAFE"
+        },
+        "soy": {
+          "status": "SAFE"
+        },
+        "peanuts": {
+          "status": "SAFE"
+        },
+        "tree_nuts": {
+          "status": "SAFE"
+        },
+        "sesame": {
+          "status": "SAFE"
+        },
+        "msg": {
+          "status": "SAFE"
+        }
+      },
+      "isEntree": true,
+      "sides": [
+        {
+          "id": "french_fries",
+          "name": "French Fries"
+        },
+        {
+          "id": "red_skin_mashed_potatoes",
+          "name": "Red Skin Mashed Potatoes"
+        },
+        {
+          "id": "steamed_broccoli_with_lemon_vinaigrette",
+          "name": "Steamed Broccoli"
+        },
+        {
+          "id": "creamed_spinach",
+          "name": "Creamed Spinach"
+        },
+        {
+          "id": "au_gratin_potatoes",
+          "name": "Au Gratin Potatoes"
+        },
+        {
+          "id": "idaho_baked_potato",
+          "name": "Idaho Baked Potato"
+        },
+        {
+          "id": "bbq_rubbed_sweet_potato",
+          "name": "BBQ Rubbed Sweet Potato"
+        },
+        {
+          "id": "mac_and_cheese",
+          "name": "Mac and Cheese"
+        },
+        {
+          "id": "roasted_mushroom_caps",
+          "name": "Roasted Mushroom Caps"
+        },
+        {
+          "id": "roasted_market_vegetables",
+          "name": "Roasted Market Vegetables"
+        },
+        {
+          "id": "applesauce",
+          "name": "Applesauce"
+        },
+        {
+          "id": "homemade_coleslaw",
+          "name": "Homemade Coleslaw"
+        }
+      ],
+      "requiresCrust": true,
+      "crustOptions": [
+        {
+          "id": "peppercorn_crust",
+          "name": "Peppercorn Crust"
+        },
+        {
+          "id": "horseradish_crust",
+          "name": "Horseradish Crust"
+        },
+        {
+          "id": "blue_cheese_crust",
+          "name": "Blue Cheese Crust"
+        },
+        {
+          "id": "parmesan_crust",
+          "name": "Parmesan Crust"
+        },
+        {
+          "id": "mushroom_crust",
+          "name": "Mushroom Crust"
+        },
+        {
+          "id": "garlic_crust",
+          "name": "Garlic Crust"
+        }
+      ]
+    },
+    {
+      "id": "porterhouse",
+      "name": "Porterhouse",
+      "categoryId": "steaks",
+      "ticketCode": "PORTERHOUSE",
+      "description": "The “King” of steaks.  22 oz. porterhouse is two steaks i n one.  One side is a New York strip and the other is a filet mignon.  The steak is brushed with melted butter, seasoned with salt, p epper  and char-crust,  then broiled to desired temperature.  Topped with steak butter  and au jus.   Served with choice of side.",
+      "allergenRules": {
+        "dairy": {
+          "status": "MODIFY",
+          "substitutions": [
+            "NO steak butter",
+            "NO pre-marking butter"
+          ]
+        },
+        "egg": {
+          "status": "SAFE"
+        },
+        "gluten": {
+          "status": "SAFE"
+        },
+        "shellfish": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "fish": {
+          "status": "SAFE"
+        },
+        "soy": {
+          "status": "SAFE"
+        },
+        "peanuts": {
+          "status": "SAFE"
+        },
+        "tree_nuts": {
+          "status": "SAFE"
+        },
+        "sesame": {
+          "status": "SAFE"
+        },
+        "msg": {
+          "status": "SAFE"
+        }
+      },
+      "isEntree": true,
+      "sides": [
+        {
+          "id": "french_fries",
+          "name": "French Fries"
+        },
+        {
+          "id": "red_skin_mashed_potatoes",
+          "name": "Red Skin Mashed Potatoes"
+        },
+        {
+          "id": "steamed_broccoli_with_lemon_vinaigrette",
+          "name": "Steamed Broccoli"
+        },
+        {
+          "id": "creamed_spinach",
+          "name": "Creamed Spinach"
+        },
+        {
+          "id": "au_gratin_potatoes",
+          "name": "Au Gratin Potatoes"
+        },
+        {
+          "id": "idaho_baked_potato",
+          "name": "Idaho Baked Potato"
+        },
+        {
+          "id": "bbq_rubbed_sweet_potato",
+          "name": "BBQ Rubbed Sweet Potato"
+        },
+        {
+          "id": "mac_and_cheese",
+          "name": "Mac and Cheese"
+        },
+        {
+          "id": "roasted_mushroom_caps",
+          "name": "Roasted Mushroom Caps"
+        },
+        {
+          "id": "roasted_market_vegetables",
+          "name": "Roasted Market Vegetables"
+        },
+        {
+          "id": "applesauce",
+          "name": "Applesauce"
+        },
+        {
+          "id": "homemade_coleslaw",
+          "name": "Homemade Coleslaw"
+        }
+      ],
+      "requiresCrust": true,
+      "crustOptions": [
+        {
+          "id": "peppercorn_crust",
+          "name": "Peppercorn Crust"
+        },
+        {
+          "id": "horseradish_crust",
+          "name": "Horseradish Crust"
+        },
+        {
+          "id": "blue_cheese_crust",
+          "name": "Blue Cheese Crust"
+        },
+        {
+          "id": "parmesan_crust",
+          "name": "Parmesan Crust"
+        },
+        {
+          "id": "mushroom_crust",
+          "name": "Mushroom Crust"
+        },
+        {
+          "id": "garlic_crust",
+          "name": "Garlic Crust"
+        }
+      ]
+    },
+    {
+      "id": "char_crust_bone_in_rib_eye",
+      "name": "Char -Crust  Bone -In Rib Eye",
+      "categoryId": "steaks",
+      "ticketCode": "RIB EYE",
+      "description": "20 oz. beef “prime rib” chop brushed with melted butter and seasoned with salt and pepper and char-crust. Broiled to desired temperature .  Topped with steak butter  and au jus .  Served with choice of side.",
+      "allergenRules": {
+        "dairy": {
+          "status": "MODIFY",
+          "substitutions": [
+            "NO steak butter",
+            "NO pre-marking butter"
+          ]
+        },
+        "egg": {
+          "status": "SAFE"
+        },
+        "gluten": {
+          "status": "SAFE"
+        },
+        "shellfish": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "fish": {
+          "status": "SAFE"
+        },
+        "soy": {
+          "status": "SAFE"
+        },
+        "peanuts": {
+          "status": "SAFE"
+        },
+        "tree_nuts": {
+          "status": "SAFE"
+        },
+        "sesame": {
+          "status": "SAFE"
+        },
+        "msg": {
+          "status": "SAFE"
+        }
+      },
+      "isEntree": true,
+      "sides": [
+        {
+          "id": "french_fries",
+          "name": "French Fries"
+        },
+        {
+          "id": "red_skin_mashed_potatoes",
+          "name": "Red Skin Mashed Potatoes"
+        },
+        {
+          "id": "steamed_broccoli_with_lemon_vinaigrette",
+          "name": "Steamed Broccoli"
+        },
+        {
+          "id": "creamed_spinach",
+          "name": "Creamed Spinach"
+        },
+        {
+          "id": "au_gratin_potatoes",
+          "name": "Au Gratin Potatoes"
+        },
+        {
+          "id": "idaho_baked_potato",
+          "name": "Idaho Baked Potato"
+        },
+        {
+          "id": "bbq_rubbed_sweet_potato",
+          "name": "BBQ Rubbed Sweet Potato"
+        },
+        {
+          "id": "mac_and_cheese",
+          "name": "Mac and Cheese"
+        },
+        {
+          "id": "roasted_mushroom_caps",
+          "name": "Roasted Mushroom Caps"
+        },
+        {
+          "id": "roasted_market_vegetables",
+          "name": "Roasted Market Vegetables"
+        },
+        {
+          "id": "applesauce",
+          "name": "Applesauce"
+        },
+        {
+          "id": "homemade_coleslaw",
+          "name": "Homemade Coleslaw"
+        }
+      ]
+    },
+    {
+      "id": "broiled_lamb_porterhouse_chops",
+      "name": "Broiled Lamb Porterhouse Chops",
+      "categoryId": "steaks",
+      "ticketCode": "LAMB CHOPS",
+      "description": "Three 6 oz. Colorado lamb porterhouse chops (part filet and part New York with bone) brushed with melted butter and se asoned with salt and pepper and char–crust. Broiled to order.  Topped with steak butter  and au jus .  Served with mint chimichurri  on the side .  Served with choice of side.",
+      "allergenRules": {
+        "dairy": {
+          "status": "MODIFY",
+          "substitutions": [
+            "NO steak butter",
+            "NO pre-marking butter"
+          ]
+        },
+        "egg": {
+          "status": "SAFE"
+        },
+        "gluten": {
+          "status": "SAFE"
+        },
+        "shellfish": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "fish": {
+          "status": "SAFE"
+        },
+        "soy": {
+          "status": "SAFE"
+        },
+        "peanuts": {
+          "status": "SAFE"
+        },
+        "tree_nuts": {
+          "status": "SAFE"
+        },
+        "sesame": {
+          "status": "SAFE"
+        },
+        "msg": {
+          "status": "SAFE"
+        }
+      },
+      "isEntree": true,
+      "sides": [
+        {
+          "id": "french_fries",
+          "name": "French Fries"
+        },
+        {
+          "id": "red_skin_mashed_potatoes",
+          "name": "Red Skin Mashed Potatoes"
+        },
+        {
+          "id": "steamed_broccoli_with_lemon_vinaigrette",
+          "name": "Steamed Broccoli"
+        },
+        {
+          "id": "creamed_spinach",
+          "name": "Creamed Spinach"
+        },
+        {
+          "id": "au_gratin_potatoes",
+          "name": "Au Gratin Potatoes"
+        },
+        {
+          "id": "idaho_baked_potato",
+          "name": "Idaho Baked Potato"
+        },
+        {
+          "id": "bbq_rubbed_sweet_potato",
+          "name": "BBQ Rubbed Sweet Potato"
+        },
+        {
+          "id": "mac_and_cheese",
+          "name": "Mac and Cheese"
+        },
+        {
+          "id": "roasted_mushroom_caps",
+          "name": "Roasted Mushroom Caps"
+        },
+        {
+          "id": "roasted_market_vegetables",
+          "name": "Roasted Market Vegetables"
+        },
+        {
+          "id": "applesauce",
+          "name": "Applesauce"
+        },
+        {
+          "id": "homemade_coleslaw",
+          "name": "Homemade Coleslaw"
+        }
+      ],
+      "requiresCrust": true,
+      "crustOptions": [
+        {
+          "id": "peppercorn_crust",
+          "name": "Peppercorn Crust"
+        },
+        {
+          "id": "horseradish_crust",
+          "name": "Horseradish Crust"
+        },
+        {
+          "id": "blue_cheese_crust",
+          "name": "Blue Cheese Crust"
+        },
+        {
+          "id": "parmesan_crust",
+          "name": "Parmesan Crust"
+        },
+        {
+          "id": "mushroom_crust",
+          "name": "Mushroom Crust"
+        },
+        {
+          "id": "garlic_crust",
+          "name": "Garlic Crust"
+        }
+      ]
+    },
+    {
+      "id": "oscar_style_added_onto_any_steak",
+      "name": "Oscar Style – Added onto any steak",
+      "categoryId": "steaks",
+      "ticketCode": "AD OSCAR",
+      "description": "Steak is topped with 2 oz. crab meat warmed with a little butter, béarnaise sauce  and 4 oz. blanched asparagus (butter, salt, pepper).",
+      "allergenRules": {
+        "dairy": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "egg": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "gluten": {
+          "status": "SAFE"
+        },
+        "shellfish": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "fish": {
+          "status": "SAFE"
+        },
+        "soy": {
+          "status": "SAFE"
+        },
+        "peanuts": {
+          "status": "SAFE"
+        },
+        "tree_nuts": {
+          "status": "SAFE"
+        },
+        "sesame": {
+          "status": "SAFE"
+        },
+        "msg": {
+          "status": "SAFE"
+        }
+      },
+      "isEntree": true,
+      "sides": [
+        {
+          "id": "french_fries",
+          "name": "French Fries"
+        },
+        {
+          "id": "red_skin_mashed_potatoes",
+          "name": "Red Skin Mashed Potatoes"
+        },
+        {
+          "id": "steamed_broccoli_with_lemon_vinaigrette",
+          "name": "Steamed Broccoli"
+        },
+        {
+          "id": "creamed_spinach",
+          "name": "Creamed Spinach"
+        },
+        {
+          "id": "au_gratin_potatoes",
+          "name": "Au Gratin Potatoes"
+        },
+        {
+          "id": "idaho_baked_potato",
+          "name": "Idaho Baked Potato"
+        },
+        {
+          "id": "bbq_rubbed_sweet_potato",
+          "name": "BBQ Rubbed Sweet Potato"
+        },
+        {
+          "id": "mac_and_cheese",
+          "name": "Mac and Cheese"
+        },
+        {
+          "id": "roasted_mushroom_caps",
+          "name": "Roasted Mushroom Caps"
+        },
+        {
+          "id": "roasted_market_vegetables",
+          "name": "Roasted Market Vegetables"
+        },
+        {
+          "id": "applesauce",
+          "name": "Applesauce"
+        },
+        {
+          "id": "homemade_coleslaw",
+          "name": "Homemade Coleslaw"
+        }
+      ]
+    },
+    {
+      "id": "roasted_prime_rib",
+      "name": "ROASTED PRIME RIB",
+      "categoryId": "steaks",
+      "ticketCode": "OF BEEF AU JUS",
+      "description": "“King of Roasts” is rubbed with fresh garlic, sea salt, cracked black pepper and slow roasted for six hours and served with horseradish sauce To provide our guests with the best cut of prime rib possible; all of our prime rib is roasted to medium rare to medium.  Rar e is not available (suggest a rib -eye).  If the guest would like well done, we recommend an end cut. Roasted Prime Rib of Beef  10 OZ PRIME/16 OZ PRIME/22 OZ PRIME",
+      "allergenRules": {
+        "dairy": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "egg": {
+          "status": "SAFE"
+        },
+        "gluten": {
+          "status": "SAFE"
+        },
+        "shellfish": {
+          "status": "SAFE"
+        },
+        "fish": {
+          "status": "SAFE"
+        },
+        "soy": {
+          "status": "SAFE"
+        },
+        "peanuts": {
+          "status": "SAFE"
+        },
+        "tree_nuts": {
+          "status": "SAFE"
+        },
+        "sesame": {
+          "status": "SAFE"
+        },
+        "msg": {
+          "status": "SAFE"
+        }
+      },
+      "isEntree": true,
+      "sides": [
+        {
+          "id": "french_fries",
+          "name": "French Fries"
+        },
+        {
+          "id": "red_skin_mashed_potatoes",
+          "name": "Red Skin Mashed Potatoes"
+        },
+        {
+          "id": "steamed_broccoli_with_lemon_vinaigrette",
+          "name": "Steamed Broccoli"
+        },
+        {
+          "id": "creamed_spinach",
+          "name": "Creamed Spinach"
+        },
+        {
+          "id": "au_gratin_potatoes",
+          "name": "Au Gratin Potatoes"
+        },
+        {
+          "id": "idaho_baked_potato",
+          "name": "Idaho Baked Potato"
+        },
+        {
+          "id": "bbq_rubbed_sweet_potato",
+          "name": "BBQ Rubbed Sweet Potato"
+        },
+        {
+          "id": "mac_and_cheese",
+          "name": "Mac and Cheese"
+        },
+        {
+          "id": "roasted_mushroom_caps",
+          "name": "Roasted Mushroom Caps"
+        },
+        {
+          "id": "roasted_market_vegetables",
+          "name": "Roasted Market Vegetables"
+        },
+        {
+          "id": "applesauce",
+          "name": "Applesauce"
+        },
+        {
+          "id": "homemade_coleslaw",
+          "name": "Homemade Coleslaw"
+        }
+      ]
+    },
+    {
+      "id": "roasted_prime_rib_of_beef",
+      "name": "Roasted Prime Rib of Beef",
+      "categoryId": "specials",
+      "ticketCode": "10 OZ PRIME/16 OZ PRIME/22 OZ PRIME",
+      "description": "The prime ribs are rubbed with house oil , fresh minced garlic, kosher salt, and black pepper.  It is then seared in the oven and slow roasted.  Served with horseradish cream sauce  and au jus.   At lunch the guest has a choice of an 8 oz. (Lunch Cut) or 10 oz. (Regular Cut).  At dinner the guest has a choice of a 10 oz. (Regular Cut), 16 oz. (Queen Cut), or 22 oz. (King Cut) portion.  All served with a choice of side.",
+      "allergenRules": {
+        "dairy": {
+          "status": "MODIFY",
+          "substitutions": [
+            "NO horseradish cream sauce"
+          ]
+        },
+        "egg": {
+          "status": "SAFE"
+        },
+        "gluten": {
+          "status": "SAFE"
+        },
+        "shellfish": {
+          "status": "SAFE"
+        },
+        "fish": {
+          "status": "SAFE"
+        },
+        "soy": {
+          "status": "SAFE"
+        },
+        "peanuts": {
+          "status": "SAFE"
+        },
+        "tree_nuts": {
+          "status": "SAFE"
+        },
+        "sesame": {
+          "status": "SAFE"
+        },
+        "msg": {
+          "status": "SAFE"
+        }
+      }
+    },
+    {
+      "id": "coconut_shrimp",
+      "name": "Coconut Shrimp",
+      "categoryId": "fresh_seafood",
+      "ticketCode": "COCO SHRP",
+      "description": "16-20 count shrimp are butterflied and then dipped in seasoned flour , lightly beaten eggs whites, and coconut crumbs ( garlic butter , parsley, Japanese bread crumbs , shredded coconut).  Seared on a skillet in the oven.  Served with a ramekin of coconut dipping sauce (reduced coconut milk, dark brown sugar, rice wine vinegar, San J Tamari , ginger, chili paste), which is garnished with fresh chives.  Served with a lemon wedge.  Dinner - 8 shrimp; Lunch - 6 shrimp; Add to entrée - 3 shrimp.  Lunch and dinner entrees served with choice of side.",
+      "allergenRules": {
+        "dairy": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "egg": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "gluten": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "shellfish": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "fish": {
+          "status": "SAFE"
+        },
+        "soy": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "peanuts": {
+          "status": "SAFE"
+        },
+        "tree_nuts": {
+          "status": "SAFE"
+        },
+        "sesame": {
+          "status": "SAFE"
+        },
+        "msg": {
+          "status": "SAFE"
+        }
+      },
+      "isEntree": true,
+      "sides": [
+        {
+          "id": "french_fries",
+          "name": "French Fries"
+        },
+        {
+          "id": "red_skin_mashed_potatoes",
+          "name": "Red Skin Mashed Potatoes"
+        },
+        {
+          "id": "steamed_broccoli_with_lemon_vinaigrette",
+          "name": "Steamed Broccoli"
+        },
+        {
+          "id": "creamed_spinach",
+          "name": "Creamed Spinach"
+        },
+        {
+          "id": "au_gratin_potatoes",
+          "name": "Au Gratin Potatoes"
+        },
+        {
+          "id": "idaho_baked_potato",
+          "name": "Idaho Baked Potato"
+        },
+        {
+          "id": "bbq_rubbed_sweet_potato",
+          "name": "BBQ Rubbed Sweet Potato"
+        },
+        {
+          "id": "mac_and_cheese",
+          "name": "Mac and Cheese"
+        },
+        {
+          "id": "roasted_mushroom_caps",
+          "name": "Roasted Mushroom Caps"
+        },
+        {
+          "id": "roasted_market_vegetables",
+          "name": "Roasted Market Vegetables"
+        },
+        {
+          "id": "applesauce",
+          "name": "Applesauce"
+        },
+        {
+          "id": "homemade_coleslaw",
+          "name": "Homemade Coleslaw"
+        }
+      ]
+    },
+    {
+      "id": "cedar_planked_salmon",
+      "name": "Cedar Planked Salmon",
+      "categoryId": "fresh_seafood",
+      "ticketCode": "SALMON",
+      "description": "Farm raised Atlantic salmon from Canada .  Brushed with BBQ chicken spice .  Baked in the oven on a cedar plank. Glazed with brown sugar, San J Tamari , Dijon  mustard  and butter.  At lunch it is a 6 oz. portion.  At dinner it is an 8 oz. portion.  Served with a choice of side.",
+      "allergenRules": {
+        "dairy": {
+          "status": "MODIFY",
+          "substitutions": [
+            "NO glaze"
+          ]
+        },
+        "egg": {
+          "status": "SAFE"
+        },
+        "gluten": {
+          "status": "SAFE"
+        },
+        "shellfish": {
+          "status": "SAFE"
+        },
+        "fish": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "soy": {
+          "status": "SAFE"
+        },
+        "peanuts": {
+          "status": "SAFE"
+        },
+        "tree_nuts": {
+          "status": "SAFE"
+        },
+        "sesame": {
+          "status": "SAFE"
+        },
+        "msg": {
+          "status": "SAFE"
+        }
+      },
+      "isEntree": true,
+      "sides": [
+        {
+          "id": "french_fries",
+          "name": "French Fries"
+        },
+        {
+          "id": "red_skin_mashed_potatoes",
+          "name": "Red Skin Mashed Potatoes"
+        },
+        {
+          "id": "steamed_broccoli_with_lemon_vinaigrette",
+          "name": "Steamed Broccoli"
+        },
+        {
+          "id": "creamed_spinach",
+          "name": "Creamed Spinach"
+        },
+        {
+          "id": "au_gratin_potatoes",
+          "name": "Au Gratin Potatoes"
+        },
+        {
+          "id": "idaho_baked_potato",
+          "name": "Idaho Baked Potato"
+        },
+        {
+          "id": "bbq_rubbed_sweet_potato",
+          "name": "BBQ Rubbed Sweet Potato"
+        },
+        {
+          "id": "mac_and_cheese",
+          "name": "Mac and Cheese"
+        },
+        {
+          "id": "roasted_mushroom_caps",
+          "name": "Roasted Mushroom Caps"
+        },
+        {
+          "id": "roasted_market_vegetables",
+          "name": "Roasted Market Vegetables"
+        },
+        {
+          "id": "applesauce",
+          "name": "Applesauce"
+        },
+        {
+          "id": "homemade_coleslaw",
+          "name": "Homemade Coleslaw"
+        }
+      ]
+    },
+    {
+      "id": "east_coast_scallops_de_jonghe",
+      "name": "East Coast Scallops De Jonghe",
+      "categoryId": "fresh_seafood",
+      "ticketCode": "SCALLOP DEJONGHE",
+      "description": "8 scallops equaling 8 oz. (20 count) are placed in a pasta boat with clam juice and topped with the DeJonghe crust . Baked in the oven. S erved with parsley, lemon wedge  and choice of side.",
+      "allergenRules": {
+        "dairy": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "egg": {
+          "status": "SAFE"
+        },
+        "gluten": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "shellfish": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "fish": {
+          "status": "SAFE"
+        },
+        "soy": {
+          "status": "SAFE"
+        },
+        "peanuts": {
+          "status": "SAFE"
+        },
+        "tree_nuts": {
+          "status": "SAFE"
+        },
+        "sesame": {
+          "status": "SAFE"
+        },
+        "msg": {
+          "status": "SAFE"
+        }
+      },
+      "isEntree": true,
+      "sides": [
+        {
+          "id": "french_fries",
+          "name": "French Fries"
+        },
+        {
+          "id": "red_skin_mashed_potatoes",
+          "name": "Red Skin Mashed Potatoes"
+        },
+        {
+          "id": "steamed_broccoli_with_lemon_vinaigrette",
+          "name": "Steamed Broccoli"
+        },
+        {
+          "id": "creamed_spinach",
+          "name": "Creamed Spinach"
+        },
+        {
+          "id": "au_gratin_potatoes",
+          "name": "Au Gratin Potatoes"
+        },
+        {
+          "id": "idaho_baked_potato",
+          "name": "Idaho Baked Potato"
+        },
+        {
+          "id": "bbq_rubbed_sweet_potato",
+          "name": "BBQ Rubbed Sweet Potato"
+        },
+        {
+          "id": "mac_and_cheese",
+          "name": "Mac and Cheese"
+        },
+        {
+          "id": "roasted_mushroom_caps",
+          "name": "Roasted Mushroom Caps"
+        },
+        {
+          "id": "roasted_market_vegetables",
+          "name": "Roasted Market Vegetables"
+        },
+        {
+          "id": "applesauce",
+          "name": "Applesauce"
+        },
+        {
+          "id": "homemade_coleslaw",
+          "name": "Homemade Coleslaw"
+        }
+      ]
+    },
+    {
+      "id": "lump_crab_cakes",
+      "name": "Lump Crab Cakes",
+      "categoryId": "fresh_seafood",
+      "ticketCode": "CRAB CAKES",
+      "description": "6 oz. crab cake  roasted to a golden brown in the oven.  Lunch portion is one crab cake and dinner portion is two crab cakes.  Served with a ramekin of mustard mayonnaise and a lemon wedge .  Garnished with chives.  Served with choice of side.",
+      "allergenRules": {
+        "dairy": {
+          "status": "MODIFY",
+          "substitutions": [
+            "NO mustard mayonnaise"
+          ]
+        },
+        "egg": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "gluten": {
+          "status": "SAFE"
+        },
+        "shellfish": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "fish": {
+          "status": "SAFE"
+        },
+        "soy": {
+          "status": "SAFE"
+        },
+        "peanuts": {
+          "status": "SAFE"
+        },
+        "tree_nuts": {
+          "status": "SAFE"
+        },
+        "sesame": {
+          "status": "SAFE"
+        },
+        "msg": {
+          "status": "SAFE"
+        }
+      },
+      "isEntree": true,
+      "sides": [
+        {
+          "id": "french_fries",
+          "name": "French Fries"
+        },
+        {
+          "id": "red_skin_mashed_potatoes",
+          "name": "Red Skin Mashed Potatoes"
+        },
+        {
+          "id": "steamed_broccoli_with_lemon_vinaigrette",
+          "name": "Steamed Broccoli"
+        },
+        {
+          "id": "creamed_spinach",
+          "name": "Creamed Spinach"
+        },
+        {
+          "id": "au_gratin_potatoes",
+          "name": "Au Gratin Potatoes"
+        },
+        {
+          "id": "idaho_baked_potato",
+          "name": "Idaho Baked Potato"
+        },
+        {
+          "id": "bbq_rubbed_sweet_potato",
+          "name": "BBQ Rubbed Sweet Potato"
+        },
+        {
+          "id": "mac_and_cheese",
+          "name": "Mac and Cheese"
+        },
+        {
+          "id": "roasted_mushroom_caps",
+          "name": "Roasted Mushroom Caps"
+        },
+        {
+          "id": "roasted_market_vegetables",
+          "name": "Roasted Market Vegetables"
+        },
+        {
+          "id": "applesauce",
+          "name": "Applesauce"
+        },
+        {
+          "id": "homemade_coleslaw",
+          "name": "Homemade Coleslaw"
+        }
+      ]
+    },
+    {
+      "id": "wildfire_s_macadamia_nut_crusted_halibut",
+      "name": "Wildfire’s Macadamia Nut Crusted Halibut",
+      "categoryId": "fresh_seafood",
+      "ticketCode": "HALIBUT",
+      "description": "Fresh Alaskan h alibut dipped in egg whites, seasoned flour , salt  and pepper.  Crusted with macadamia nuts, garlic butter, salt, pepper, parsley, and Japanese breadcrumbs .  Roasted in the oven with asparagus and served with lemon butter sauce .  Lunch portion is 5 oz.  Dinner portion is 7 oz. Served with choice of side.",
+      "allergenRules": {
+        "dairy": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "egg": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "gluten": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "shellfish": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "fish": {
+          "status": "SAFE"
+        },
+        "soy": {
+          "status": "SAFE"
+        },
+        "peanuts": {
+          "status": "SAFE"
+        },
+        "tree_nuts": {
+          "status": "SAFE"
+        },
+        "sesame": {
+          "status": "SAFE"
+        },
+        "msg": {
+          "status": "SAFE"
+        }
+      },
+      "isEntree": true,
+      "sides": [
+        {
+          "id": "french_fries",
+          "name": "French Fries"
+        },
+        {
+          "id": "red_skin_mashed_potatoes",
+          "name": "Red Skin Mashed Potatoes"
+        },
+        {
+          "id": "steamed_broccoli_with_lemon_vinaigrette",
+          "name": "Steamed Broccoli"
+        },
+        {
+          "id": "creamed_spinach",
+          "name": "Creamed Spinach"
+        },
+        {
+          "id": "au_gratin_potatoes",
+          "name": "Au Gratin Potatoes"
+        },
+        {
+          "id": "idaho_baked_potato",
+          "name": "Idaho Baked Potato"
+        },
+        {
+          "id": "bbq_rubbed_sweet_potato",
+          "name": "BBQ Rubbed Sweet Potato"
+        },
+        {
+          "id": "mac_and_cheese",
+          "name": "Mac and Cheese"
+        },
+        {
+          "id": "roasted_mushroom_caps",
+          "name": "Roasted Mushroom Caps"
+        },
+        {
+          "id": "roasted_market_vegetables",
+          "name": "Roasted Market Vegetables"
+        },
+        {
+          "id": "applesauce",
+          "name": "Applesauce"
+        },
+        {
+          "id": "homemade_coleslaw",
+          "name": "Homemade Coleslaw"
+        }
+      ]
+    },
+    {
+      "id": "parmesan_crusted_cod",
+      "name": "Parmesan Crusted Cod",
+      "categoryId": "fresh_seafood",
+      "ticketCode": "COD",
+      "description": "Fresh c od dipped in egg whites, seasoned flour , salt  and pepper.  Crusted with garlic breadcrumbs  and P armesan cheese.  Roasted in the oven with green beans and served with lemon b utter sauce  and dollops of tomato jam . Served with choice of side.  Lunch portion is 5 oz.  Dinner portion is 7 oz.",
+      "allergenRules": {
+        "dairy": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "egg": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "gluten": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "shellfish": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "fish": {
+          "status": "SAFE"
+        },
+        "soy": {
+          "status": "SAFE"
+        },
+        "peanuts": {
+          "status": "SAFE"
+        },
+        "tree_nuts": {
+          "status": "SAFE"
+        },
+        "sesame": {
+          "status": "SAFE"
+        },
+        "msg": {
+          "status": "SAFE"
+        }
+      },
+      "isEntree": true,
+      "sides": [
+        {
+          "id": "french_fries",
+          "name": "French Fries"
+        },
+        {
+          "id": "red_skin_mashed_potatoes",
+          "name": "Red Skin Mashed Potatoes"
+        },
+        {
+          "id": "steamed_broccoli_with_lemon_vinaigrette",
+          "name": "Steamed Broccoli"
+        },
+        {
+          "id": "creamed_spinach",
+          "name": "Creamed Spinach"
+        },
+        {
+          "id": "au_gratin_potatoes",
+          "name": "Au Gratin Potatoes"
+        },
+        {
+          "id": "idaho_baked_potato",
+          "name": "Idaho Baked Potato"
+        },
+        {
+          "id": "bbq_rubbed_sweet_potato",
+          "name": "BBQ Rubbed Sweet Potato"
+        },
+        {
+          "id": "mac_and_cheese",
+          "name": "Mac and Cheese"
+        },
+        {
+          "id": "roasted_mushroom_caps",
+          "name": "Roasted Mushroom Caps"
+        },
+        {
+          "id": "roasted_market_vegetables",
+          "name": "Roasted Market Vegetables"
+        },
+        {
+          "id": "applesauce",
+          "name": "Applesauce"
+        },
+        {
+          "id": "homemade_coleslaw",
+          "name": "Homemade Coleslaw"
+        }
+      ]
+    },
+    {
+      "id": "cornbread_crusted_cod",
+      "name": "Cornbread Crusted Cod",
+      "categoryId": "fresh_seafood",
+      "ticketCode": "COD",
+      "description": "Fresh c od dipped in egg whites, seasoned flour , salt and pepper. Crusted with garlic breadcrumbs  and cornbread crumbs .  Roasted in the oven.  Served with blanched shaved Brussel s sprouts tossed in garlic butter , salt and pepper.  Served with cranberry lemon butter  (cranberry sauce , lemon butter sauce ).  Served with choice of side. Lunch portion is 5 oz.  Dinner portion is 7 oz.",
+      "allergenRules": {
+        "dairy": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "egg": {
+          "status": "SAFE"
+        },
+        "gluten": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "shellfish": {
+          "status": "SAFE"
+        },
+        "fish": {
+          "status": "SAFE"
+        },
+        "soy": {
+          "status": "SAFE"
+        },
+        "peanuts": {
+          "status": "SAFE"
+        },
+        "tree_nuts": {
+          "status": "SAFE"
+        },
+        "sesame": {
+          "status": "SAFE"
+        },
+        "msg": {
+          "status": "SAFE"
+        }
+      },
+      "isEntree": true,
+      "sides": [
+        {
+          "id": "french_fries",
+          "name": "French Fries"
+        },
+        {
+          "id": "red_skin_mashed_potatoes",
+          "name": "Red Skin Mashed Potatoes"
+        },
+        {
+          "id": "steamed_broccoli_with_lemon_vinaigrette",
+          "name": "Steamed Broccoli"
+        },
+        {
+          "id": "creamed_spinach",
+          "name": "Creamed Spinach"
+        },
+        {
+          "id": "au_gratin_potatoes",
+          "name": "Au Gratin Potatoes"
+        },
+        {
+          "id": "idaho_baked_potato",
+          "name": "Idaho Baked Potato"
+        },
+        {
+          "id": "bbq_rubbed_sweet_potato",
+          "name": "BBQ Rubbed Sweet Potato"
+        },
+        {
+          "id": "mac_and_cheese",
+          "name": "Mac and Cheese"
+        },
+        {
+          "id": "roasted_mushroom_caps",
+          "name": "Roasted Mushroom Caps"
+        },
+        {
+          "id": "roasted_market_vegetables",
+          "name": "Roasted Market Vegetables"
+        },
+        {
+          "id": "applesauce",
+          "name": "Applesauce"
+        },
+        {
+          "id": "homemade_coleslaw",
+          "name": "Homemade Coleslaw"
+        }
+      ]
+    },
+    {
+      "id": "spit_roasted_half_chicken",
+      "name": "Spit Roasted Half Chicken",
+      "categoryId": "specials",
+      "ticketCode": "HERB CHICKEN",
+      "description": "½ of a 3¾ pound chicken, marinated in the herb chicken marinade  (cayenne pepper, oregano, thyme, tarragon, curry powder , rosemary, garlic, salt, pepper, bay leaves, olive oil, dried onions, chicken stock , butter, Dijon  mustard ).  Spit roasted and served with chicken juice.   Served with choice of side.",
+      "allergenRules": {
+        "dairy": {
+          "status": "MODIFY",
+          "substitutions": [
+            "NO lemon parmesan vinaigrette",
+            "SUB lemon herb vinaigrette",
+            "NO parmesan"
+          ]
+        },
+        "egg": {
+          "status": "SAFE"
+        },
+        "gluten": {
+          "status": "SAFE"
+        },
+        "shellfish": {
+          "status": "SAFE"
+        },
+        "fish": {
+          "status": "SAFE"
+        },
+        "soy": {
+          "status": "SAFE"
+        },
+        "peanuts": {
+          "status": "SAFE"
+        },
+        "tree_nuts": {
+          "status": "SAFE"
+        },
+        "sesame": {
+          "status": "SAFE"
+        },
+        "msg": {
+          "status": "SAFE"
+        }
+      }
+    },
+    {
+      "id": "barbecued_chicken",
+      "name": "Barbecued Chicken",
+      "categoryId": "specials",
+      "ticketCode": "BBQ CHICKEN",
+      "description": "½ of a 3¾ pound chicken, marinated in the herb chicken marinade , spit roasted, rubbed with BBQ chicken spice  and brushed with BBQ sauce .  Served with BBQ sauce  and choice of side.",
+      "allergenRules": {
+        "dairy": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "egg": {
+          "status": "SAFE"
+        },
+        "gluten": {
+          "status": "SAFE"
+        },
+        "shellfish": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "fish": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "soy": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "peanuts": {
+          "status": "SAFE"
+        },
+        "tree_nuts": {
+          "status": "SAFE"
+        },
+        "sesame": {
+          "status": "SAFE"
+        },
+        "msg": {
+          "status": "SAFE"
+        }
+      }
+    },
+    {
+      "id": "lemon_pepper_chicken_breasts",
+      "name": "Lemon Pepper Chicken Breasts",
+      "categoryId": "specials",
+      "ticketCode": "LEMON CHIX",
+      "description": "Skin on, boneless chicken breast marinated in fresh lemon juice, melted butter, Lawry's seasoning  and cracked black pepper.  Roasted in the oven.  Lunch portion is one 8 oz. breast, and the dinner portion is two 8 oz. breasts.  Served with a squeeze of fresh lemon, grilled lemon slice and chicken juice .  Served with a choice of side.",
+      "allergenRules": {
+        "dairy": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "egg": {
+          "status": "SAFE"
+        },
+        "gluten": {
+          "status": "SAFE"
+        },
+        "shellfish": {
+          "status": "SAFE"
+        },
+        "fish": {
+          "status": "SAFE"
+        },
+        "soy": {
+          "status": "SAFE"
+        },
+        "peanuts": {
+          "status": "SAFE"
+        },
+        "tree_nuts": {
+          "status": "SAFE"
+        },
+        "sesame": {
+          "status": "SAFE"
+        },
+        "msg": {
+          "status": "SAFE"
+        }
+      }
+    },
+    {
+      "id": "barbecued_baby_back_ribs",
+      "name": "Barbecued Baby Back Ribs",
+      "categoryId": "specials",
+      "ticketCode": "FULL RIBS/HALF RIBS",
+      "description": "Baby b ack pork ribs rubbed with BBQ rib spice  and hot smoked.  B roiled and basted with Wildfire BBQ sauce . Served with coleslaw, applesauce  and BBQ sauce .  A full slab is 1½ pounds (13 ribs).  A half slab is ¾ of a pound (6 - 7 ribs).  Served with a choice of side.",
+      "allergenRules": {
+        "dairy": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "egg": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "gluten": {
+          "status": "SAFE"
+        },
+        "shellfish": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "fish": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "soy": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "peanuts": {
+          "status": "SAFE"
+        },
+        "tree_nuts": {
+          "status": "SAFE"
+        },
+        "sesame": {
+          "status": "SAFE"
+        },
+        "msg": {
+          "status": "SAFE"
+        }
+      }
+    },
+    {
+      "id": "chicken_baby_back_ribs_combo",
+      "name": "Chicken & Baby Back Ribs Combo",
+      "categoryId": "specials",
+      "ticketCode": "BBQ COMBO",
+      "description": "Half slab of baby b ack ribs and ½ of a BBQ chi cken.  Served with coleslaw, applesauce  and BBQ sauce .  Served with a choice of side.",
+      "allergenRules": {
+        "dairy": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "egg": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "gluten": {
+          "status": "SAFE"
+        },
+        "shellfish": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "fish": {
+          "status": "SAFE"
+        },
+        "soy": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "peanuts": {
+          "status": "SAFE"
+        },
+        "tree_nuts": {
+          "status": "SAFE"
+        },
+        "sesame": {
+          "status": "SAFE"
+        },
+        "msg": {
+          "status": "SAFE"
+        }
+      }
+    },
+    {
+      "id": "limited_quantities_are_prepared_nightly_monday_tuesday_southern_fried_chicken",
+      "name": "Monday & Tuesday: Southern Fried Chicken",
+      "categoryId": "nightly",
+      "ticketCode": "FRIED CHICKEN",
+      "description": "Four pieces of chicken (breast, thigh, wing, and leg) dipped in fried chicken batter  and fried chicken seasoned flour and then deep fried.  Served with mashed potatoes , mushroom gravy , buttermilk biscuit , a ramekin of honey  and coleslaw.",
+      "allergenRules": {
+        "dairy": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "egg": {
+          "status": "SAFE"
+        },
+        "gluten": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "shellfish": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "fish": {
+          "status": "SAFE"
+        },
+        "soy": {
+          "status": "SAFE"
+        },
+        "peanuts": {
+          "status": "SAFE"
+        },
+        "tree_nuts": {
+          "status": "SAFE"
+        },
+        "sesame": {
+          "status": "SAFE"
+        },
+        "msg": {
+          "status": "SAFE"
+        }
+      },
+      "isEntree": true,
+      "sides": [
+        {
+          "id": "french_fries",
+          "name": "French Fries"
+        },
+        {
+          "id": "red_skin_mashed_potatoes",
+          "name": "Red Skin Mashed Potatoes"
+        },
+        {
+          "id": "steamed_broccoli_with_lemon_vinaigrette",
+          "name": "Steamed Broccoli"
+        },
+        {
+          "id": "creamed_spinach",
+          "name": "Creamed Spinach"
+        },
+        {
+          "id": "au_gratin_potatoes",
+          "name": "Au Gratin Potatoes"
+        },
+        {
+          "id": "idaho_baked_potato",
+          "name": "Idaho Baked Potato"
+        },
+        {
+          "id": "bbq_rubbed_sweet_potato",
+          "name": "BBQ Rubbed Sweet Potato"
+        },
+        {
+          "id": "mac_and_cheese",
+          "name": "Mac and Cheese"
+        },
+        {
+          "id": "roasted_mushroom_caps",
+          "name": "Roasted Mushroom Caps"
+        },
+        {
+          "id": "roasted_market_vegetables",
+          "name": "Roasted Market Vegetables"
+        },
+        {
+          "id": "applesauce",
+          "name": "Applesauce"
+        },
+        {
+          "id": "homemade_coleslaw",
+          "name": "Homemade Coleslaw"
+        }
+      ]
+    },
+    {
+      "id": "wednesday_spit_roasted_half_long_island_duck",
+      "name": "Wednesday: Spit Roasted Half Long Island Duck",
+      "categoryId": "nightly",
+      "ticketCode": "LI DUCK",
+      "description": "One half of a 5 pound duck.  The duck is stuffed with onions and thyme and seasoned with salt, pepper and thyme. Slow roasted for two hours on the spit.  Brush ed with balsamic vinegar, honey  and orange zest glaze.  Served in a cherry sauce (honey, shallots, orange juice and zest, thyme, balsamic vinegar, cherry juice, duck stock , Door County cherries, corns tarch, butter, pepper) and wild rice  (blend of long grain, brown rice, sweet brown rice, wehani, black japonica, and wild rice pieces baked in the oven with onions, garlic, fresh thyme, butter, house oil , salt, pepper  and vegetable stock .  Mince d red peppers, corn  and peas are sautéed in house oil , salt and pepper and f olded into the rice blend with scallions and garlic butter ).",
+      "allergenRules": {
+        "dairy": {
+          "status": "MODIFY",
+          "substitutions": [
+            "NO cherry glaze",
+            "NO wild rice"
+          ]
+        },
+        "egg": {
+          "status": "SAFE"
+        },
+        "gluten": {
+          "status": "SAFE"
+        },
+        "shellfish": {
+          "status": "SAFE"
+        },
+        "fish": {
+          "status": "SAFE"
+        },
+        "soy": {
+          "status": "SAFE"
+        },
+        "peanuts": {
+          "status": "SAFE"
+        },
+        "tree_nuts": {
+          "status": "SAFE"
+        },
+        "sesame": {
+          "status": "SAFE"
+        },
+        "msg": {
+          "status": "SAFE"
+        }
+      },
+      "isEntree": true,
+      "sides": [
+        {
+          "id": "french_fries",
+          "name": "French Fries"
+        },
+        {
+          "id": "red_skin_mashed_potatoes",
+          "name": "Red Skin Mashed Potatoes"
+        },
+        {
+          "id": "steamed_broccoli_with_lemon_vinaigrette",
+          "name": "Steamed Broccoli"
+        },
+        {
+          "id": "creamed_spinach",
+          "name": "Creamed Spinach"
+        },
+        {
+          "id": "au_gratin_potatoes",
+          "name": "Au Gratin Potatoes"
+        },
+        {
+          "id": "idaho_baked_potato",
+          "name": "Idaho Baked Potato"
+        },
+        {
+          "id": "bbq_rubbed_sweet_potato",
+          "name": "BBQ Rubbed Sweet Potato"
+        },
+        {
+          "id": "mac_and_cheese",
+          "name": "Mac and Cheese"
+        },
+        {
+          "id": "roasted_mushroom_caps",
+          "name": "Roasted Mushroom Caps"
+        },
+        {
+          "id": "roasted_market_vegetables",
+          "name": "Roasted Market Vegetables"
+        },
+        {
+          "id": "applesauce",
+          "name": "Applesauce"
+        },
+        {
+          "id": "homemade_coleslaw",
+          "name": "Homemade Coleslaw"
+        }
+      ]
+    },
+    {
+      "id": "thursday_beer_braised_short_ribs",
+      "name": "Thursday: Beer Braised Short Ribs",
+      "categoryId": "nightly",
+      "ticketCode": "SHORT RIBS",
+      "description": "12 oz. boneless beef short rib seasoned with house oil , salt, pepper and BBQ chicken spice .  Seared and then slowly braised for 3 hours with carrots, onions, celery, garlic, tomato paste, bay leaves, thyme, rosemary, IPA beer, tomatoes, chicken stock  and beef stock .  Served with reduced braising liquid (mixed with cornstarch and butter), roast ed root vegetables (turnips, parsnips, carrots, shallots, garlic, thyme, rosemary, salt, pepper, house oil ) and mashed potatoes.",
+      "allergenRules": {
+        "dairy": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "egg": {
+          "status": "SAFE"
+        },
+        "gluten": {
+          "status": "SAFE"
+        },
+        "shellfish": {
+          "status": "SAFE"
+        },
+        "fish": {
+          "status": "SAFE"
+        },
+        "soy": {
+          "status": "SAFE"
+        },
+        "peanuts": {
+          "status": "SAFE"
+        },
+        "tree_nuts": {
+          "status": "SAFE"
+        },
+        "sesame": {
+          "status": "SAFE"
+        },
+        "msg": {
+          "status": "SAFE"
+        }
+      },
+      "isEntree": true,
+      "sides": [
+        {
+          "id": "french_fries",
+          "name": "French Fries"
+        },
+        {
+          "id": "red_skin_mashed_potatoes",
+          "name": "Red Skin Mashed Potatoes"
+        },
+        {
+          "id": "steamed_broccoli_with_lemon_vinaigrette",
+          "name": "Steamed Broccoli"
+        },
+        {
+          "id": "creamed_spinach",
+          "name": "Creamed Spinach"
+        },
+        {
+          "id": "au_gratin_potatoes",
+          "name": "Au Gratin Potatoes"
+        },
+        {
+          "id": "idaho_baked_potato",
+          "name": "Idaho Baked Potato"
+        },
+        {
+          "id": "bbq_rubbed_sweet_potato",
+          "name": "BBQ Rubbed Sweet Potato"
+        },
+        {
+          "id": "mac_and_cheese",
+          "name": "Mac and Cheese"
+        },
+        {
+          "id": "roasted_mushroom_caps",
+          "name": "Roasted Mushroom Caps"
+        },
+        {
+          "id": "roasted_market_vegetables",
+          "name": "Roasted Market Vegetables"
+        },
+        {
+          "id": "applesauce",
+          "name": "Applesauce"
+        },
+        {
+          "id": "homemade_coleslaw",
+          "name": "Homemade Coleslaw"
+        }
+      ]
+    },
+    {
+      "id": "friday_saturday_filet_mignon_wellington",
+      "name": "Friday & Saturday: Filet Mignon Wellington",
+      "categoryId": "nightly",
+      "ticketCode": "BEEF WELLINGTON",
+      "description": "7 oz. f ilet brushed with melted butter and seasoned with salt and pepper, then seared.  Wrapped in puff pastry  with a mushroom crust .  Baked medium rare to medium and s erved with shallot  balsamic sauce , broccolini tossed with garlic butter  and A siago breadcrumbs ( Japanese breadcrumbs , garlic butter , Asiago cheese) and au gratin potatoes .",
+      "allergenRules": {
+        "dairy": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "egg": {
+          "status": "SAFE"
+        },
+        "gluten": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "shellfish": {
+          "status": "SAFE"
+        },
+        "fish": {
+          "status": "SAFE"
+        },
+        "soy": {
+          "status": "SAFE"
+        },
+        "peanuts": {
+          "status": "SAFE"
+        },
+        "tree_nuts": {
+          "status": "SAFE"
+        },
+        "sesame": {
+          "status": "SAFE"
+        },
+        "msg": {
+          "status": "SAFE"
+        }
+      },
+      "isEntree": true,
+      "sides": [
+        {
+          "id": "french_fries",
+          "name": "French Fries"
+        },
+        {
+          "id": "red_skin_mashed_potatoes",
+          "name": "Red Skin Mashed Potatoes"
+        },
+        {
+          "id": "steamed_broccoli_with_lemon_vinaigrette",
+          "name": "Steamed Broccoli"
+        },
+        {
+          "id": "creamed_spinach",
+          "name": "Creamed Spinach"
+        },
+        {
+          "id": "au_gratin_potatoes",
+          "name": "Au Gratin Potatoes"
+        },
+        {
+          "id": "idaho_baked_potato",
+          "name": "Idaho Baked Potato"
+        },
+        {
+          "id": "bbq_rubbed_sweet_potato",
+          "name": "BBQ Rubbed Sweet Potato"
+        },
+        {
+          "id": "mac_and_cheese",
+          "name": "Mac and Cheese"
+        },
+        {
+          "id": "roasted_mushroom_caps",
+          "name": "Roasted Mushroom Caps"
+        },
+        {
+          "id": "roasted_market_vegetables",
+          "name": "Roasted Market Vegetables"
+        },
+        {
+          "id": "applesauce",
+          "name": "Applesauce"
+        },
+        {
+          "id": "homemade_coleslaw",
+          "name": "Homemade Coleslaw"
+        }
+      ]
+    },
+    {
+      "id": "sunday_spit_roasted_turkey_dinner",
+      "name": "Sunday: Spit Roasted Turkey Dinner",
+      "categoryId": "nightly",
+      "ticketCode": "ROAST TURKEY",
+      "description": "Whole turkey breast brined  in water, salt  and sugar, then marinated in fresh herb marinade  and spit roasted.  Sliced into an 8 oz. portion.  Served with stuffing ( sourdough bread , butter, onions, celery, mushrooms, cayenne pepper, carrots, garlic, rosemary, sage, thyme, basil, salt, pepper, chicken base , chicken stock , eggs, cooking spray ), mashed potatoes , mushroom gravy  and a ramekin of cranberry sauce (cranberries, water, sugar, salt, Grand Marnier, Cognac).",
+      "allergenRules": {
+        "dairy": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "egg": {
+          "status": "SAFE"
+        },
+        "gluten": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "shellfish": {
+          "status": "SAFE"
+        },
+        "fish": {
+          "status": "SAFE"
+        },
+        "soy": {
+          "status": "SAFE"
+        },
+        "peanuts": {
+          "status": "SAFE"
+        },
+        "tree_nuts": {
+          "status": "SAFE"
+        },
+        "sesame": {
+          "status": "SAFE"
+        },
+        "msg": {
+          "status": "SAFE"
+        }
+      },
+      "isEntree": true,
+      "sides": [
+        {
+          "id": "french_fries",
+          "name": "French Fries"
+        },
+        {
+          "id": "red_skin_mashed_potatoes",
+          "name": "Red Skin Mashed Potatoes"
+        },
+        {
+          "id": "steamed_broccoli_with_lemon_vinaigrette",
+          "name": "Steamed Broccoli"
+        },
+        {
+          "id": "creamed_spinach",
+          "name": "Creamed Spinach"
+        },
+        {
+          "id": "au_gratin_potatoes",
+          "name": "Au Gratin Potatoes"
+        },
+        {
+          "id": "idaho_baked_potato",
+          "name": "Idaho Baked Potato"
+        },
+        {
+          "id": "bbq_rubbed_sweet_potato",
+          "name": "BBQ Rubbed Sweet Potato"
+        },
+        {
+          "id": "mac_and_cheese",
+          "name": "Mac and Cheese"
+        },
+        {
+          "id": "roasted_mushroom_caps",
+          "name": "Roasted Mushroom Caps"
+        },
+        {
+          "id": "roasted_market_vegetables",
+          "name": "Roasted Market Vegetables"
+        },
+        {
+          "id": "applesauce",
+          "name": "Applesauce"
+        },
+        {
+          "id": "homemade_coleslaw",
+          "name": "Homemade Coleslaw"
+        }
+      ]
+    },
+    {
+      "id": "french_fries",
+      "name": "French Fries",
+      "categoryId": "sides",
+      "ticketCode": "FRIES",
+      "description": "Idaho russet potatoes hand cut with skins on, soaked in cold water and apple cider vinegar overnight, then blanched quickly in the fryer. Cooled and fried a second time for serving. Tossed with salt and pepper and served with a ramekin of ketchup.",
+      "allergenRules": {
+        "dairy": {
+          "status": "SAFE"
+        },
+        "egg": {
+          "status": "SAFE"
+        },
+        "gluten": {
+          "status": "SAFE"
+        },
+        "shellfish": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "fish": {
+          "status": "SAFE"
+        },
+        "soy": {
+          "status": "SAFE"
+        },
+        "peanuts": {
+          "status": "SAFE"
+        },
+        "tree_nuts": {
+          "status": "SAFE"
+        },
+        "sesame": {
+          "status": "SAFE"
+        },
+        "msg": {
+          "status": "SAFE"
+        }
+      }
+    },
+    {
+      "id": "red_skin_mashed_potatoes",
+      "name": "Red Skin Mashed Potatoes",
+      "categoryId": "sides",
+      "ticketCode": "MASHED",
+      "description": "Red skin potatoes and Idaho russet potatoes (with skin) mashed with butter, half and half , whipping cream , salt  and pepper.",
+      "allergenRules": {
+        "dairy": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "egg": {
+          "status": "SAFE"
+        },
+        "gluten": {
+          "status": "SAFE"
+        },
+        "shellfish": {
+          "status": "SAFE"
+        },
+        "fish": {
+          "status": "SAFE"
+        },
+        "soy": {
+          "status": "SAFE"
+        },
+        "peanuts": {
+          "status": "SAFE"
+        },
+        "tree_nuts": {
+          "status": "SAFE"
+        },
+        "sesame": {
+          "status": "SAFE"
+        },
+        "msg": {
+          "status": "SAFE"
+        }
+      }
+    },
+    {
+      "id": "steamed_broccoli_with_lemon_vinaigrette",
+      "name": "Steamed Broccoli with Lemon Vinaigrette",
+      "categoryId": "sides",
+      "ticketCode": "BROCCOLI",
+      "description": "5 oz. of steamed broccoli crowns served with lemon herb vinaigrette .",
+      "allergenRules": {
+        "dairy": {
+          "status": "SAFE"
+        },
+        "egg": {
+          "status": "SAFE"
+        },
+        "gluten": {
+          "status": "SAFE"
+        },
+        "shellfish": {
+          "status": "SAFE"
+        },
+        "fish": {
+          "status": "SAFE"
+        },
+        "soy": {
+          "status": "SAFE"
+        },
+        "peanuts": {
+          "status": "SAFE"
+        },
+        "tree_nuts": {
+          "status": "SAFE"
+        },
+        "sesame": {
+          "status": "SAFE"
+        },
+        "msg": {
+          "status": "SAFE"
+        }
+      }
+    },
+    {
+      "id": "creamed_spinach",
+      "name": "Creamed Spinach",
+      "categoryId": "sides",
+      "ticketCode": "SPINACH",
+      "description": "Mixture made from spinach, cre am, butter, flour, nutmeg, salt  and pepper.",
+      "allergenRules": {
+        "dairy": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "egg": {
+          "status": "SAFE"
+        },
+        "gluten": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "shellfish": {
+          "status": "SAFE"
+        },
+        "fish": {
+          "status": "SAFE"
+        },
+        "soy": {
+          "status": "SAFE"
+        },
+        "peanuts": {
+          "status": "SAFE"
+        },
+        "tree_nuts": {
+          "status": "SAFE"
+        },
+        "sesame": {
+          "status": "SAFE"
+        },
+        "msg": {
+          "status": "SAFE"
+        }
+      }
+    },
+    {
+      "id": "au_gratin_potatoes",
+      "name": "Au Gratin Potatoes",
+      "categoryId": "sides",
+      "ticketCode": "AU GRATIN",
+      "description": "Thinly sliced potatoes layered with cr eam, white cheddar cheese, salt  and pepper.  Baked slowly in oven.",
+      "allergenRules": {
+        "dairy": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "egg": {
+          "status": "SAFE"
+        },
+        "gluten": {
+          "status": "SAFE"
+        },
+        "shellfish": {
+          "status": "SAFE"
+        },
+        "fish": {
+          "status": "SAFE"
+        },
+        "soy": {
+          "status": "SAFE"
+        },
+        "peanuts": {
+          "status": "SAFE"
+        },
+        "tree_nuts": {
+          "status": "SAFE"
+        },
+        "sesame": {
+          "status": "SAFE"
+        },
+        "msg": {
+          "status": "SAFE"
+        }
+      }
+    },
+    {
+      "id": "idaho_baked_potato",
+      "name": "Idaho Baked Potato",
+      "categoryId": "sides",
+      "ticketCode": "BAKED POT",
+      "description": "40 count Idaho potato with rubbed with house oil , salt and pepper, baked  and spilt open.  Available with sour cream or butter or both on the side.  $1.95 additional with entrees  and sandwiches.",
+      "allergenRules": {
+        "dairy": {
+          "status": "MODIFY",
+          "substitutions": [
+            "NO sour cream",
+            "NO butter"
+          ]
+        },
+        "egg": {
+          "status": "SAFE"
+        },
+        "gluten": {
+          "status": "SAFE"
+        },
+        "shellfish": {
+          "status": "SAFE"
+        },
+        "fish": {
+          "status": "SAFE"
+        },
+        "soy": {
+          "status": "SAFE"
+        },
+        "peanuts": {
+          "status": "SAFE"
+        },
+        "tree_nuts": {
+          "status": "SAFE"
+        },
+        "sesame": {
+          "status": "SAFE"
+        },
+        "msg": {
+          "status": "SAFE"
+        }
+      }
+    },
+    {
+      "id": "bbq_rubbed_sweet_potato",
+      "name": "BBQ Rubbed Sweet Potato",
+      "categoryId": "sides",
+      "ticketCode": "SWEET POT",
+      "description": "40 count sweet potato rubbed with BBQ chicken spice  and house oil , baked  and spit open.  Available with butter or brown sugar or both on the side.  $1.95 additional with entrees  and sandwiches.",
+      "allergenRules": {
+        "dairy": {
+          "status": "MODIFY",
+          "substitutions": [
+            "NO butter"
+          ]
+        },
+        "egg": {
+          "status": "SAFE"
+        },
+        "gluten": {
+          "status": "SAFE"
+        },
+        "shellfish": {
+          "status": "SAFE"
+        },
+        "fish": {
+          "status": "SAFE"
+        },
+        "soy": {
+          "status": "SAFE"
+        },
+        "peanuts": {
+          "status": "SAFE"
+        },
+        "tree_nuts": {
+          "status": "SAFE"
+        },
+        "sesame": {
+          "status": "SAFE"
+        },
+        "msg": {
+          "status": "SAFE"
+        }
+      }
+    },
+    {
+      "id": "mac_and_cheese",
+      "name": "Mac and Cheese",
+      "categoryId": "sides",
+      "ticketCode": "MAC & CHEESE",
+      "description": "Elbow macaroni  mixed with whipping cream , whole milk, Land o’Lakes Golden Velvet Yellow Cheese Spread . Topped with cheddar cheese slices and baked.  $1.95 additional with entrees  and sandwiches.",
+      "allergenRules": {
+        "dairy": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "egg": {
+          "status": "SAFE"
+        },
+        "gluten": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "shellfish": {
+          "status": "SAFE"
+        },
+        "fish": {
+          "status": "SAFE"
+        },
+        "soy": {
+          "status": "SAFE"
+        },
+        "peanuts": {
+          "status": "SAFE"
+        },
+        "tree_nuts": {
+          "status": "SAFE"
+        },
+        "sesame": {
+          "status": "SAFE"
+        },
+        "msg": {
+          "status": "SAFE"
+        }
+      }
+    },
+    {
+      "id": "roasted_mushroom_caps",
+      "name": "Roasted Mushroom Caps",
+      "categoryId": "sides",
+      "ticketCode": "MUSH CAPS",
+      "description": "Mushroom caps roasted with garlic, shallots, white wine, fresh thyme, chicken stock  and butter.  $3 .95 additional with entrees and sandwiches.",
+      "allergenRules": {
+        "dairy": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "egg": {
+          "status": "SAFE"
+        },
+        "gluten": {
+          "status": "SAFE"
+        },
+        "shellfish": {
+          "status": "SAFE"
+        },
+        "fish": {
+          "status": "SAFE"
+        },
+        "soy": {
+          "status": "SAFE"
+        },
+        "peanuts": {
+          "status": "SAFE"
+        },
+        "tree_nuts": {
+          "status": "SAFE"
+        },
+        "sesame": {
+          "status": "SAFE"
+        },
+        "msg": {
+          "status": "SAFE"
+        }
+      }
+    },
+    {
+      "id": "roasted_vegetables",
+      "name": "Roasted Market Vegetables",
+      "categoryId": "sides",
+      "ticketCode": "ROASTED VEG",
+      "description": "A blend of red onion, red pepper, Brussels sprouts, cauliflower and butternut squash roasted with house oil, salt and pepper.",
+      "allergenRules": {
+        "dairy": {
+          "status": "SAFE"
+        },
+        "egg": {
+          "status": "SAFE"
+        },
+        "gluten": {
+          "status": "SAFE"
+        },
+        "shellfish": {
+          "status": "SAFE"
+        },
+        "fish": {
+          "status": "SAFE"
+        },
+        "soy": {
+          "status": "SAFE"
+        },
+        "peanuts": {
+          "status": "SAFE"
+        },
+        "tree_nuts": {
+          "status": "SAFE"
+        },
+        "sesame": {
+          "status": "SAFE"
+        },
+        "msg": {
+          "status": "SAFE"
+        }
+      }
+    },
+    {
+      "id": "applesauce",
+      "name": "Applesauce",
+      "categoryId": "sides",
+      "ticketCode": "APPLESAUCE",
+      "description": "Apples mixed w ith corn syrup, cinnamon, sugar  and fresh lemon juice.",
+      "allergenRules": {
+        "dairy": {
+          "status": "SAFE"
+        },
+        "egg": {
+          "status": "SAFE"
+        },
+        "gluten": {
+          "status": "SAFE"
+        },
+        "shellfish": {
+          "status": "SAFE"
+        },
+        "fish": {
+          "status": "SAFE"
+        },
+        "soy": {
+          "status": "SAFE"
+        },
+        "peanuts": {
+          "status": "SAFE"
+        },
+        "tree_nuts": {
+          "status": "SAFE"
+        },
+        "sesame": {
+          "status": "SAFE"
+        },
+        "msg": {
+          "status": "SAFE"
+        }
+      }
+    },
+    {
+      "id": "homemade_coleslaw",
+      "name": "Homemade Coleslaw",
+      "categoryId": "sides",
+      "ticketCode": "COLESLAW",
+      "description": "Cabbage and carrot mixed with coleslaw d ressing .",
+      "allergenRules": {
+        "dairy": {
+          "status": "SAFE"
+        },
+        "egg": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "gluten": {
+          "status": "SAFE"
+        },
+        "shellfish": {
+          "status": "SAFE"
+        },
+        "fish": {
+          "status": "SAFE"
+        },
+        "soy": {
+          "status": "SAFE"
+        },
+        "peanuts": {
+          "status": "SAFE"
+        },
+        "tree_nuts": {
+          "status": "SAFE"
+        },
+        "sesame": {
+          "status": "SAFE"
+        },
+        "msg": {
+          "status": "SAFE"
+        }
+      }
+    },
+    {
+      "id": "triple_layer_chocolate_cake",
+      "name": "Triple  Layer Chocolate Cake",
+      "categoryId": "desserts",
+      "ticketCode": "CHOC CAKE",
+      "description": "Chocolate cake (eggs, canola oil, milk, vanilla extract, flour, sugar, baking powder, baking soda, salt, cocoa powder, water), and chocolate icing ( chocolate pistoles , egg yolks, sugar, heavy whipping cream). The pan is sprayed with cooking spray .  Outside of the cake is coated in toasted cake crumbs.  Topped with hot fudge  and whipped cream . Ala mode is an option.",
+      "allergenRules": {
+        "dairy": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "egg": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "gluten": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "shellfish": {
+          "status": "SAFE"
+        },
+        "fish": {
+          "status": "SAFE"
+        },
+        "soy": {
+          "status": "SAFE"
+        },
+        "peanuts": {
+          "status": "SAFE"
+        },
+        "tree_nuts": {
+          "status": "SAFE"
+        },
+        "sesame": {
+          "status": "SAFE"
+        },
+        "msg": {
+          "status": "SAFE"
+        }
+      }
+    },
+    {
+      "id": "door_county_cherry_pie",
+      "name": "Door County Cherry Pie",
+      "categoryId": "desserts",
+      "ticketCode": "CHERRY PIE",
+      "description": "Filling is a mixture of Door County cherries, sugar, c ornstarch, salt, almond extract  and Door County cherry juice. Placed in a pie crust shell  and topped with pie crust  topper .  Lightly brushed with a mix of egg and half and half  and sprinkled with sugar.  Served with whipped cream .",
+      "allergenRules": {
+        "dairy": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "egg": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "gluten": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "shellfish": {
+          "status": "SAFE"
+        },
+        "fish": {
+          "status": "SAFE"
+        },
+        "soy": {
+          "status": "SAFE"
+        },
+        "peanuts": {
+          "status": "SAFE"
+        },
+        "tree_nuts": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "sesame": {
+          "status": "SAFE"
+        },
+        "msg": {
+          "status": "SAFE"
+        }
+      }
+    },
+    {
+      "id": "key_lime_pie",
+      "name": "Key Lime Pie",
+      "categoryId": "desserts",
+      "ticketCode": "KEY LIME",
+      "description": "An individual pie made with a graham cracker crust  and real key lime filling (key lime juice, egg yolks, sweetened condensed milk, sugar, lemon juice).  Topped with whipped cream  and zest of lime.",
+      "allergenRules": {
+        "dairy": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "egg": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "gluten": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "shellfish": {
+          "status": "SAFE"
+        },
+        "fish": {
+          "status": "SAFE"
+        },
+        "soy": {
+          "status": "SAFE"
+        },
+        "peanuts": {
+          "status": "SAFE"
+        },
+        "tree_nuts": {
+          "status": "SAFE"
+        },
+        "sesame": {
+          "status": "SAFE"
+        },
+        "msg": {
+          "status": "SAFE"
+        }
+      }
+    },
+    {
+      "id": "jd_s_cheesecake",
+      "name": "JD’s Cheesecake",
+      "categoryId": "desserts",
+      "ticketCode": "CHEESECAKE",
+      "description": "2 layer cheese cake with graham cracker  crust  bottom only crust ( graham crackers , butter, sugar), cream cheese filling (cream cheese, sugar, eggs, salt, vanilla), baked and chilled.  Topped with a sour cream topping (sour cream, sugar, vanilla) and baked briefly.  Served cold with a cherry sauce (Door County cherries, orange and cherry juice, sugar, cinnamon sticks, almond extract, cornstarch and water)",
+      "allergenRules": {
+        "dairy": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "egg": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "gluten": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "shellfish": {
+          "status": "SAFE"
+        },
+        "fish": {
+          "status": "SAFE"
+        },
+        "soy": {
+          "status": "SAFE"
+        },
+        "peanuts": {
+          "status": "SAFE"
+        },
+        "tree_nuts": {
+          "status": "SAFE"
+        },
+        "sesame": {
+          "status": "SAFE"
+        },
+        "msg": {
+          "status": "SAFE"
+        }
+      }
+    },
+    {
+      "id": "warm_chocolate_chip_cookie_skillet",
+      "name": "Warm Chocolate Chip Cookie  Skillet",
+      "categoryId": "desserts",
+      "ticketCode": "COOKIE",
+      "description": "A chocolate chip cookie (butter, sugar, brown sugar, vanilla, eggs, flour, salt, baking powder, chocolate chips ) served warm with a scoop of vanilla ice cream,  topped with whipped cream  and hot fudge .",
+      "allergenRules": {
+        "dairy": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "egg": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "gluten": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "shellfish": {
+          "status": "SAFE"
+        },
+        "fish": {
+          "status": "SAFE"
+        },
+        "soy": {
+          "status": "SAFE"
+        },
+        "peanuts": {
+          "status": "SAFE"
+        },
+        "tree_nuts": {
+          "status": "SAFE"
+        },
+        "sesame": {
+          "status": "SAFE"
+        },
+        "msg": {
+          "status": "SAFE"
+        }
+      }
+    },
+    {
+      "id": "seasonal_berries_crisp",
+      "name": "Seasonal Berries Crisp",
+      "categoryId": "desserts",
+      "ticketCode": "BERRIES CRISP",
+      "description": "A mixture of raspberr ies, strawberries, blackberries  mixed with warm berry sauce  and topped with crumbles of oatmeal raisin cookies (butter, sugar, brown sugar, eggs, vanilla, Domata’s gluten free flour , baking soda, baking powder, salt, Bob’s Red Mill gluten free rolled oats, raisins).  Garnished with vanilla ice cream.",
+      "allergenRules": {
+        "dairy": {
+          "status": "MODIFY",
+          "substitutions": [
+            "NO oatmeal crumble",
+            "NO ice cream"
+          ]
+        },
+        "egg": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "gluten": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "shellfish": {
+          "status": "SAFE"
+        },
+        "fish": {
+          "status": "SAFE"
+        },
+        "soy": {
+          "status": "SAFE"
+        },
+        "peanuts": {
+          "status": "SAFE"
+        },
+        "tree_nuts": {
+          "status": "SAFE"
+        },
+        "sesame": {
+          "status": "SAFE"
+        },
+        "msg": {
+          "status": "SAFE"
+        }
+      }
+    },
+    {
+      "id": "flourless_chocolate_cake_birthday_dessert",
+      "name": "Flourless Chocolate Cake/Birthday Dessert",
+      "categoryId": "desserts",
+      "ticketCode": "BDAY DESSERT",
+      "description": "A slice of flourless chocolate cake ( chocolate  pistoles , butter, eggs, sugar, vanilla, salt, cocoa powder) served with whipped cream  and hot fudge .  Pan sprayed with cooking spray .",
+      "allergenRules": {
+        "dairy": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "egg": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "gluten": {
+          "status": "SAFE"
+        },
+        "shellfish": {
+          "status": "SAFE"
+        },
+        "fish": {
+          "status": "SAFE"
+        },
+        "soy": {
+          "status": "SAFE"
+        },
+        "peanuts": {
+          "status": "SAFE"
+        },
+        "tree_nuts": {
+          "status": "SAFE"
+        },
+        "sesame": {
+          "status": "SAFE"
+        },
+        "msg": {
+          "status": "SAFE"
+        }
+      }
+    },
+    {
+      "id": "grilled_cheese_and_fries",
+      "name": "Grilled Cheese and Fries",
+      "categoryId": "kids",
+      "ticketCode": "KID GR CHEEZ",
+      "description": "Two slices of multi -grain  bread  buttered on the outside.  Filled with thr ee slices of American cheese and b aked in the oven on a sizzle platter until golden brown.  Served with French fires, applesauce  and a ramekin of ketchup.",
+      "allergenRules": {
+        "dairy": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "egg": {
+          "status": "SAFE"
+        },
+        "gluten": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "shellfish": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "fish": {
+          "status": "SAFE"
+        },
+        "soy": {
+          "status": "SAFE"
+        },
+        "peanuts": {
+          "status": "SAFE"
+        },
+        "tree_nuts": {
+          "status": "SAFE"
+        },
+        "sesame": {
+          "status": "SAFE"
+        },
+        "msg": {
+          "status": "SAFE"
+        }
+      }
+    },
+    {
+      "id": "chicken_fingers_and_fries",
+      "name": "Chicken Fingers  and Fries",
+      "categoryId": "kids",
+      "ticketCode": "KIDS CHICKEN",
+      "description": "3 Kid ’s chicken f ingers  deep fried  and served French fries,  applesauce  and a ramekin of ketchup.",
+      "allergenRules": {
+        "dairy": {
+          "status": "SAFE"
+        },
+        "egg": {
+          "status": "SAFE"
+        },
+        "gluten": {
+          "status": "SAFE"
+        },
+        "shellfish": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "fish": {
+          "status": "SAFE"
+        },
+        "soy": {
+          "status": "SAFE"
+        },
+        "peanuts": {
+          "status": "SAFE"
+        },
+        "tree_nuts": {
+          "status": "SAFE"
+        },
+        "sesame": {
+          "status": "SAFE"
+        },
+        "msg": {
+          "status": "SAFE"
+        }
+      }
+    },
+    {
+      "id": "burger_cheeseburger_and_fries",
+      "name": "Burger/Cheeseburger  and Fries",
+      "categoryId": "kids",
+      "ticketCode": "KIDS BURGER/KIDS CHEESEBURGER",
+      "description": "4 oz. ground beef grilled to well done.  Cheeseburger is  topped with American cheese and s erved with French fries, applesauce  and a ramekin of ketchup.",
+      "allergenRules": {
+        "dairy": {
+          "status": "MODIFY",
+          "substitutions": [
+            "SUB multi-grain or sesame seed bun",
+            "NO butter on bun/bread",
+            "NO cheese"
+          ]
+        },
+        "egg": {
+          "status": "SAFE"
+        },
+        "gluten": {
+          "status": "SAFE"
+        },
+        "shellfish": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "fish": {
+          "status": "SAFE"
+        },
+        "soy": {
+          "status": "SAFE"
+        },
+        "peanuts": {
+          "status": "SAFE"
+        },
+        "tree_nuts": {
+          "status": "SAFE"
+        },
+        "sesame": {
+          "status": "SAFE"
+        },
+        "msg": {
+          "status": "SAFE"
+        }
+      }
+    },
+    {
+      "id": "macaroni_and_cheese",
+      "name": "Macaroni and Cheese",
+      "categoryId": "kids",
+      "ticketCode": "KID MAC & CHEZ",
+      "description": "Elbow macaroni  mixed with whipping cream , whole milk, Land o’Lakes Velvet Yellow Cheese Spread .  Then topped with cheddar cheese slices and baked.  Served with applesauce .",
+      "allergenRules": {
+        "dairy": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "egg": {
+          "status": "SAFE"
+        },
+        "gluten": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "shellfish": {
+          "status": "SAFE"
+        },
+        "fish": {
+          "status": "SAFE"
+        },
+        "soy": {
+          "status": "SAFE"
+        },
+        "peanuts": {
+          "status": "SAFE"
+        },
+        "tree_nuts": {
+          "status": "SAFE"
+        },
+        "sesame": {
+          "status": "SAFE"
+        },
+        "msg": {
+          "status": "SAFE"
+        }
+      }
+    },
+    {
+      "id": "available_upon_request_kids_filet_mashed_potato",
+      "name": "Available upon request: Kids Filet & Mashed Potato",
+      "categoryId": "kids",
+      "ticketCode": "KIDS STEAK",
+      "description": "Two 3 oz. f ilet medallions b rushed with melted butter, salt  and pepper.  Broiled to desired temperature and brushed with steak butter .  Served with au jus , mashed potatoes and applesauce .",
+      "allergenRules": {
+        "dairy": {
+          "status": "MODIFY",
+          "substitutions": [
+            "NO pre-marking butter",
+            "NO steak butter",
+            "NO mashed potatoes"
+          ]
+        },
+        "egg": {
+          "status": "SAFE"
+        },
+        "gluten": {
+          "status": "SAFE"
+        },
+        "shellfish": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "fish": {
+          "status": "SAFE"
+        },
+        "soy": {
+          "status": "SAFE"
+        },
+        "peanuts": {
+          "status": "SAFE"
+        },
+        "tree_nuts": {
+          "status": "SAFE"
+        },
+        "sesame": {
+          "status": "SAFE"
+        },
+        "msg": {
+          "status": "SAFE"
+        }
+      }
+    },
+    {
+      "id": "loaded_cottage_fries",
+      "name": "Loaded Cottage Fries",
+      "categoryId": "specials",
+      "ticketCode": "LOADED COTTAGE",
+      "description": "Cottage fries  topped with salt, pepper, melted ch eddar cheese, bacon, sour cream  and chives.  Available as a sub or a side.",
+      "allergenRules": {
+        "dairy": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "egg": {
+          "status": "SAFE"
+        },
+        "gluten": {
+          "status": "SAFE"
+        },
+        "shellfish": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "fish": {
+          "status": "SAFE"
+        },
+        "soy": {
+          "status": "SAFE"
+        },
+        "peanuts": {
+          "status": "SAFE"
+        },
+        "tree_nuts": {
+          "status": "SAFE"
+        },
+        "sesame": {
+          "status": "SAFE"
+        },
+        "msg": {
+          "status": "SAFE"
+        }
+      }
+    },
+    {
+      "id": "fresh_mozzarella_flatbread",
+      "name": "Fresh Mozzarella Flatbread",
+      "categoryId": "nightly",
+      "ticketCode": "MOZZ PIZZA",
+      "description": "6 oz. homemade  flatbread  hand stretched.  Brushed with roasted garlic puree  and then topped with shredded fresh mozzarella, tomato jam  and fresh basil.",
+      "allergenRules": {
+        "dairy": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "egg": {
+          "status": "SAFE"
+        },
+        "gluten": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "shellfish": {
+          "status": "SAFE"
+        },
+        "fish": {
+          "status": "SAFE"
+        },
+        "soy": {
+          "status": "SAFE"
+        },
+        "peanuts": {
+          "status": "SAFE"
+        },
+        "tree_nuts": {
+          "status": "SAFE"
+        },
+        "sesame": {
+          "status": "SAFE"
+        },
+        "msg": {
+          "status": "SAFE"
+        }
+      },
+      "isEntree": true,
+      "sides": [
+        {
+          "id": "french_fries",
+          "name": "French Fries"
+        },
+        {
+          "id": "red_skin_mashed_potatoes",
+          "name": "Red Skin Mashed Potatoes"
+        },
+        {
+          "id": "steamed_broccoli_with_lemon_vinaigrette",
+          "name": "Steamed Broccoli"
+        },
+        {
+          "id": "creamed_spinach",
+          "name": "Creamed Spinach"
+        },
+        {
+          "id": "au_gratin_potatoes",
+          "name": "Au Gratin Potatoes"
+        },
+        {
+          "id": "idaho_baked_potato",
+          "name": "Idaho Baked Potato"
+        },
+        {
+          "id": "bbq_rubbed_sweet_potato",
+          "name": "BBQ Rubbed Sweet Potato"
+        },
+        {
+          "id": "mac_and_cheese",
+          "name": "Mac and Cheese"
+        },
+        {
+          "id": "roasted_mushroom_caps",
+          "name": "Roasted Mushroom Caps"
+        },
+        {
+          "id": "roasted_market_vegetables",
+          "name": "Roasted Market Vegetables"
+        },
+        {
+          "id": "applesauce",
+          "name": "Applesauce"
+        },
+        {
+          "id": "homemade_coleslaw",
+          "name": "Homemade Coleslaw"
+        }
+      ]
+    },
+    {
+      "id": "pasta_and_roasted_vegetable_pasta",
+      "name": "Pasta  and Roasted Vegetable Pasta",
+      "categoryId": "nightly",
+      "ticketCode": "PASTA  W/VEG",
+      "description": "8 oz. of pasta with garlic butter  and roasted vegetables .  Tossed with a tomato basil sauce  and topped with Asiago and goat cheeses.  Baked in the oven and g arnished with basil.",
+      "allergenRules": {
+        "dairy": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "egg": {
+          "status": "SAFE"
+        },
+        "gluten": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "shellfish": {
+          "status": "SAFE"
+        },
+        "fish": {
+          "status": "SAFE"
+        },
+        "soy": {
+          "status": "SAFE"
+        },
+        "peanuts": {
+          "status": "SAFE"
+        },
+        "tree_nuts": {
+          "status": "SAFE"
+        },
+        "sesame": {
+          "status": "SAFE"
+        },
+        "msg": {
+          "status": "SAFE"
+        }
+      },
+      "isEntree": true,
+      "sides": [
+        {
+          "id": "french_fries",
+          "name": "French Fries"
+        },
+        {
+          "id": "red_skin_mashed_potatoes",
+          "name": "Red Skin Mashed Potatoes"
+        },
+        {
+          "id": "steamed_broccoli_with_lemon_vinaigrette",
+          "name": "Steamed Broccoli"
+        },
+        {
+          "id": "creamed_spinach",
+          "name": "Creamed Spinach"
+        },
+        {
+          "id": "au_gratin_potatoes",
+          "name": "Au Gratin Potatoes"
+        },
+        {
+          "id": "idaho_baked_potato",
+          "name": "Idaho Baked Potato"
+        },
+        {
+          "id": "bbq_rubbed_sweet_potato",
+          "name": "BBQ Rubbed Sweet Potato"
+        },
+        {
+          "id": "mac_and_cheese",
+          "name": "Mac and Cheese"
+        },
+        {
+          "id": "roasted_mushroom_caps",
+          "name": "Roasted Mushroom Caps"
+        },
+        {
+          "id": "roasted_market_vegetables",
+          "name": "Roasted Market Vegetables"
+        },
+        {
+          "id": "applesauce",
+          "name": "Applesauce"
+        },
+        {
+          "id": "homemade_coleslaw",
+          "name": "Homemade Coleslaw"
+        }
+      ]
+    },
+    {
+      "id": "roasted_vegetable_vegan_plate",
+      "name": "Roasted Vegetable Vegan Plate",
+      "categoryId": "nightly",
+      "ticketCode": "VEGAN PLATE",
+      "description": "One Portobello mushroom cap  marinated in balsamic vinaigrette , salt, pepper then grilled.  4 oz. of as paragus roasted and tossed with balsamic vinaigrette , salt  and pepper.  8 oz. of roasted market vegetables .  One half of a baked sweet potato .",
+      "allergenRules": {
+        "dairy": {
+          "status": "SAFE"
+        },
+        "egg": {
+          "status": "SAFE"
+        },
+        "gluten": {
+          "status": "SAFE"
+        },
+        "shellfish": {
+          "status": "SAFE"
+        },
+        "fish": {
+          "status": "SAFE"
+        },
+        "soy": {
+          "status": "SAFE"
+        },
+        "peanuts": {
+          "status": "SAFE"
+        },
+        "tree_nuts": {
+          "status": "SAFE"
+        },
+        "sesame": {
+          "status": "SAFE"
+        },
+        "msg": {
+          "status": "SAFE"
+        }
+      },
+      "isEntree": true,
+      "sides": [
+        {
+          "id": "french_fries",
+          "name": "French Fries"
+        },
+        {
+          "id": "red_skin_mashed_potatoes",
+          "name": "Red Skin Mashed Potatoes"
+        },
+        {
+          "id": "steamed_broccoli_with_lemon_vinaigrette",
+          "name": "Steamed Broccoli"
+        },
+        {
+          "id": "creamed_spinach",
+          "name": "Creamed Spinach"
+        },
+        {
+          "id": "au_gratin_potatoes",
+          "name": "Au Gratin Potatoes"
+        },
+        {
+          "id": "idaho_baked_potato",
+          "name": "Idaho Baked Potato"
+        },
+        {
+          "id": "bbq_rubbed_sweet_potato",
+          "name": "BBQ Rubbed Sweet Potato"
+        },
+        {
+          "id": "mac_and_cheese",
+          "name": "Mac and Cheese"
+        },
+        {
+          "id": "roasted_mushroom_caps",
+          "name": "Roasted Mushroom Caps"
+        },
+        {
+          "id": "roasted_market_vegetables",
+          "name": "Roasted Market Vegetables"
+        },
+        {
+          "id": "applesauce",
+          "name": "Applesauce"
+        },
+        {
+          "id": "homemade_coleslaw",
+          "name": "Homemade Coleslaw"
+        }
+      ]
+    },
+    {
+      "id": "cinnamon_dried_basil_ginger_puree_dried_tarragon_ketchup_tomato_paste_steak_sauce_worcestershire_sauce_molasses_san_j_tamari_water_red_wine_vinegar_lemon_juice_beef_base_pepper_chilies_balsamic_vinegar_dijon_mustard",
+      "name": "cinnamon, dried basil, ginger puree, dried tarragon, ketchup , tomato paste, steak sauce , Worcestershire  sauce , molasses, San J Tamari , water, red wine vinegar, lemon juice, beef base , pepper, chilies, balsamic vinegar, Dijon mustard",
+      "categoryId": "specials",
+      "ticketCode": "ALLERGY",
+      "description": "ALERT: dairy, shellfish, soy",
+      "allergenRules": {
+        "dairy": {
+          "status": "SAFE"
+        },
+        "egg": {
+          "status": "SAFE"
+        },
+        "gluten": {
+          "status": "SAFE"
+        },
+        "shellfish": {
+          "status": "SAFE"
+        },
+        "fish": {
+          "status": "SAFE"
+        },
+        "soy": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "peanuts": {
+          "status": "SAFE"
+        },
+        "tree_nuts": {
+          "status": "SAFE"
+        },
+        "sesame": {
+          "status": "SAFE"
+        },
+        "msg": {
+          "status": "SAFE"
+        }
+      }
+    },
+    {
+      "id": "blue_cheese_dressing_mayonnaise_buttermilk_salt_pepper_blue_cheese_crumbles_tabasco_sauce",
+      "name": "BLUE CHEESE DRESSING:   mayonnaise , buttermilk, salt, pepper, blue cheese crumbles, tabasco sauce",
+      "categoryId": "specials",
+      "ticketCode": "ALLERGY",
+      "description": "ALERT: dairy, egg",
+      "allergenRules": {
+        "dairy": {
+          "status": "SAFE"
+        },
+        "egg": {
+          "status": "SAFE"
+        },
+        "gluten": {
+          "status": "SAFE"
+        },
+        "shellfish": {
+          "status": "SAFE"
+        },
+        "fish": {
+          "status": "SAFE"
+        },
+        "soy": {
+          "status": "SAFE"
+        },
+        "peanuts": {
+          "status": "SAFE"
+        },
+        "tree_nuts": {
+          "status": "SAFE"
+        },
+        "sesame": {
+          "status": "SAFE"
+        },
+        "msg": {
+          "status": "SAFE"
+        }
+      }
+    },
+    {
+      "id": "hydrolyzed_corn_gluten_leavening_sodium_bicarbonate_sodium_aluminum_phosphate_monocalcium_phosphate_maltodextrin_natural_flavor_onion_powder_soybean_oil_as_a_processing_aid_spices_wheat_gluten_yeast_extract",
+      "name": "hydrolyzed corn gluten, leavening (sodium bicarbonate, sodium aluminum phosphate, monocalcium phosphate), maltodextrin, natural flavor, onion powder, soybean oil (as a processing aid), spices, wheat gluten, yeast extract.",
+      "categoryId": "specials",
+      "ticketCode": "ALLERGY",
+      "description": "ALERT: soy, gluten",
+      "allergenRules": {
+        "dairy": {
+          "status": "SAFE"
+        },
+        "egg": {
+          "status": "SAFE"
+        },
+        "gluten": {
+          "status": "SAFE"
+        },
+        "shellfish": {
+          "status": "SAFE"
+        },
+        "fish": {
+          "status": "SAFE"
+        },
+        "soy": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "peanuts": {
+          "status": "SAFE"
+        },
+        "tree_nuts": {
+          "status": "SAFE"
+        },
+        "sesame": {
+          "status": "SAFE"
+        },
+        "msg": {
+          "status": "SAFE"
+        }
+      }
+    },
+    {
+      "id": "item",
+      "name": "ITEM",
+      "categoryId": "specials",
+      "ticketCode": "IL 5/6/25 66 5/6/25  MN 5/6/25  VA 5/6/25",
+      "description": "Petite Horse Filet - dinner  51.95  53.95  52.95  51.95 Petite Horse Filet - lunch  40.95   42.95  40.95 Peppercorn Filet (crust only)  57.95  59.95  57.95  52.95 Filet Medallion Trio  44.95  49.95  46.95  44.95 Filet Medallion Oscar  59.95  64.95   59.95 Parmesan Crusted New York  56.95    55.95 Penne Pasta with Roasted Veg  17.95  18.95  18.95  18.95 Roasted Vegetable Vegan Plate  19.95  20.95  20.95  20.95 Add Coco shrimp (3 shrimp)  10.00   14.00  10.00 Add one medallion (add crust no extra charge)  15.00  16.00  16.00  15.00 Add 8 oz. burger patty  10.00  10.00  10.00  10.00 Add any cheese  1.00 1.00 1.00 1.00 Add crust (not peppercorn, or char -crust)  3.00 3.00 3.00 3.00 Add peppercorn crust (crust only)  No charge  No charge  No charge  No charge Add 6 mushroom caps  4.00 4.00 4.00 4.00 Add Scallop Skewer (1)  11.00  12.00  13.00  11.00 Add Jalapeno  1.00 1.00 1.00 1.00 Kids Steak – upon request only  26.95  28.95  29.95  29.95 Tomato and Blue Cheese Salad  9.95/16.95/30.95  9.95/16.95/30.95  9.95/16.95/30.95  9.95/16.95/30.95 Extra blue cheese for Chopped (1)  1.00 1.00 1.00 1.00 Extra avocado for Chopped (1)  2.00 2.00 2.00 2.00 Extra chop chix for Chopped (1)  3.00 3.00 3.00 3.00 Chop Salad everything on the side – C/O 2.00/4.00/6.00  2.00/4.00/6.00  2.00/4.00/6.00  2.00/4.00/6.00 Side of Fries  6.95 7.95  6.95 Side of Applesauce side  4.95 5.95 5.95 4.95 Side of Sautéed Spinach  7.95 7.95 7.95 7.95 Side Wild Rice  7.95 – Sun. only    7.95 – Wed only Sub/Side Loaded Mashed Potato  3.95/8.95  3.95/9.95  3.95/9.95  3.95/8.95 Sub/Side Asparagus  3.95/9.95  3.95/9.95  3.95/9.95  3.95/9.95 Sub/Side Green Beans  2.95/8.95  3.95/9.95  3.95/9.95  2.95/8.95 Loaded Cottage Fries     9.95 Sub/Side Fruit     3.95/9.95 Ala mode  2.00 2.00 2.00 2.00 Extra Dressing – Carryout (after one complimentary)  2.00 2.00 2.00 2.00 Bottles of Dressing  6.95 6.95 6.95 6.95 Cup/Bowl Soup of Day  5.95/7.95  6.95/9.95  6.50/8.95  5.95/7.95 Extra Flatbread  3.00 2.00 3.00 3.00 Extra Biscuit – with Fried Chicken  1.00 1.00 1.00 1.00 Add 1 piece Shrimp Cocktail  3.75 (83 only)   4.00 3.75 Surf ‘n Petite Filet  72.95 (83 only) Surf and Turf (10 oz. Filet)  82.95 (83 only) Lobster and Lobster  59.95 (83 only) Lobster tail  27.00 (83 only) 33",
+      "allergenRules": {
+        "dairy": {
+          "status": "SAFE"
+        },
+        "egg": {
+          "status": "SAFE"
+        },
+        "gluten": {
+          "status": "SAFE"
+        },
+        "shellfish": {
+          "status": "SAFE"
+        },
+        "fish": {
+          "status": "SAFE"
+        },
+        "soy": {
+          "status": "SAFE"
+        },
+        "peanuts": {
+          "status": "SAFE"
+        },
+        "tree_nuts": {
+          "status": "SAFE"
+        },
+        "sesame": {
+          "status": "SAFE"
+        },
+        "msg": {
+          "status": "SAFE"
+        }
+      }
+    },
+    {
+      "id": "item",
+      "name": "ITEM",
+      "categoryId": "specials",
+      "ticketCode": "IL 66 MN VA",
+      "description": "Sub chop salad  9.95 (83 only) Side Chopped Salad  13.95 (83 only)    12.95 Sub Caesar, Kale  6.95 (83 only) Eden Prairie/Tysons Only: Sub Onion Soup/Bisque for side    3.95 3.95 Tysons Only: Sub Caesar, Field Greens     3.95 Mozzarella Flatbread  14.95  14.95  14.95  14.95 Grilled Pepperoni Flatbread  16.95  16.95  16.95  16.95 Wild Mushroom Flatbread  16.95  16.95  16.95  16.95 BBQ Chicken Flatbread   16.95 C/O ½ Pan Cornbread     8.95 Lg. Creamed Spinach/Mashed/Roasted Veg/Broccoli     18.95 Lg. Mac and Cheese     17.95 Lg. Mushroom Caps     21.95 PP Cod  249.95  254.95  259.95  249.95 PP Halibut  305.95  345.95  315.95  305.95",
+      "allergenRules": {
+        "dairy": {
+          "status": "SAFE"
+        },
+        "egg": {
+          "status": "SAFE"
+        },
+        "gluten": {
+          "status": "SAFE"
+        },
+        "shellfish": {
+          "status": "SAFE"
+        },
+        "fish": {
+          "status": "SAFE"
+        },
+        "soy": {
+          "status": "SAFE"
+        },
+        "peanuts": {
+          "status": "SAFE"
+        },
+        "tree_nuts": {
+          "status": "SAFE"
+        },
+        "sesame": {
+          "status": "SAFE"
+        },
+        "msg": {
+          "status": "SAFE"
+        }
+      }
+    },
+    {
+      "id": "eggs_benedict",
+      "name": "Wildfire Eggs Benedict",
+      "categoryId": "brunch",
+      "ticketCode": "EGGS BENEDICT",
+      "description": "Two poached eggs on English muffins topped with Canadian bacon and hollandaise sauce. Served with red skin mashed potatoes or fresh-cut french fries.",
+      "allergenRules": {
+        "dairy": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "egg": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "gluten": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "shellfish": {
+          "status": "SAFE"
+        },
+        "fish": {
+          "status": "SAFE"
+        },
+        "soy": {
+          "status": "SAFE"
+        },
+        "peanuts": {
+          "status": "SAFE"
+        },
+        "tree_nuts": {
+          "status": "SAFE"
+        },
+        "sesame": {
+          "status": "SAFE"
+        },
+        "msg": {
+          "status": "SAFE"
+        }
+      }
+    },
+    {
+      "id": "classic_omelet",
+      "name": "Classic Three-Egg Omelet",
+      "categoryId": "brunch",
+      "ticketCode": "CLASSIC OMELET",
+      "description": "Three-egg omelet with choice of fillings: cheddar cheese, Swiss cheese, mushrooms, onions, peppers, tomatoes, spinach, bacon, ham, or sausage. Served with red skin mashed potatoes or fresh-cut french fries.",
+      "allergenRules": {
+        "dairy": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "egg": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "gluten": {
+          "status": "SAFE"
+        },
+        "shellfish": {
+          "status": "SAFE"
+        },
+        "fish": {
+          "status": "SAFE"
+        },
+        "soy": {
+          "status": "SAFE"
+        },
+        "peanuts": {
+          "status": "SAFE"
+        },
+        "tree_nuts": {
+          "status": "SAFE"
+        },
+        "sesame": {
+          "status": "SAFE"
+        },
+        "msg": {
+          "status": "SAFE"
+        }
+      }
+    },
+    {
+      "id": "build_your_own_omelet",
+      "name": "Build Your Own Omelet",
+      "categoryId": "brunch",
+      "ticketCode": "BUILD OMELET",
+      "description": "Three-egg omelet with your choice of fillings: cheddar cheese, Swiss cheese, mushrooms, onions, peppers, tomatoes, spinach, bacon, ham, or sausage. Served with red skin mashed potatoes or fresh-cut french fries.",
+      "allergenRules": {
+        "dairy": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "egg": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "gluten": {
+          "status": "SAFE"
+        },
+        "shellfish": {
+          "status": "SAFE"
+        },
+        "fish": {
+          "status": "SAFE"
+        },
+        "soy": {
+          "status": "SAFE"
+        },
+        "peanuts": {
+          "status": "SAFE"
+        },
+        "tree_nuts": {
+          "status": "SAFE"
+        },
+        "sesame": {
+          "status": "SAFE"
+        },
+        "msg": {
+          "status": "SAFE"
+        }
+      }
+    },
+    {
+      "id": "wildfire_pancakes",
+      "name": "Wildfire Buttermilk Pancakes",
+      "categoryId": "brunch",
+      "ticketCode": "PANCAKES",
+      "description": "Three fluffy buttermilk pancakes served with butter and maple syrup. Add chocolate chips for an additional charge.",
+      "allergenRules": {
+        "dairy": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "egg": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "gluten": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "shellfish": {
+          "status": "SAFE"
+        },
+        "fish": {
+          "status": "SAFE"
+        },
+        "soy": {
+          "status": "SAFE"
+        },
+        "peanuts": {
+          "status": "SAFE"
+        },
+        "tree_nuts": {
+          "status": "SAFE"
+        },
+        "sesame": {
+          "status": "SAFE"
+        },
+        "msg": {
+          "status": "SAFE"
+        }
+      }
+    },
+    {
+      "id": "french_toast",
+      "name": "French Toast",
+      "categoryId": "brunch",
+      "ticketCode": "FRENCH TOAST",
+      "description": "Thick-cut brioche bread dipped in egg batter and griddled until golden brown. Served with butter, maple syrup, and fresh berries.",
+      "allergenRules": {
+        "dairy": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "egg": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "gluten": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "shellfish": {
+          "status": "SAFE"
+        },
+        "fish": {
+          "status": "SAFE"
+        },
+        "soy": {
+          "status": "SAFE"
+        },
+        "peanuts": {
+          "status": "SAFE"
+        },
+        "tree_nuts": {
+          "status": "SAFE"
+        },
+        "sesame": {
+          "status": "SAFE"
+        },
+        "msg": {
+          "status": "SAFE"
+        }
+      }
+    },
+    {
+      "id": "steak_and_eggs",
+      "name": "Steak and Eggs",
+      "categoryId": "brunch",
+      "ticketCode": "STEAK EGGS",
+      "description": "7 oz. petite filet mignon cooked to your preference, served with two eggs any style, red skin mashed potatoes or fresh-cut french fries, and toast.",
+      "allergenRules": {
+        "dairy": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "egg": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "gluten": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "shellfish": {
+          "status": "SAFE"
+        },
+        "fish": {
+          "status": "SAFE"
+        },
+        "soy": {
+          "status": "SAFE"
+        },
+        "peanuts": {
+          "status": "SAFE"
+        },
+        "tree_nuts": {
+          "status": "SAFE"
+        },
+        "sesame": {
+          "status": "SAFE"
+        },
+        "msg": {
+          "status": "SAFE"
+        }
+      }
+    },
+    {
+      "id": "smoked_salmon_benedict",
+      "name": "Smoked Salmon Benedict",
+      "categoryId": "brunch",
+      "ticketCode": "SALMON BENEDICT",
+      "description": "Two poached eggs on English muffins topped with smoked salmon, capers, red onions, and hollandaise sauce. Served with red skin mashed potatoes or fresh-cut french fries.",
+      "allergenRules": {
+        "dairy": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "egg": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "gluten": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "shellfish": {
+          "status": "SAFE"
+        },
+        "fish": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "soy": {
+          "status": "SAFE"
+        },
+        "peanuts": {
+          "status": "SAFE"
+        },
+        "tree_nuts": {
+          "status": "SAFE"
+        },
+        "sesame": {
+          "status": "SAFE"
+        },
+        "msg": {
+          "status": "SAFE"
+        }
+      }
+    },
+    {
+      "id": "avocado_toast",
+      "name": "Avocado Toast",
+      "categoryId": "brunch",
+      "ticketCode": "AVOCADO TOAST",
+      "description": "Sliced avocado on toasted artisan bread with cherry tomatoes, red onion, feta cheese, and a drizzle of olive oil. Served with a side of mixed greens.",
+      "allergenRules": {
+        "dairy": {
+          "status": "MODIFY",
+          "substitutions": [
+            "NO butter on toast",
+            "NO cheese in eggs"
+          ]
+        },
+        "egg": {
+          "status": "SAFE"
+        },
+        "gluten": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "shellfish": {
+          "status": "SAFE"
+        },
+        "fish": {
+          "status": "SAFE"
+        },
+        "soy": {
+          "status": "SAFE"
+        },
+        "peanuts": {
+          "status": "SAFE"
+        },
+        "tree_nuts": {
+          "status": "SAFE"
+        },
+        "sesame": {
+          "status": "SAFE"
+        },
+        "msg": {
+          "status": "SAFE"
+        }
+      }
+    },
+    {
+      "id": "breakfast_burrito",
+      "name": "Breakfast Burrito",
+      "categoryId": "brunch",
+      "ticketCode": "BREAKFAST BURRITO",
+      "description": "Scrambled eggs, cheddar cheese, bacon, and hash browns wrapped in a flour tortilla. Served with salsa and sour cream on the side.",
+      "allergenRules": {
+        "dairy": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "egg": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "gluten": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "shellfish": {
+          "status": "SAFE"
+        },
+        "fish": {
+          "status": "SAFE"
+        },
+        "soy": {
+          "status": "SAFE"
+        },
+        "peanuts": {
+          "status": "SAFE"
+        },
+        "tree_nuts": {
+          "status": "SAFE"
+        },
+        "sesame": {
+          "status": "SAFE"
+        },
+        "msg": {
+          "status": "SAFE"
+        }
+      }
+    },
+    {
+      "id": "chicken_and_waffles",
+      "name": "Chicken and Waffles",
+      "categoryId": "brunch",
+      "ticketCode": "CHICKEN WAFFLES",
+      "description": "Crispy fried chicken breast served on a Belgian waffle with maple syrup and butter. Served with a side of red skin mashed potatoes.",
+      "allergenRules": {
+        "dairy": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "egg": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "gluten": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "shellfish": {
+          "status": "SAFE"
+        },
+        "fish": {
+          "status": "SAFE"
+        },
+        "soy": {
+          "status": "SAFE"
+        },
+        "peanuts": {
+          "status": "SAFE"
+        },
+        "tree_nuts": {
+          "status": "SAFE"
+        },
+        "sesame": {
+          "status": "SAFE"
+        },
+        "msg": {
+          "status": "SAFE"
+        }
+      }
+    },
+    {
+      "id": "breakfast_sandwich",
+      "name": "Breakfast Sandwich",
+      "categoryId": "brunch",
+      "ticketCode": "BREAKFAST SANDWICH",
+      "description": "Fried egg, cheddar cheese, and your choice of bacon, ham, or sausage on a toasted English muffin. Served with red skin mashed potatoes or fresh-cut french fries.",
+      "allergenRules": {
+        "dairy": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "egg": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "gluten": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "shellfish": {
+          "status": "SAFE"
+        },
+        "fish": {
+          "status": "SAFE"
+        },
+        "soy": {
+          "status": "SAFE"
+        },
+        "peanuts": {
+          "status": "SAFE"
+        },
+        "tree_nuts": {
+          "status": "SAFE"
+        },
+        "sesame": {
+          "status": "SAFE"
+        },
+        "msg": {
+          "status": "SAFE"
+        }
+      }
+    },
+    {
+      "id": "belgian_waffle",
+      "name": "Belgian Waffle",
+      "categoryId": "brunch",
+      "ticketCode": "WAFFLE",
+      "description": "Crispy Belgian waffle served with butter, maple syrup, and fresh berries. Add chocolate chips or whipped cream for an additional charge.",
+      "allergenRules": {
+        "dairy": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "egg": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "gluten": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "shellfish": {
+          "status": "SAFE"
+        },
+        "fish": {
+          "status": "SAFE"
+        },
+        "soy": {
+          "status": "SAFE"
+        },
+        "peanuts": {
+          "status": "SAFE"
+        },
+        "tree_nuts": {
+          "status": "SAFE"
+        },
+        "sesame": {
+          "status": "SAFE"
+        },
+        "msg": {
+          "status": "SAFE"
+        }
+      }
+    },
+    {
+      "id": "classic_breakfast",
+      "name": "Classic Breakfast",
+      "categoryId": "brunch",
+      "ticketCode": "CLASSIC BREAKFAST",
+      "description": "Three eggs cooked to guest desired style, choice of three slices of bacon or two turkey sausage patties, breakfast potatoes and onions, one slice of multi-grain bread toasted and buttered then cut in half, and a ramekin of preserves.",
+      "allergenRules": {
+        "dairy": {
+          "status": "MODIFY",
+          "substitutions": [
+            "NO butter when cooking eggs",
+            "NO breakfast potatoes and onions",
+            "NO butter on toast"
+          ]
+        },
+        "egg": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "gluten": {
+          "status": "UNKNOWN",
+          "notes": "Please verify modifications with chef"
+        },
+        "shellfish": {
+          "status": "SAFE"
+        },
+        "fish": {
+          "status": "SAFE"
+        },
+        "soy": {
+          "status": "SAFE"
+        },
+        "peanuts": {
+          "status": "SAFE"
+        },
+        "tree_nuts": {
+          "status": "SAFE"
+        },
+        "sesame": {
+          "status": "SAFE"
+        },
+        "msg": {
+          "status": "SAFE"
+        }
+      }
+    },
+    {
+      "id": "item",
+      "name": "ITEM",
+      "categoryId": "brunch",
+      "ticketCode": "TYSONS",
+      "description": "English Muffin  1.95 Side of Eggs  4.95 Side of Pancakes  7.95 Add Chocolate Chips  1.00 Add Fried Egg  1.00 Sub Egg  2.95",
+      "allergenRules": {
+        "dairy": {
+          "status": "SAFE"
+        },
+        "egg": {
+          "status": "SAFE"
+        },
+        "gluten": {
+          "status": "SAFE"
+        },
+        "shellfish": {
+          "status": "SAFE"
+        },
+        "fish": {
+          "status": "SAFE"
+        },
+        "soy": {
+          "status": "SAFE"
+        },
+        "peanuts": {
+          "status": "SAFE"
+        },
+        "tree_nuts": {
+          "status": "SAFE"
+        },
+        "sesame": {
+          "status": "SAFE"
+        },
+        "msg": {
+          "status": "SAFE"
+        }
+      }
+    },
+    {
+      "id": "item",
+      "name": "ITEM",
+      "categoryId": "desserts",
+      "ticketCode": "IL 12/24  66 3/25  MN 12/24  VA 12/24",
+      "description": "Whole Seasonal Pie  34.95  34.95  34.95  34.95 Whole Key Lime  34.95  34.95  34.95  34.95 Whole Cherry Pie  34.95  34.95  34.95  34.95 Whole Chocolate Cake  54.95  54.95  54.95  54.95 Whole Cheesecake  54.95  54.95  54.95  54.95 Whole Flourless Chocolate Cake  34.95  34.95  34.95  34.95 Berries only  9.95 9.95 9.95 9.95 Kid's Ice Cream  3.95 3.95 3.95 3.95 Scoop (1) Vanilla Ice Cream (GF also)  4.95 4.95 4.95 4.95 Scoops (2) Vanilla Ice Cream (GF also)  6.95 6.95 6.95 6.95 Scoops (3) Vanilla Ice Cream (GF also)  8.95 8.95 8.95 8.95",
+      "allergenRules": {
+        "dairy": {
+          "status": "SAFE"
+        },
+        "egg": {
+          "status": "SAFE"
+        },
+        "gluten": {
+          "status": "SAFE"
+        },
+        "shellfish": {
+          "status": "SAFE"
+        },
+        "fish": {
+          "status": "SAFE"
+        },
+        "soy": {
+          "status": "SAFE"
+        },
+        "peanuts": {
+          "status": "SAFE"
+        },
+        "tree_nuts": {
+          "status": "SAFE"
+        },
+        "sesame": {
+          "status": "SAFE"
+        },
+        "msg": {
+          "status": "SAFE"
+        }
+      }
+    },
+    {
+      "id": "item",
+      "name": "ITEM",
+      "categoryId": "specials",
+      "ticketCode": "IL 2/25  66 3/25  MN 3/25  VA 3/25",
+      "description": "Soda (Coke, Diet Coke, etc.)  4.50 4.50 4.50 4.50 Iced Tea/Arnold Palmer  4.50 4.50 4.50 4.50 Lemonade (Fountain)  4.50 4.50 4.50 4.50 Lemonade (Featured)  4.95 4.95 4.95 4.95 Coffee/Decaf/Hot Tea  4.50 4.50 4.50 4.50 Espresso  4.75 4.75 4.75 4.75 Cappuccino  4.95 4.95 4.95 4.95 Double Espresso  6.75 6.75 6.75 6.75 Double Cappuccino  6.95 6.95 6.95 6.95 Café Latte  4.95 4.95 4.95 4.95 Café Mocha  4.95 4.95 4.95 4.95 Milk/Skim  4.50 4.50 4.50 4.50 Juice (Orange, Cran, etc.)  4.50 4.50 4.50 4.50 IBC Root Beer  5.00 5.00 5.00 5.00 Virgin Bloody Mary  4.95 4.95 4.95 4.95 Ginger Beer  5.00 5.00 5.00 5.00 San Pelligrino  5.50/8.00  5.50/8.00  5.50/8.00  5.50/8.00 Panna  5.50/8.00  5.50/8.00  5.50/8.00  5.50/8.00 Can of Soda – Carryout/Delivery  1.95/3.95  1.95/3.95  1.95/3.95  1.95/3.95 Bottle of Water – Carryout/Delivery  1.95/3.95  1.95/3.95  1.95/3.95  1.95/3.95 Retail Coffee (Reg and Decaf) - Carryout  12.95  12.95  12.95  12.95",
+      "allergenRules": {
+        "dairy": {
+          "status": "SAFE"
+        },
+        "egg": {
+          "status": "SAFE"
+        },
+        "gluten": {
+          "status": "SAFE"
+        },
+        "shellfish": {
+          "status": "SAFE"
+        },
+        "fish": {
+          "status": "SAFE"
+        },
+        "soy": {
+          "status": "SAFE"
+        },
+        "peanuts": {
+          "status": "SAFE"
+        },
+        "tree_nuts": {
+          "status": "SAFE"
+        },
+        "sesame": {
+          "status": "SAFE"
+        },
+        "msg": {
+          "status": "SAFE"
+        }
+      }
+    }
+  ]
+}

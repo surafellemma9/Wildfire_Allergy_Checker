@@ -1,4 +1,5 @@
 import type { Allergen, AllergyCheckResult, MenuItem } from '../types';
+import { getCachedModification, hasDbModifications } from './modifications-cache';
 
 // Knowledge base of composite ingredients (sauces, condiments, etc.) and their sub-ingredients
 const compositeIngredients: Record<string, string[]> = {
@@ -199,7 +200,276 @@ const compositeIngredients: Record<string, string[]> = {
   'vegetable base': ['vegetables', 'sugar', 'salt', 'yeast extract', 'hydrolyzed corn protein', 'maltodextrin', 'canola oil', 'natural flavor', 'disodium inosinate', 'disodium guanylate', 'modified food starch', 'spice', 'hydrolyzed soy protein', 'burgundy wine solids'],
   'vegetable stock': ['vegetable base', 'hot water'],
   'za\'atar': ['ground sumac seeds', 'ground thyme', 'roasted white sesame seeds'],
+  
+  // Nightly Specials components
+  'cherry glaze': ['honey', 'shallots', 'orange juice', 'orange zest', 'thyme', 'balsamic vinegar', 'cherry juice', 'duck stock', 'door county cherries', 'cornstarch', 'butter', 'pepper'],
 };
+
+// Special dish-specific modifications for allergies
+// These override the automatic detection with exact restaurant specifications
+type SpecialModification = {
+  modifications: string[];  // What to tell the kitchen
+  canBeModified: boolean;   // Whether the dish can be modified
+};
+
+const specialDishModifications: Record<string, Partial<Record<Allergen, SpecialModification>>> = {
+  // =====================
+  // APPETIZERS
+  // =====================
+  'mediterranean_chicken_skewers': {
+    dairy: { modifications: ['NO yogurt sauce'], canBeModified: true },
+  },
+  'shrimp_cocktail': {
+    dairy: { modifications: [], canBeModified: true }, // No changes needed
+  },
+  'oven_roasted_lump_crab_cakes': {
+    dairy: { modifications: ['NO mustard mayonnaise'], canBeModified: true },
+  },
+  'applewood_smoked_bacon_wrapped_sea_scallops_skewers': {
+    dairy: { modifications: [], canBeModified: true }, // No changes needed
+  },
+
+  // =====================
+  // SALADS
+  // Note: Safe dressings are Balsamic Vinaigrette, Citrus Lime Vinaigrette, Lemon Herb Vinaigrette
+  // =====================
+  'field_salad': {
+    dairy: { modifications: [], canBeModified: true }, // No changes needed (use safe dressings)
+  },
+  'tuscan_kale_and_spinach_salad': {
+    dairy: { modifications: ['NO cheese', 'NO dressing'], canBeModified: true },
+  },
+  'greek_salad': {
+    dairy: { modifications: ['NO feta cheese', 'NO dressing'], canBeModified: true },
+  },
+  'steak_and_blue_cheese_salad': {
+    dairy: { modifications: ['NO cheese', 'NO crispy onions', 'NO ranch dressing'], canBeModified: true },
+  },
+  'wildfire_chopped_salad': {
+    dairy: { modifications: ['NO marinated chicken', 'NO blue cheese', 'NO tortillas'], canBeModified: true },
+  },
+  'caesar_salad': {
+    dairy: { modifications: [], canBeModified: false }, // Dressing contains dairy, cannot be modified
+  },
+
+  // =====================
+  // SANDWICHES
+  // Note: NO butter on buns/bread, may sub sesame seed or multi-grain bun
+  // NO kid's bun, NO buttery onion bun, NO gluten free bun
+  // NO coleslaw, NO fries with sandwiches
+  // =====================
+  'add_roasted_wild_mushrooms_or_applewood_smoked_bacon_to_any_burger_for_2_00_each_thick_prime_angus_burger_cheeseburger': {
+    dairy: { modifications: ['NO butter on bun', 'NO coleslaw', 'NO fries'], canBeModified: true },
+  },
+  'all_natural_turkey_burger': {
+    dairy: { modifications: ['NO cheese', 'NO butter on bun'], canBeModified: true },
+  },
+  'grilled_chicken_club': {
+    dairy: { modifications: ['NO mustard-mayo marinated chicken (SUB plain chicken)', 'NO cheese', 'NO mustard mayonnaise', 'NO butter on bun'], canBeModified: true },
+  },
+  'roasted_prime_rib_french_dip': {
+    dairy: { modifications: ['NO butter on bread', 'NO horseradish cream sauce'], canBeModified: true },
+  },
+  'blackened_new_york_strip_steak_sandwich': {
+    dairy: { modifications: ['NO butter on bun'], canBeModified: true },
+  },
+  'sliced_turkey_sandwich': {
+    dairy: { modifications: ['NO cheese', 'NO butter on bread'], canBeModified: true },
+  },
+
+  // =====================
+  // FILETS
+  // Note: NO crusts (except peppercorn), NO steak butter, NO garlic crouton, NO pre-marking butter
+  // =====================
+  'center_cut_by_master_butchers_from_the_finest_midwestern_beef_tenderloin_basil_hayden_s_bourbon_marinated_tenderloin_tips': {
+    dairy: { modifications: ['NO steak butter', 'NO pre-marking butter'], canBeModified: true },
+  },
+  'petite_filet_mignon_filet_mignon': {
+    dairy: { modifications: ['NO pre-marking butter', 'NO steak butter', 'NO garlic crouton'], canBeModified: true },
+  },
+  'horseradish_crusted_filet': {
+    dairy: { modifications: ['NO horseradish crust', 'NO steak butter', 'NO pre-marking butter'], canBeModified: true },
+  },
+  'filet_medallion_duo_filet_medallion_trio': {
+    dairy: { modifications: ['NO steak butter', 'NO pre-marking butter'], canBeModified: true },
+  },
+
+  // =====================
+  // STEAKS AND CHOPS
+  // =====================
+  'tenderness_and_taste_brushed_with_our_seasoning_blend_and_broiled_over_glowing_embers_to_your_preferred_temperature_mushroom_crusted_fancy_pork_chops': {
+    dairy: { modifications: ['NO mushroom crust', 'NO pre-marking butter'], canBeModified: true },
+  },
+  'roumanian_skirt_steak': {
+    dairy: { modifications: ['NO steak butter', 'NO pre-marking butter'], canBeModified: true },
+  },
+  'new_york_strip_steak': {
+    dairy: { modifications: ['NO steak butter', 'NO pre-marking butter'], canBeModified: true },
+  },
+  'porterhouse': {
+    dairy: { modifications: ['NO steak butter', 'NO pre-marking butter'], canBeModified: true },
+  },
+  'char_crust_bone_in_rib_eye': {
+    dairy: { modifications: ['NO steak butter', 'NO pre-marking butter'], canBeModified: true },
+  },
+  'broiled_lamb_porterhouse_chops': {
+    dairy: { modifications: ['NO steak butter', 'NO pre-marking butter'], canBeModified: true },
+  },
+
+  // =====================
+  // PRIME RIB
+  // =====================
+  'roasted_prime_rib': {
+    dairy: { modifications: ['NO horseradish cream sauce'], canBeModified: true },
+  },
+  'roasted_prime_rib_of_beef': {
+    dairy: { modifications: ['NO horseradish cream sauce'], canBeModified: true },
+  },
+
+  // =====================
+  // FRESH FISH AND SEAFOOD
+  // =====================
+  'cedar_planked_salmon': {
+    dairy: { modifications: ['NO glaze'], canBeModified: true },
+  },
+  'lump_crab_cakes': {
+    dairy: { modifications: ['NO mustard mayo'], canBeModified: true },
+  },
+
+  // =====================
+  // NIGHTLY SPECIALS
+  // =====================
+  'wednesday_spit_roasted_half_long_island_duck': {
+    dairy: { modifications: ['NO cherry glaze', 'NO wild rice'], canBeModified: true },
+  },
+
+  // =====================
+  // CHICKEN
+  // =====================
+  // Note: Chicken Moreno needs: NO lemon parmesan vinaigrette (SUB lemon herb vinaigrette), NO parmesan
+  // But Chicken Moreno doesn't appear to be in the menu data
+
+  // =====================
+  // SIDES
+  // =====================
+  'steamed_broccoli_with_lemon_vinaigrette': {
+    dairy: { modifications: [], canBeModified: true }, // No changes needed
+  },
+  'roasted_vegetables': {
+    dairy: { modifications: [], canBeModified: true }, // No changes needed
+  },
+  'idaho_baked_potato': {
+    dairy: { modifications: ['NO sour cream', 'NO butter'], canBeModified: true },
+  },
+  'bbq_rubbed_sweet_potato': {
+    dairy: { modifications: ['NO butter'], canBeModified: true },
+  },
+  'applesauce': {
+    dairy: { modifications: [], canBeModified: true }, // No changes needed
+  },
+  'red_skin_mashed_potatoes': {
+    dairy: { modifications: [], canBeModified: false }, // Contains dairy, cannot remove
+  },
+  'creamed_spinach': {
+    dairy: { modifications: [], canBeModified: false }, // Contains cream, cannot remove
+  },
+  'au_gratin_potatoes': {
+    dairy: { modifications: [], canBeModified: false }, // Contains cheese/cream, cannot remove
+  },
+  'mac_and_cheese': {
+    dairy: { modifications: [], canBeModified: false }, // Contains cheese, cannot remove
+  },
+
+  // =====================
+  // DESSERTS
+  // =====================
+  'seasonal_berries_crisp': {
+    dairy: { modifications: ['NO oatmeal crumble', 'NO ice cream'], canBeModified: true },
+  },
+  'jd_s_cheesecake': {
+    dairy: { modifications: [], canBeModified: false }, // Core ingredient is dairy
+  },
+  'key_lime_pie': {
+    dairy: { modifications: [], canBeModified: false }, // Contains dairy
+  },
+
+  // =====================
+  // KID'S MENU
+  // =====================
+  'burger_cheeseburger_and_fries': {
+    dairy: { modifications: ['NO bun (SUB multi-grain or sesame seed bun)', 'NO butter on bun/bread', 'NO cheese'], canBeModified: true },
+  },
+  'available_upon_request_kids_filet_mashed_potato': {
+    dairy: { modifications: ['NO pre-marking butter', 'NO steak butter', 'NO mashed potatoes'], canBeModified: true },
+  },
+  'grilled_cheese_and_fries': {
+    dairy: { modifications: [], canBeModified: false }, // Cheese is core ingredient
+  },
+  'macaroni_and_cheese': {
+    dairy: { modifications: [], canBeModified: false }, // Cheese is core ingredient
+  },
+
+  // =====================
+  // BRUNCH
+  // =====================
+  'classic_breakfast': {
+    dairy: { modifications: ['NO butter when cooking eggs', 'NO breakfast potatoes and onions', 'NO butter on toast'], canBeModified: true },
+  },
+  'avocado_toast': {
+    dairy: { modifications: ['NO butter on toast', 'NO cheese in eggs'], canBeModified: true },
+  },
+  'steak_and_eggs': {
+    dairy: { modifications: [], canBeModified: true }, // No changes needed (Southwestern Steak and Eggs)
+  },
+  'eggs_benedict': {
+    dairy: { modifications: [], canBeModified: false }, // Hollandaise contains butter
+  },
+  'wildfire_pancakes': {
+    dairy: { modifications: [], canBeModified: false }, // Buttermilk is dairy
+  },
+
+  // =====================
+  // SPECIAL PARTY MENU / HAPPY HOUR / VEGAN PLATE
+  // =====================
+  'roasted_vegetable_vegan_plate': {
+    dairy: { modifications: [], canBeModified: true }, // No changes needed
+  },
+  'pasta_and_roasted_vegetable_pasta': {
+    dairy: { modifications: ['NO garlic butter', 'NO tomato basil sauce', 'NO goat cheese', 'NO asiago', 'SUB tomato jam'], canBeModified: true },
+  },
+};
+
+// Special marker for UNKNOWN status (dish not in database)
+const UNKNOWN_MODIFICATION: SpecialModification = {
+  modifications: ['UNKNOWN - This dish has not been verified for this allergen. Please consult a manager.'],
+  canBeModified: false,
+};
+
+// Helper function to get special modifications for a dish
+// First checks database cache, then falls back to static modifications
+// When using database: missing row = UNKNOWN (not safe)
+function getSpecialModifications(dishId: string, allergen: Allergen): SpecialModification | null {
+  // First, check if we have database modifications
+  if (hasDbModifications()) {
+    const dbMod = getCachedModification(dishId, allergen);
+    if (dbMod) {
+      return {
+        modifications: dbMod.modifications,
+        canBeModified: dbMod.canBeModified,
+      };
+    }
+    // IMPORTANT: If using database and no modification found, return UNKNOWN
+    // This prevents false safety claims - better to be cautious
+    return UNKNOWN_MODIFICATION;
+  }
+  
+  // Fall back to static modifications (legacy behavior)
+  const dishMods = specialDishModifications[dishId];
+  if (dishMods && dishMods[allergen]) {
+    return dishMods[allergen];
+  }
+  return null;
+}
 
 /**
  * Get sub-ingredients for a composite ingredient (sauce, condiment, etc.)
@@ -797,6 +1067,18 @@ function isPreparedFood(dish: MenuItem): boolean {
 function isGarnishIngredient(dish: MenuItem, ingredient: string): boolean {
   const description = dish.description.toLowerCase();
   const ingredientLower = ingredient.toLowerCase();
+  const dishNameLower = dish.dish_name.toLowerCase();
+  
+  // Main proteins are NEVER garnish - they're the core of the dish
+  // Check if the ingredient is the main protein type that's also in the dish name
+  const mainProteins = ['shrimp', 'crab', 'lobster', 'scallop', 'salmon', 'tuna', 'cod', 'halibut', 
+                        'chicken', 'beef', 'steak', 'pork', 'lamb', 'duck', 'fish'];
+  const isMainProtein = mainProteins.some(protein => 
+    ingredientLower.includes(protein) && dishNameLower.includes(protein)
+  );
+  if (isMainProtein) {
+    return false; // Main protein is never a garnish
+  }
   
   // Marinades are NEVER garnish - they're part of the base preparation
   // Examples: "marinated in Mediterranean marinade", "marinated in herb chicken marinade"
@@ -810,7 +1092,7 @@ function isGarnishIngredient(dish: MenuItem, ingredient: string): boolean {
     }
   }
   
-  // Check if ingredient appears after garnish-related phrases
+  // Check if ingredient appears DIRECTLY after garnish-related phrases (in the same sentence)
   const garnishPhrases = [
     'garnished with',
     'garnished',
@@ -819,7 +1101,6 @@ function isGarnishIngredient(dish: MenuItem, ingredient: string): boolean {
     'covered with',
     'covered',
     'served with',
-    'served',
     'with a side of',
     'on the side',
     'accompanied by',
@@ -832,9 +1113,14 @@ function isGarnishIngredient(dish: MenuItem, ingredient: string): boolean {
   for (const phrase of garnishPhrases) {
     const phraseIndex = description.indexOf(phrase);
     if (phraseIndex !== -1) {
-      // Check if ingredient appears after the garnish phrase
+      // Check if ingredient appears in the SAME sentence after the garnish phrase
+      // Find the end of the current sentence (period or end of description)
       const afterPhrase = description.substring(phraseIndex + phrase.length);
-      if (afterPhrase.includes(ingredientLower)) {
+      const sentenceEnd = afterPhrase.indexOf('.');
+      const sameSentence = sentenceEnd !== -1 ? afterPhrase.substring(0, sentenceEnd) : afterPhrase;
+      
+      // Check if ingredient appears in this same sentence segment
+      if (sameSentence.includes(ingredientLower)) {
         return true;
       }
     }
@@ -1018,6 +1304,20 @@ function getCompositeIngredientsWithAllergen(dish: MenuItem, allergen: Allergen)
 
 // Generate substitution list for an allergen
 function generateSubstitutions(dish: MenuItem, allergen: Allergen, canModify: boolean, foundIngredients: string[]): string[] {
+  // Check for special dish-specific modifications first
+  const specialMods = getSpecialModifications(dish.id, allergen);
+  if (specialMods) {
+    // Check if this is the UNKNOWN marker (missing from database)
+    if (specialMods === UNKNOWN_MODIFICATION) {
+      return specialMods.modifications; // Returns the UNKNOWN message
+    }
+    // If not modifiable, return NOT POSSIBLE message
+    if (!specialMods.canBeModified) {
+      return [`NOT POSSIBLE - ${ALLERGEN_LABELS[allergen]} cannot be removed from this dish`];
+    }
+    return specialMods.modifications;
+  }
+  
   const isPrepared = isPreparedFood(dish);
   
   // Safety check: ensure foundIngredients is an array
@@ -1062,17 +1362,14 @@ function generateSubstitutions(dish: MenuItem, allergen: Allergen, canModify: bo
   } else {
     // For non-prepared foods, check modification possibility first
     const modAnalysis = analyzeModificationPossibility(dish, allergen);
-    console.log('DEBUG: isPrepared=false, modAnalysis=', JSON.stringify(modAnalysis));
     
     // If modification is not possible, return the reason
-    if (!modAnalysis.modifiable) {
-      console.log('DEBUG: modifiable=false, returning NOT POSSIBLE');
-      if (modAnalysis.reason) {
-        return [`NOT POSSIBLE - ${ALLERGEN_LABELS[allergen]} cannot be removed - ${modAnalysis.reason}`];
+      if (!modAnalysis.modifiable) {
+        if (modAnalysis.reason) {
+          return [`NOT POSSIBLE - ${ALLERGEN_LABELS[allergen]} cannot be removed - ${modAnalysis.reason}`];
+        }
+        return [`NOT POSSIBLE - ${ALLERGEN_LABELS[allergen]} cannot be removed - this dish cannot be modified`];
       }
-      return [`NOT POSSIBLE - ${ALLERGEN_LABELS[allergen]} cannot be removed - this dish cannot be modified`];
-    }
-    console.log('DEBUG: modifiable=true, continuing...');
   }
   
   if (!canModify && !isPrepared) {
@@ -1735,13 +2032,30 @@ export function checkDishSafety(
       }
     }
 
-    const status: 'safe' | 'unsafe' = (containsValue === 'Y' || contains) ? 'unsafe' : 'safe';
+    // Check for special dish-specific modifications first
+    const specialMods = getSpecialModifications(dish.id, allergen);
+    
+    // Determine status - special mods with empty array = safe (no changes needed)
+    let status: 'safe' | 'unsafe';
+    if (specialMods) {
+      // If special mods exist with empty array and canBeModified=true, dish is safe
+      if (specialMods.modifications.length === 0 && specialMods.canBeModified) {
+        status = 'safe';
+      } else {
+        // Has modifications needed OR cannot be modified = unsafe
+        status = 'unsafe';
+      }
+    } else {
+      // No special mods, use standard detection
+      status = (containsValue === 'Y' || contains) ? 'unsafe' : 'safe';
+    }
+    
     const substitutions = status === 'unsafe' ? generateSubstitutions(dish, allergen, canModify, foundIngredients) : [];
     
     // Determine if modification is actually possible based on analyzeModificationPossibility
-    // This overrides the general canModify flag for specific cases
+    // Special modifications override the automatic analysis
     const modAnalysis = analyzeModificationPossibility(dish, allergen);
-    const actualCanBeModified = modAnalysis.modifiable && canModify;
+    const actualCanBeModified = specialMods ? specialMods.canBeModified : (modAnalysis.modifiable && canModify);
 
     return {
       allergen,

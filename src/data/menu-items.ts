@@ -2348,7 +2348,7 @@ export const menuItems: MenuItem[] = [
   },
   {
     "id": "limited_quantities_are_prepared_nightly_monday_tuesday_southern_fried_chicken",
-    "dish_name": "Limited quantities are prepared nightly Monday  & Tuesday: Southern Fried Chicken",
+    "dish_name": "Monday & Tuesday: Southern Fried Chicken",
     "ticket_code": "FRIED CHICKEN",
     "category": "Nightly Specials",
     "menu": "D",
@@ -2498,7 +2498,7 @@ export const menuItems: MenuItem[] = [
   },
   {
     "id": "friday_saturday_filet_mignon_wellington",
-    "dish_name": "Friday % Saturday : Filet Mignon Wellington",
+    "dish_name": "Friday & Saturday: Filet Mignon Wellington",
     "ticket_code": "BEEF WELLINGTON",
     "category": "Nightly Specials",
     "menu": "D",

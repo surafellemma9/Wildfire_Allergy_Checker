@@ -10,6 +10,8 @@ import { useOnlineStatus } from '../utils/use-online-status';
 
 // POS Categories for tablet view
 const POS_CATEGORIES = [
+  { id: 'nightly', label: 'Nightly Specials', icon: '🌙', color: 'from-indigo-600 to-purple-700' },
+  { id: 'seasonal', label: 'Specials', icon: '⭐', color: 'from-yellow-500 to-orange-600' },
   { id: 'appetizers', label: 'Appetizers', icon: '🍤', color: 'from-amber-600 to-orange-700' },
   { id: 'salads', label: 'Salads', icon: '🥗', color: 'from-green-600 to-emerald-700' },
   { id: 'seafood', label: 'Fresh Seafood', icon: '🐟', color: 'from-cyan-600 to-blue-700' },
@@ -25,6 +27,10 @@ const POS_CATEGORIES = [
 // Map menu categories to POS categories
 function getPosCategory(menuCategory: string): string {
   const cat = menuCategory.toLowerCase();
+  // Nightly Specials - daily rotating specials
+  if (cat.includes('nightly special')) return 'nightly';
+  // Seasonal/Party Specials - happy hour, party items, vegan plate, etc.
+  if (cat.includes('special party') || cat.includes('happy hour') || cat.includes('vegan')) return 'seasonal';
   if (cat.includes('appetizer')) return 'appetizers';
   if (cat.includes('salad')) return 'salads';
   if (cat.includes('fish') || cat.includes('seafood')) return 'seafood';
@@ -35,19 +41,21 @@ function getPosCategory(menuCategory: string): string {
   if (cat.includes('dessert')) return 'desserts';
   if (cat.includes('side')) return 'sides';
   if (cat.includes('kid')) return 'kids';
-  if (cat.includes('nightly') || cat.includes('special')) return 'steaks'; // Put specials with steaks
   return 'appetizers'; // Default fallback
 }
 
 // Check if a category is an "entree" that should flip to sides
 function isEntreeCategory(posCategory: string): boolean {
-  return ['seafood', 'burgers', 'steaks', 'chicken', 'brunch'].includes(posCategory);
+  return ['nightly', 'seasonal', 'seafood', 'burgers', 'steaks', 'chicken', 'brunch'].includes(posCategory);
 }
 
 // Lazy load menu items to reduce initial bundle size
 type MenuItemsModule = typeof import('../data/menu-items');
 let menuItemsModuleCache: MenuItemsModule | null = null;
 let menuItemsPromise: Promise<MenuItemsModule> | null = null;
+
+// Import modifications cache for Supabase integration
+import { loadAllModifications, hasDbModifications } from '../utils/modifications-cache';
 
 async function loadMenuItems(): Promise<MenuItemsModule> {
   if (menuItemsModuleCache) {
@@ -58,10 +66,16 @@ async function loadMenuItems(): Promise<MenuItemsModule> {
   }
   
   const startTime = performance.now();
-  menuItemsPromise = import('../data/menu-items').then((module) => {
+  
+  // Load menu items and modifications in parallel
+  menuItemsPromise = Promise.all([
+    import('../data/menu-items'),
+    loadAllModifications(), // Load modifications from Supabase if configured
+  ]).then(([module]) => {
     menuItemsModuleCache = module;
     const loadTime = performance.now() - startTime;
     console.log(`[Performance] Menu items loaded in ${loadTime.toFixed(2)}ms`);
+    console.log(`[Performance] Using ${hasDbModifications() ? 'Supabase' : 'static'} modifications`);
     return module;
   });
   
@@ -499,9 +513,35 @@ export function AllergyChecker() {
       }
     });
     
-    // Sort dishes within each category by name
+    // Custom sort for nightly specials (Monday to Sunday order)
+    const dayOrder: Record<string, number> = {
+      'monday': 1,
+      'tuesday': 2,
+      'wednesday': 3,
+      'thursday': 4,
+      'friday': 5,
+      'saturday': 6,
+      'sunday': 7
+    };
+    
+    const getDayOrder = (dishName: string): number => {
+      const nameLower = dishName.toLowerCase();
+      for (const [day, order] of Object.entries(dayOrder)) {
+        if (nameLower.includes(day)) return order;
+      }
+      return 99; // Default to end if no day found
+    };
+    
+    // Sort nightly specials by day order
+    if (grouped['nightly']) {
+      grouped['nightly'].sort((a, b) => getDayOrder(a.dish_name) - getDayOrder(b.dish_name));
+    }
+    
+    // Sort other categories alphabetically
     Object.keys(grouped).forEach(key => {
-      grouped[key].sort((a, b) => a.dish_name.localeCompare(b.dish_name));
+      if (key !== 'nightly') {
+        grouped[key].sort((a, b) => a.dish_name.localeCompare(b.dish_name));
+      }
     });
     
     return grouped;
@@ -2688,358 +2728,268 @@ export function AllergyChecker() {
                   </div>
                 )}
 
-                {/* Quick Reference Section - Simplified and Easy to Read */}
-                <Card className="border-[#1e3a5f]/50 bg-white mt-6">
-                  <CardHeader>
-                    <CardTitle className="text-[#1e3a5f] text-xl font-bold">Quick Reference</CardTitle>
-                    <CardDescription className="text-gray-600">
-                      Summary of all dishes and required modifications
-                    </CardDescription>
+                {/* Quick Reference Section - Clean Kitchen Ticket */}
+                <Card className="border-2 border-[#1e3a5f] bg-white mt-6 shadow-lg overflow-hidden">
+                  <CardHeader className="bg-[#1e3a5f] text-white py-4">
+                    <CardTitle className="text-xl font-bold text-center">🎫 Kitchen Ticket</CardTitle>
                   </CardHeader>
-                  <CardContent>
-                    <div className="space-y-6">
+                  <CardContent className="p-0 divide-y-2 divide-dashed divide-gray-200">
                       {/* Entree */}
-                      <div className="border-b border-gray-200 pb-4">
-                        <h4 className="font-bold text-gray-900 text-lg mb-3">
-                          Entree: {result.mainDishResult.dish.dish_name}
-                        </h4>
-                        {result.mainDishResult.overallStatus === 'safe' ? (
-                          <p className="text-[#2d5016] font-medium">✓ No changes needed</p>
-                        ) : (
-                          <div className="space-y-4">
-                            {result.mainDishResult.perAllergy
+                    {(() => {
+                      const allMods: string[] = [];
+                      const notModifiableItems: string[] = [];
+                      result.mainDishResult.perAllergy
                               .filter(item => item.status === 'unsafe')
-                              .map((item, idx) => {
-                                const isCustomAllergen = typeof item.allergen === 'string' && !(item.allergen in ALLERGEN_LABELS);
-                                const allergenLabel = isCustomAllergen
-                                  ? item.allergen
-                                  : ALLERGEN_LABELS[item.allergen as Allergen] || item.allergen;
-                                
-                                // Separate substitutable vs not modifiable
-                                const notModifiable = item.substitutions.filter(sub => 
-                                  sub.includes('NOT POSSIBLE') || sub.includes('not possible')
-                                );
-                                const substitutable = item.substitutions.filter(sub => 
-                                  !sub.includes('NOT POSSIBLE') && !sub.includes('not possible')
-                                );
-                                
-                                // Separate "NO" items from alternatives (like "Gluten Free croutons")
-                                const noItems = substitutable.filter(sub => sub.startsWith('NO '));
-                                const alternatives = substitutable.filter(sub => !sub.startsWith('NO '));
+                        .forEach(item => {
+                          item.substitutions.forEach(sub => {
+                            if (sub.includes('NOT POSSIBLE') || sub.includes('not possible')) {
+                              notModifiableItems.push(sub.replace(/^NOT POSSIBLE - /i, '').replace(/^not possible - /i, ''));
+                            } else {
+                              allMods.push(sub);
+                            }
+                          });
+                        });
+                      const isSafe = result.mainDishResult.overallStatus === 'safe';
+                      const isNotModifiable = notModifiableItems.length > 0 && allMods.length === 0;
                                 
                                 return (
-                                  <div key={`entree-${idx}`} className="border border-gray-200 rounded-lg p-4 bg-gray-50">
-                                    <div className="mb-3">
-                                      <span className="px-2 py-1 rounded-full text-xs font-bold uppercase bg-[#991b1b]/20 text-[#991b1b] border border-[#991b1b]/50">
-                                        Potentially unsafe
-                                      </span>
-                                    </div>
-                                    
-                                    <h5 className="font-bold text-gray-900 mb-3">
-                                      Allergen: {allergenLabel}
-                                    </h5>
-                                    
-                                    {/* Show found ingredients if available */}
-                                    {item.foundIngredients && item.foundIngredients.length > 0 && (
-                                      <div className="mb-3">
-                                        <strong className="block text-xs font-semibold text-gray-700 mb-1">
-                                          Found ingredients:
-                                        </strong>
-                                        <ul className="list-disc list-inside space-y-0.5">
-                                          {item.foundIngredients.map((ing, ingIdx) => (
-                                            <li key={ingIdx} className="text-xs text-red-600 italic">
-                                              {ing}
-                                            </li>
-                                          ))}
-                                        </ul>
+                        <div className="p-5">
+                          <p className="text-xs text-gray-400 uppercase tracking-wider font-medium mb-1">Entree</p>
+                          <p className="font-bold text-gray-900 text-lg mb-3">{result.mainDishResult.dish.dish_name}</p>
+                          
+                          {isSafe ? (
+                            <div className="flex items-center gap-3 bg-emerald-50 rounded-xl p-4">
+                              <div className="flex-shrink-0 w-10 h-10 bg-emerald-500 rounded-full flex items-center justify-center">
+                                <span className="text-white text-xl font-bold">✓</span>
+                              </div>
+                              <p className="text-emerald-700 font-bold text-lg">No Changes Needed</p>
+                            </div>
+                          ) : isNotModifiable ? (
+                            <div className="bg-red-50 rounded-xl p-4">
+                              <div className="flex items-center gap-3">
+                                <div className="flex-shrink-0 w-10 h-10 bg-red-500 rounded-full flex items-center justify-center">
+                                  <span className="text-white text-xl font-bold">✗</span>
+                                </div>
+                                <p className="text-red-700 font-bold text-lg">Cannot Be Modified</p>
+                              </div>
+                              <div className="mt-2 pl-13 text-red-600 text-sm">
+                                {notModifiableItems.map((item, idx) => (
+                                  <p key={idx}>{item}</p>
+                                ))}
                                       </div>
-                                    )}
-                                    
-                                      {/* Show NOT MODIFIABLE items */}
-                                      {notModifiable.length > 0 && (
-                                        <div className="mb-3 bg-red-50 border-l-4 border-red-500 p-3 rounded">
-                                          <p className="text-red-700 font-semibold text-sm mb-1">
-                                            NOT MODIFIABLE ({allergenLabel}):
-                                          </p>
-                                          <ul className="list-disc list-inside space-y-1 ml-2">
-                                            {notModifiable.map((sub, subIdx) => {
-                                              // Remove "NOT POSSIBLE - " prefix
-                                              let message = sub.replace(/^NOT POSSIBLE - /i, '').replace(/^not possible - /i, '');
-                                              return (
-                                                <li key={subIdx} className="text-red-600 text-xs">
-                                                  {message}
-                                                </li>
-                                              );
-                                            })}
-                                          </ul>
                                         </div>
-                                      )}
-                                    
-                                    {/* Show SUBSTITUTABLE items */}
-                                    {substitutable.length > 0 && (
-                                      <div className="bg-green-50 border-l-4 border-green-500 p-3 rounded">
-                                        <p className="text-green-700 font-semibold text-sm mb-1">
-                                          SUBSTITUTABLE:
-                                        </p>
-                                        <ul className="list-disc list-inside space-y-1 ml-2">
-                                          {noItems.map((sub, subIdx) => (
-                                            <li key={subIdx} className="text-green-800 text-xs">
-                                              {sub}
-                                            </li>
-                                          ))}
-                                          {alternatives.map((alt, altIdx) => (
-                                            <li key={`alt-${altIdx}`} className="text-green-800 text-xs ml-4">
-                                              {alt}
-                                            </li>
-                                          ))}
-                                        </ul>
+                          ) : (
+                            <div className="bg-amber-50 rounded-xl p-4 space-y-2">
+                              {allMods.map((mod, idx) => (
+                                <div key={idx} className="flex items-center gap-3">
+                                  <div className="flex-shrink-0 w-8 h-8 bg-amber-500 rounded-full flex items-center justify-center">
+                                    <span className="text-white text-sm font-bold">!</span>
+                                  </div>
+                                  <p className="text-amber-900 font-bold text-lg">{mod}</p>
+                                </div>
+                              ))}
+                              {notModifiableItems.length > 0 && (
+                                <div className="mt-3 pt-3 border-t border-red-200">
+                                  <p className="text-red-600 font-semibold text-sm">⚠️ Cannot Remove:</p>
+                                  {notModifiableItems.map((item, idx) => (
+                                    <p key={idx} className="text-red-500 text-sm">{item}</p>
+                                  ))}
                                       </div>
                                     )}
-                                    
-                                    {/* If no substitutions at all (shouldn't happen, but handle it) */}
-                                    {notModifiable.length === 0 && substitutable.length === 0 && (
-                                      <div className="bg-red-50 border-l-4 border-red-500 p-3 rounded">
-                                        <p className="text-red-700 text-sm">
-                                          This dish contains {allergenLabel.toLowerCase()} and cannot be modified.
-                                        </p>
                                       </div>
                                     )}
                                   </div>
                                 );
-                              })}
-                          </div>
-                        )}
-                      </div>
+                    })()}
 
                       {/* Side Dish */}
-                      {result.sideDishResult && (
-                        <div className="border-b border-gray-200 pb-4">
-                          <h4 className="font-bold text-gray-900 text-lg mb-3">
-                            Side Dish: {result.sideDishResult.dish.dish_name}
-                          </h4>
-                          {result.sideDishResult.overallStatus === 'safe' ? (
-                            <p className="text-[#2d5016] font-medium">✓ No changes needed</p>
-                          ) : (
-                            <div className="space-y-4">
-                              {result.sideDishResult.perAllergy
+                    {result.sideDishResult && (() => {
+                      const allMods: string[] = [];
+                      const notModifiableItems: string[] = [];
+                      result.sideDishResult!.perAllergy
                                 .filter(item => item.status === 'unsafe')
-                                .map((item, idx) => {
-                                  const isCustomAllergen = typeof item.allergen === 'string' && !(item.allergen in ALLERGEN_LABELS);
-                                  const allergenLabel = isCustomAllergen
-                                    ? item.allergen
-                                    : ALLERGEN_LABELS[item.allergen as Allergen] || item.allergen;
-                                  
-                                  // Separate substitutable vs not modifiable
-                                  const notModifiable = item.substitutions.filter(sub => 
-                                    sub.includes('NOT POSSIBLE') || sub.includes('not possible')
-                                  );
-                                  const substitutable = item.substitutions.filter(sub => 
-                                    !sub.includes('NOT POSSIBLE') && !sub.includes('not possible')
-                                  );
-                                  
-                                  // Separate "NO" items from alternatives (like "Gluten Free croutons")
-                                  const noItems = substitutable.filter(sub => sub.startsWith('NO '));
-                                  const alternatives = substitutable.filter(sub => !sub.startsWith('NO '));
+                        .forEach(item => {
+                          item.substitutions.forEach(sub => {
+                            if (sub.includes('NOT POSSIBLE') || sub.includes('not possible')) {
+                              notModifiableItems.push(sub.replace(/^NOT POSSIBLE - /i, '').replace(/^not possible - /i, ''));
+                            } else {
+                              allMods.push(sub);
+                            }
+                          });
+                        });
+                      const isSafe = result.sideDishResult!.overallStatus === 'safe';
+                      const isNotModifiable = notModifiableItems.length > 0 && allMods.length === 0;
                                   
                                   return (
-                                    <div key={`side-${idx}`} className="border border-gray-200 rounded-lg p-4 bg-gray-50">
-                                      <div className="mb-3">
-                                        <span className="px-2 py-1 rounded-full text-xs font-bold uppercase bg-[#991b1b]/20 text-[#991b1b] border border-[#991b1b]/50">
-                                          Potentially unsafe
-                                        </span>
-                                      </div>
-                                      
-                                      <h5 className="font-bold text-gray-900 mb-3">
-                                        Allergen: {allergenLabel}
-                                      </h5>
-                                      
-                                      {/* Show found ingredients if available */}
-                                      {item.foundIngredients && item.foundIngredients.length > 0 && (
-                                        <div className="mb-3">
-                                          <strong className="block text-xs font-semibold text-gray-700 mb-1">
-                                            Found ingredients:
-                                          </strong>
-                                          <ul className="list-disc list-inside space-y-0.5">
-                                            {item.foundIngredients.map((ing, ingIdx) => (
-                                              <li key={ingIdx} className="text-xs text-red-600 italic">
-                                                {ing}
-                                              </li>
-                                            ))}
-                                          </ul>
+                        <div className="p-5">
+                          <p className="text-xs text-gray-400 uppercase tracking-wider font-medium mb-1">Side</p>
+                          <p className="font-bold text-gray-900 text-lg mb-3">{result.sideDishResult!.dish.dish_name}</p>
+                          
+                          {isSafe ? (
+                            <div className="flex items-center gap-3 bg-emerald-50 rounded-xl p-4">
+                              <div className="flex-shrink-0 w-10 h-10 bg-emerald-500 rounded-full flex items-center justify-center">
+                                <span className="text-white text-xl font-bold">✓</span>
+                              </div>
+                              <p className="text-emerald-700 font-bold text-lg">No Changes Needed</p>
+                            </div>
+                          ) : isNotModifiable ? (
+                            <div className="bg-red-50 rounded-xl p-4">
+                              <div className="flex items-center gap-3">
+                                <div className="flex-shrink-0 w-10 h-10 bg-red-500 rounded-full flex items-center justify-center">
+                                  <span className="text-white text-xl font-bold">✗</span>
+                                </div>
+                                <p className="text-red-700 font-bold text-lg">Cannot Be Modified</p>
+                              </div>
+                              <div className="mt-2 pl-13 text-red-600 text-sm">
+                                {notModifiableItems.map((item, idx) => (
+                                  <p key={idx}>{item}</p>
+                                ))}
+                                        </div>
+                                        </div>
+                          ) : (
+                            <div className="bg-amber-50 rounded-xl p-4 space-y-2">
+                              {allMods.map((mod, idx) => (
+                                <div key={idx} className="flex items-center gap-3">
+                                  <div className="flex-shrink-0 w-8 h-8 bg-amber-500 rounded-full flex items-center justify-center">
+                                    <span className="text-white text-sm font-bold">!</span>
+                                  </div>
+                                  <p className="text-amber-900 font-bold text-lg">{mod}</p>
+                                </div>
+                              ))}
+                              {notModifiableItems.length > 0 && (
+                                <div className="mt-3 pt-3 border-t border-red-200">
+                                  <p className="text-red-600 font-semibold text-sm">⚠️ Cannot Remove:</p>
+                                  {notModifiableItems.map((item, idx) => (
+                                    <p key={idx} className="text-red-500 text-sm">{item}</p>
+                                  ))}
                                         </div>
                                       )}
-                                      
-                                      {/* Show NOT MODIFIABLE items */}
-                                      {notModifiable.length > 0 && (
-                                        <div className="mb-3 bg-red-50 border-l-4 border-red-500 p-3 rounded">
-                                          <p className="text-red-700 font-semibold text-sm mb-1">
-                                            NOT MODIFIABLE ({allergenLabel}):
-                                          </p>
-                                          <ul className="list-disc list-inside space-y-1 ml-2">
-                                            {notModifiable.map((sub, subIdx) => {
-                                              // Remove "NOT POSSIBLE - " prefix
-                                              let message = sub.replace(/^NOT POSSIBLE - /i, '').replace(/^not possible - /i, '');
-                                              return (
-                                                <li key={subIdx} className="text-red-600 text-xs">
-                                                  {message}
-                                                </li>
-                                              );
-                                            })}
-                                          </ul>
-                                        </div>
-                                      )}
-                                      
-                                      {/* Show SUBSTITUTABLE items */}
-                                      {substitutable.length > 0 && (
-                                        <div className="bg-green-50 border-l-4 border-green-500 p-3 rounded">
-                                          <p className="text-green-700 font-semibold text-sm mb-1">
-                                            SUBSTITUTABLE:
-                                          </p>
-                                          <ul className="list-disc list-inside space-y-1 ml-2">
-                                            {noItems.map((sub, subIdx) => (
-                                              <li key={subIdx} className="text-green-800 text-xs">
-                                                {sub}
-                                              </li>
-                                            ))}
-                                            {alternatives.map((alt, altIdx) => (
-                                              <li key={`alt-${altIdx}`} className="text-green-800 text-xs ml-4">
-                                                {alt}
-                                              </li>
-                                            ))}
-                                          </ul>
-                                        </div>
-                                      )}
-                                      
-                                      {/* If no substitutions at all */}
-                                      {notModifiable.length === 0 && substitutable.length === 0 && (
-                                        <div className="bg-red-50 border-l-4 border-red-500 p-3 rounded">
-                                          <p className="text-red-700 text-sm">
-                                            This dish contains {allergenLabel.toLowerCase()} and cannot be modified.
-                                          </p>
                                         </div>
                                       )}
                                     </div>
                                   );
-                                })}
-                            </div>
-                          )}
-                        </div>
-                      )}
+                    })()}
 
                       {/* Crusts */}
-                      {result.crustCheck && result.selectedCrusts && result.selectedCrusts.size > 0 && (
-                        <div className="border-b border-gray-200 pb-4">
-                          <h4 className="font-bold text-gray-900 text-lg mb-3">
-                            Crusts: {Array.from(result.selectedCrusts).map(c => crustOptions.find(opt => opt.value === c)?.label).filter(Boolean).join(', ')}
-                          </h4>
-                          {result.crustCheck.status === 'safe' ? (
-                            <p className="text-[#2d5016] font-medium">✓ No changes needed</p>
-                          ) : (
-                            <div className="space-y-2">
-                              {Array.from(selectedAllergies)
-                                .filter(allergen => result.crustCheck && result.crustCheck.substitutions[allergen]?.length > 0)
-                                .map((allergen) => {
-                                  if (!result.crustCheck) return null;
-                                  const allergenLabel = ALLERGEN_LABELS[allergen] || allergen;
-                                  const subs = result.crustCheck.substitutions[allergen] || [];
+                    {result.crustCheck && result.selectedCrusts && result.selectedCrusts.size > 0 && (() => {
+                      const allMods: string[] = [];
+                      Array.from(selectedAllergies).forEach(allergen => {
+                        if (result.crustCheck && result.crustCheck.substitutions[allergen]) {
+                          result.crustCheck.substitutions[allergen].forEach(sub => allMods.push(sub));
+                        }
+                      });
+                      const isSafe = result.crustCheck.status === 'safe' || allMods.length === 0;
+
                                   return (
-                                    <div key={`crust-${allergen}`} className="bg-amber-50 border-l-4 border-amber-500 p-3 rounded">
-                                      <p className="text-amber-900 font-semibold mb-1">
-                                        Crusts - {allergenLabel}:
-                                      </p>
-                                      <ul className="list-disc list-inside space-y-1 ml-2">
-                                        {subs.map((sub, idx) => (
-                                          <li key={idx} className="text-amber-800 text-sm">
-                                            {sub.replace(/^NO /, '')}
-                                          </li>
-                                        ))}
-                                      </ul>
+                        <div className="p-5">
+                          <p className="text-xs text-gray-400 uppercase tracking-wider font-medium mb-1">Crust</p>
+                          <p className="font-bold text-gray-900 text-lg mb-3">
+                            {Array.from(result.selectedCrusts).map(c => crustOptions.find(opt => opt.value === c)?.label).filter(Boolean).join(', ')}
+                          </p>
+                          
+                          {isSafe ? (
+                            <div className="flex items-center gap-3 bg-emerald-50 rounded-xl p-4">
+                              <div className="flex-shrink-0 w-10 h-10 bg-emerald-500 rounded-full flex items-center justify-center">
+                                <span className="text-white text-xl font-bold">✓</span>
                                     </div>
-                                  );
-                                })}
+                              <p className="text-emerald-700 font-bold text-lg">No Changes Needed</p>
+                            </div>
+                          ) : (
+                            <div className="bg-amber-50 rounded-xl p-4 space-y-2">
+                              {allMods.map((mod, idx) => (
+                                <div key={idx} className="flex items-center gap-3">
+                                  <div className="flex-shrink-0 w-8 h-8 bg-amber-500 rounded-full flex items-center justify-center">
+                                    <span className="text-white text-sm font-bold">!</span>
+                                  </div>
+                                  <p className="text-amber-900 font-bold text-lg">{mod}</p>
+                                </div>
+                              ))}
+                        </div>
+                      )}
+                        </div>
+                      );
+                    })()}
+
+                      {/* Dressings */}
+                    {result.defaultDressingCheck && result.defaultDressing && (() => {
+                      const allMods: string[] = [];
+                      Array.from(selectedAllergies).forEach(allergen => {
+                        if (result.defaultDressingCheck && result.defaultDressingCheck.substitutions[allergen]) {
+                          result.defaultDressingCheck.substitutions[allergen].forEach(sub => allMods.push(sub));
+                        }
+                      });
+                      const isSafe = allMods.length === 0;
+
+                                      return (
+                        <div className="p-5">
+                          <p className="text-xs text-gray-400 uppercase tracking-wider font-medium mb-1">Default Dressing</p>
+                          <p className="font-bold text-gray-900 text-lg mb-3">
+                            {dressingOptions.find(d => d.value === result.defaultDressing)?.label || result.defaultDressing}
+                          </p>
+                          
+                          {isSafe ? (
+                            <div className="flex items-center gap-3 bg-emerald-50 rounded-xl p-4">
+                              <div className="flex-shrink-0 w-10 h-10 bg-emerald-500 rounded-full flex items-center justify-center">
+                                <span className="text-white text-xl font-bold">✓</span>
+                                        </div>
+                              <p className="text-emerald-700 font-bold text-lg">No Changes Needed</p>
+                                </div>
+                          ) : (
+                            <div className="bg-amber-50 rounded-xl p-4 space-y-2">
+                              {allMods.map((mod, idx) => (
+                                <div key={idx} className="flex items-center gap-3">
+                                  <div className="flex-shrink-0 w-8 h-8 bg-amber-500 rounded-full flex items-center justify-center">
+                                    <span className="text-white text-sm font-bold">!</span>
+                                  </div>
+                                  <p className="text-amber-900 font-bold text-lg">{mod}</p>
+                                </div>
+                              ))}
                             </div>
                           )}
                         </div>
-                      )}
+                      );
+                    })()}
+                    
+                    {result.selectedDressingCheck && result.selectedDressing && (() => {
+                      const allMods: string[] = [];
+                      Array.from(selectedAllergies).forEach(allergen => {
+                        if (result.selectedDressingCheck && result.selectedDressingCheck.substitutions[allergen]) {
+                          result.selectedDressingCheck.substitutions[allergen].forEach(sub => allMods.push(sub));
+                        }
+                      });
+                      const isSafe = allMods.length === 0;
 
-                      {/* Dressings */}
-                      {(result.defaultDressingCheck || result.selectedDressingCheck) && (
-                        <div>
-                          {result.defaultDressingCheck && result.defaultDressing && (
-                            <div className="mb-4">
-                              <h4 className="font-bold text-gray-900 text-lg mb-3">
-                                Default Dressing: {dressingOptions.find(d => d.value === result.defaultDressing)?.label || result.defaultDressing}
-                              </h4>
-                              {Array.from(selectedAllergies)
-                                .filter(allergen => result.defaultDressingCheck && result.defaultDressingCheck.substitutions[allergen]?.length > 0)
-                                .length === 0 ? (
-                                <p className="text-[#2d5016] font-medium">✓ No changes needed</p>
-                              ) : (
-                                <div className="space-y-2">
-                                  {Array.from(selectedAllergies)
-                                    .filter(allergen => result.defaultDressingCheck && result.defaultDressingCheck.substitutions[allergen]?.length > 0)
-                                    .map((allergen) => {
-                                      if (!result.defaultDressingCheck) return null;
-                                      const allergenLabel = ALLERGEN_LABELS[allergen] || allergen;
-                                      const subs = result.defaultDressingCheck.substitutions[allergen] || [];
                                       return (
-                                        <div key={`default-dressing-${allergen}`} className="bg-amber-50 border-l-4 border-amber-500 p-3 rounded">
-                                          <p className="text-amber-900 font-semibold mb-1">
-                                            Default Dressing - {allergenLabel}:
-                                          </p>
-                                          <ul className="list-disc list-inside space-y-1 ml-2">
-                                            {subs.map((sub, idx) => (
-                                              <li key={idx} className="text-amber-800 text-sm">
-                                                {sub.replace(/^NO /, '')}
-                                              </li>
-                                            ))}
-                                          </ul>
+                        <div className="p-5">
+                          <p className="text-xs text-gray-400 uppercase tracking-wider font-medium mb-1">
+                            {result.hasDressingSubstitution ? 'Substituted Dressing' : 'Selected Dressing'}
+                          </p>
+                          <p className="font-bold text-gray-900 text-lg mb-3">
+                            {dressingOptions.find(d => d.value === result.selectedDressing)?.label || result.selectedDressing}
+                          </p>
+                          
+                          {isSafe ? (
+                            <div className="flex items-center gap-3 bg-emerald-50 rounded-xl p-4">
+                              <div className="flex-shrink-0 w-10 h-10 bg-emerald-500 rounded-full flex items-center justify-center">
+                                <span className="text-white text-xl font-bold">✓</span>
                                         </div>
-                                      );
-                                    })}
+                              <p className="text-emerald-700 font-bold text-lg">No Changes Needed</p>
                                 </div>
-                              )}
+                          ) : (
+                            <div className="bg-amber-50 rounded-xl p-4 space-y-2">
+                              {allMods.map((mod, idx) => (
+                                <div key={idx} className="flex items-center gap-3">
+                                  <div className="flex-shrink-0 w-8 h-8 bg-amber-500 rounded-full flex items-center justify-center">
+                                    <span className="text-white text-sm font-bold">!</span>
                             </div>
-                          )}
-                          {result.selectedDressingCheck && result.selectedDressing && (
-                            <div>
-                              <h4 className="font-bold text-gray-900 text-lg mb-3">
-                                {result.hasDressingSubstitution ? 'Substitution ' : ''}Dressing: {dressingOptions.find(d => d.value === result.selectedDressing)?.label || result.selectedDressing}
-                              </h4>
-                              {Array.from(selectedAllergies)
-                                .filter(allergen => result.selectedDressingCheck && result.selectedDressingCheck.substitutions[allergen]?.length > 0)
-                                .length === 0 ? (
-                                <p className="text-[#2d5016] font-medium">✓ No changes needed</p>
-                              ) : (
-                                <div className="space-y-2">
-                                  {Array.from(selectedAllergies)
-                                    .filter(allergen => result.selectedDressingCheck && result.selectedDressingCheck.substitutions[allergen]?.length > 0)
-                                    .map((allergen) => {
-                                      if (!result.selectedDressingCheck) return null;
-                                      const allergenLabel = ALLERGEN_LABELS[allergen] || allergen;
-                                      const subs = result.selectedDressingCheck.substitutions[allergen] || [];
-                                      return (
-                                        <div key={`selected-dressing-${allergen}`} className="bg-amber-50 border-l-4 border-amber-500 p-3 rounded">
-                                          <p className="text-amber-900 font-semibold mb-1">
-                                            {result.hasDressingSubstitution ? 'Substitution ' : ''}Dressing - {allergenLabel}:
-                                          </p>
-                                          <ul className="list-disc list-inside space-y-1 ml-2">
-                                            {subs.map((sub, idx) => (
-                                              <li key={idx} className="text-amber-800 text-sm">
-                                                {sub.replace(/^NO /, '')}
-                                              </li>
-                                            ))}
-                                          </ul>
-                                        </div>
-                                      );
-                                    })}
+                                  <p className="text-amber-900 font-bold text-lg">{mod}</p>
                                 </div>
-                              )}
-                            </div>
-                          )}
+                              ))}
                         </div>
                       )}
                     </div>
+                      );
+                    })()}
                   </CardContent>
                 </Card>
 
