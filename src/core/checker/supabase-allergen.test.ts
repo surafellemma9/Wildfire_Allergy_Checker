@@ -34,7 +34,6 @@ function createMockPack(items: MenuItem[]): TenantPack {
     allergens,
     categories: [],
     items,
-    stats: { totalItems: items.length, itemsWithRules: 0, totalRules: 0 },
   };
 }
 
