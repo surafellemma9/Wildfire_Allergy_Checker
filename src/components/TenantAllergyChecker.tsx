@@ -4,8 +4,6 @@
  */
 
 import { useState, useMemo } from 'react';
-import { AnimatedBackground } from '@/components/ui/animated-background';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
 import {
   Info,
@@ -18,7 +16,6 @@ import {
   Check,
   AlertTriangle,
   X,
-  HelpCircle,
 } from 'lucide-react';
 import type {
   TenantPack,
@@ -50,10 +47,16 @@ interface TenantAllergyCheckerProps {
 // Constants
 // ============================================================================
 
-const TABLET_BREAKPOINT = 768;
-
 // Step definitions
-type Step = 'allergies' | 'dish' | 'sides' | 'crust' | 'results';
+type Step = 'allergies' | 'dish' | 'protein' | 'sides' | 'crust' | 'results';
+
+// Protein option type (for salads)
+interface ProteinOption {
+  id: string;
+  name: string;
+  ticketCode: string;
+  allergenRules: Record<string, { status: string; substitutions: string[]; notes: string | null }>;
+}
 
 const DISCLAIMER_TEXT =
   'This tool is an internal helper based on our ingredient book. It may not capture all cross-contact or kitchen changes.';
@@ -78,24 +81,6 @@ const CATEGORY_ICONS: Record<string, string> = {
   specials: '⭐',
 };
 
-// Category colors
-const CATEGORY_COLORS: Record<string, string> = {
-  appetizers: 'from-amber-600 to-orange-700',
-  salads: 'from-green-600 to-emerald-700',
-  fresh_seafood: 'from-cyan-600 to-blue-700',
-  sandwiches: 'from-red-600 to-rose-700',
-  steaks: 'from-red-800 to-red-900',
-  prime_rib: 'from-red-800 to-red-900',
-  chicken: 'from-orange-600 to-amber-700',
-  ribs: 'from-orange-700 to-red-700',
-  nightly: 'from-indigo-600 to-purple-700',
-  desserts: 'from-pink-600 to-rose-700',
-  sides: 'from-slate-600 to-slate-700',
-  kids: 'from-purple-600 to-indigo-700',
-  brunch: 'from-yellow-500 to-amber-600',
-  specials: 'from-yellow-500 to-orange-600',
-};
-
 // ============================================================================
 // Component
 // ============================================================================
@@ -112,6 +97,7 @@ export function TenantAllergyChecker({
   const [selectedAllergens, setSelectedAllergens] = useState<string[]>([]);
   const [customAllergenText, setCustomAllergenText] = useState('');
   const [selectedItem, setSelectedItem] = useState<MenuItem | null>(null);
+  const [selectedProtein, setSelectedProtein] = useState<ProteinOption | null>(null);
   const [selectedSide, setSelectedSide] = useState<MenuItem | null>(null);
   const [selectedCrust, setSelectedCrust] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
@@ -121,18 +107,6 @@ export function TenantAllergyChecker({
   );
   const [showDisclaimer, setShowDisclaimer] = useState(!disclaimerAccepted);
 
-  // ========== Responsive ==========
-  const [isTablet, setIsTablet] = useState(
-    typeof window !== 'undefined' ? window.innerWidth >= TABLET_BREAKPOINT : false
-  );
-
-  // Listen for resize
-  useState(() => {
-    if (typeof window === 'undefined') return;
-    const handleResize = () => setIsTablet(window.innerWidth >= TABLET_BREAKPOINT);
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  });
 
   // ========== Computed ==========
   const searchResults = useMemo(() => {
@@ -149,18 +123,54 @@ export function TenantAllergyChecker({
     if (!selectedItem || selectedAllergens.length === 0) return null;
 
     try {
-      return checkAllergens(pack, {
+      const result = checkAllergens(pack, {
         allergenIds: selectedAllergens,
         itemId: selectedItem.id,
         sideId: selectedSide?.id,
         crustId: selectedCrust || undefined,
         customAllergenText: customAllergenText.trim() || undefined,
       });
+
+      // If protein is selected, combine its allergen rules with the result
+      if (selectedProtein && result) {
+        for (const allergenResult of result.mainItem.perAllergen) {
+          const proteinRule = selectedProtein.allergenRules[allergenResult.allergenId];
+          if (proteinRule) {
+            // If protein has modifications, add them
+            if (proteinRule.status === 'MODIFIABLE' && proteinRule.substitutions.length > 0) {
+              // Add protein mods to the substitutions
+              const proteinMods = proteinRule.substitutions.map(s => `(${selectedProtein.name}) ${s}`);
+              allergenResult.substitutions = [...allergenResult.substitutions, ...proteinMods];
+              // If main dish was SAFE, protein makes it MODIFIABLE
+              if (allergenResult.status === 'SAFE') {
+                allergenResult.status = 'MODIFIABLE';
+              }
+            } else if (proteinRule.status === 'UNSAFE') {
+              // If protein is unsafe for this allergen, mark overall as unsafe
+              allergenResult.status = 'UNSAFE';
+              allergenResult.notes = [...allergenResult.notes, `${selectedProtein.name} is not safe for this allergen`];
+            }
+          }
+        }
+        // Recalculate overall status
+        const statuses = result.mainItem.perAllergen.map(pa => pa.status);
+        if (statuses.includes('UNSAFE') || statuses.includes('NOT_SAFE_NOT_IN_SHEET')) {
+          result.overallStatus = 'UNSAFE';
+        } else if (statuses.includes('VERIFY_WITH_KITCHEN')) {
+          result.overallStatus = 'VERIFY_WITH_KITCHEN';
+        } else if (statuses.includes('MODIFIABLE')) {
+          result.overallStatus = 'MODIFIABLE';
+        } else {
+          result.overallStatus = 'SAFE';
+        }
+      }
+
+      return result;
     } catch (error) {
       console.error('Checker error:', error);
       return null;
     }
-  }, [pack, selectedItem, selectedSide, selectedCrust, selectedAllergens, customAllergenText]);
+  }, [pack, selectedItem, selectedProtein, selectedSide, selectedCrust, selectedAllergens, customAllergenText]);
 
   // ========== Handlers ==========
   const handleAcceptDisclaimer = () => {
@@ -179,7 +189,11 @@ export function TenantAllergyChecker({
 
   const handleSelectItem = (item: MenuItem) => {
     setSelectedItem(item);
-    if (item.isEntree && item.sides && item.sides.length > 0) {
+    // Check for protein options (salads)
+    const proteinOptions = (item as any).proteinOptions;
+    if (proteinOptions && proteinOptions.length > 0) {
+      setCurrentStep('protein');
+    } else if (item.isEntree && item.sides && item.sides.length > 0) {
       setCurrentStep('sides');
     } else if (item.requiresCrust && item.crustOptions && item.crustOptions.length > 0) {
       setCurrentStep('crust');
@@ -188,6 +202,18 @@ export function TenantAllergyChecker({
     }
     setSelectedCategory(null);
     setSearchQuery('');
+  };
+
+  const handleSelectProtein = (protein: ProteinOption | null) => {
+    setSelectedProtein(protein);
+    // After protein, check for sides or crust, otherwise go to results
+    if (selectedItem?.isEntree && selectedItem?.sides && selectedItem.sides.length > 0) {
+      setCurrentStep('sides');
+    } else if (selectedItem?.requiresCrust && selectedItem?.crustOptions && selectedItem.crustOptions.length > 0) {
+      setCurrentStep('crust');
+    } else {
+      setCurrentStep('results');
+    }
   };
 
   const handleSelectSide = (sideId: string | null) => {
@@ -207,17 +233,33 @@ export function TenantAllergyChecker({
   };
 
   const handleBack = () => {
+    const proteinOptions = (selectedItem as any)?.proteinOptions;
+    const hasProteinOptions = proteinOptions && proteinOptions.length > 0;
+    
     switch (currentStep) {
       case 'dish':
         setCurrentStep('allergies');
         break;
-      case 'sides':
+      case 'protein':
         setCurrentStep('dish');
         setSelectedItem(null);
+        setSelectedProtein(null);
+        break;
+      case 'sides':
+        if (hasProteinOptions) {
+          setCurrentStep('protein');
+          setSelectedProtein(null);
+        } else {
+          setCurrentStep('dish');
+          setSelectedItem(null);
+        }
         break;
       case 'crust':
         if (selectedItem?.isEntree) {
           setCurrentStep('sides');
+        } else if (hasProteinOptions) {
+          setCurrentStep('protein');
+          setSelectedProtein(null);
         } else {
           setCurrentStep('dish');
           setSelectedItem(null);
@@ -228,6 +270,9 @@ export function TenantAllergyChecker({
           setCurrentStep('crust');
         } else if (selectedItem?.isEntree) {
           setCurrentStep('sides');
+        } else if (hasProteinOptions) {
+          setCurrentStep('protein');
+          setSelectedProtein(null);
         } else {
           setCurrentStep('dish');
           setSelectedItem(null);
@@ -241,6 +286,7 @@ export function TenantAllergyChecker({
     setSelectedAllergens([]);
     setCustomAllergenText('');
     setSelectedItem(null);
+    setSelectedProtein(null);
     setSelectedSide(null);
     setSelectedCrust(null);
     setSearchQuery('');
@@ -256,94 +302,112 @@ export function TenantAllergyChecker({
   // ========== Disclaimer Modal ==========
   if (showDisclaimer) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center p-4">
-        <Card className="max-w-lg w-full bg-slate-800/90 border-amber-600/50">
-          <CardHeader>
-            <CardTitle className="text-xl text-white flex items-center gap-2">
-              <Info className="w-6 h-6 text-amber-500" />
-              Important Notice
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <p className="text-slate-300">{DISCLAIMER_TEXT}</p>
-            <p className="text-amber-400 font-medium">{ALWAYS_VERIFY_TEXT}</p>
-            <button
-              onClick={handleAcceptDisclaimer}
-              className="w-full py-3 px-6 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white rounded-lg font-semibold transition-colors"
-            >
-              I Understand
-            </button>
-          </CardContent>
-        </Card>
+      <div className="min-h-screen relative flex items-center justify-center p-4">
+        {/* Background */}
+        <div 
+          className="fixed inset-0"
+          style={{
+            background: 'linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 25%, #141414 50%, #0d0d0d 75%, #080808 100%)',
+          }}
+        />
+        <div className="relative max-w-md w-full bg-white/5 rounded-2xl border border-white/10 p-6">
+          <div className="flex items-center gap-3 mb-5">
+            <div className="w-11 h-11 rounded-xl bg-amber-500 flex items-center justify-center">
+              <Info className="w-5 h-5 text-white" />
+            </div>
+            <h2 className="text-xl font-bold text-white">Important Notice</h2>
+          </div>
+          <p className="text-white/60 mb-4 leading-relaxed text-sm">{DISCLAIMER_TEXT}</p>
+          <p className="text-amber-400 font-medium mb-6 text-sm">{ALWAYS_VERIFY_TEXT}</p>
+          <button
+            onClick={handleAcceptDisclaimer}
+            className="w-full py-4 bg-white hover:bg-white/90 text-gray-900 rounded-xl font-semibold transition-all shadow-lg shadow-white/20"
+          >
+            I Understand
+          </button>
+        </div>
       </div>
     );
   }
 
   // ========== Render ==========
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
-      <AnimatedBackground />
+    <div className="min-h-screen relative">
+      {/* Background - Dark neutral gradient */}
+      <div 
+        className="fixed inset-0"
+        style={{
+          background: 'linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 25%, #141414 50%, #0d0d0d 75%, #080808 100%)',
+        }}
+      />
+      {/* Subtle glow effects */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-0 left-1/4 w-96 h-96 bg-white/5 rounded-full blur-3xl" />
+        <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-white/3 rounded-full blur-3xl" />
+      </div>
       
-      {/* Header */}
-      <div className="sticky top-0 z-50 bg-slate-900/95 backdrop-blur-md border-b border-slate-700/50">
-        <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <ShieldCheck className="w-7 h-7 text-amber-500" />
+      {/* Header - Modern glass */}
+      <div className="sticky top-0 z-50 backdrop-blur-2xl bg-black/20 border-b border-white/5">
+        <div className="max-w-4xl mx-auto px-6 py-4 flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <div className="w-11 h-11 rounded-xl bg-white flex items-center justify-center shadow-lg shadow-white/20">
+              <ShieldCheck className="w-5 h-5 text-gray-900" />
+            </div>
             <div>
-              <h1 className="text-lg font-bold text-white">Allergy Safety Checker</h1>
-              <p className="text-xs text-slate-400">
+              <h1 className="text-base font-semibold text-white">Allergy Safety Checker</h1>
+              <p className="text-xs text-white/50">
                 {tenantContext.conceptName} • {tenantContext.locationName}
               </p>
             </div>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2">
             {/* Connection status */}
-            <div className="flex items-center gap-1 text-xs">
+            <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white/5 border border-white/10">
               {isOffline ? (
-                <WifiOff className="w-4 h-4 text-red-400" />
+                <WifiOff className="w-3.5 h-3.5 text-red-400" />
               ) : (
-                <Wifi className="w-4 h-4 text-green-400" />
+                <Wifi className="w-3.5 h-3.5 text-emerald-400" />
               )}
               {isUsingCache && (
-                <span className="text-amber-400">cached</span>
+                <span className="text-amber-400 text-xs font-medium">cached</span>
               )}
             </div>
             {/* Settings button */}
             <button
               onClick={onOpenSettings}
-              className="p-2 rounded-lg hover:bg-slate-700/50 transition-colors"
+              className="p-2.5 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 transition-colors"
             >
-              <Settings className="w-5 h-5 text-slate-400" />
+              <Settings className="w-4 h-4 text-white/60" />
             </button>
           </div>
         </div>
       </div>
 
       {/* Progress indicator */}
-      <div className="max-w-7xl mx-auto px-4 py-4">
-        <div className="flex items-center justify-center gap-2 text-sm">
-          {['allergies', 'dish', 'sides', 'crust', 'results'].map((step, idx) => {
-            const isActive = currentStep === step;
-            const isPast =
-              ['allergies', 'dish', 'sides', 'crust', 'results'].indexOf(currentStep) > idx;
-            const shouldShow =
-              step === 'allergies' ||
-              step === 'dish' ||
-              step === 'results' ||
-              (step === 'sides' && selectedItem?.isEntree) ||
-              (step === 'crust' && selectedItem?.requiresCrust);
-
-            if (!shouldShow) return null;
+      <div className="relative max-w-4xl mx-auto px-6 py-6">
+        <div className="flex items-center justify-center gap-3">
+          {['allergies', 'dish', 'results'].map((step, idx) => {
+            const stepIdx = ['allergies', 'dish', 'results'].indexOf(step);
+            const currentIdx = ['allergies', 'dish', 'protein', 'sides', 'crust', 'results'].indexOf(currentStep);
+            const stepTargetIdx = step === 'results' ? 5 : stepIdx;
+            const isActive = currentStep === step || 
+              (step === 'dish' && ['dish', 'protein', 'sides', 'crust'].includes(currentStep));
+            const isPast = currentIdx > stepTargetIdx;
 
             return (
-              <div key={step} className="flex items-center gap-2">
-                {idx > 0 && <div className="w-8 h-0.5 bg-slate-700" />}
+              <div key={step} className="flex items-center gap-3">
+                {idx > 0 && (
+                  <div className={cn(
+                    'w-12 h-0.5 rounded-full transition-colors',
+                    isPast ? 'bg-white' : 'bg-white/10'
+                  )} />
+                )}
                 <div
                   className={cn(
-                    'w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold',
-                    isActive && 'bg-amber-500 text-white',
-                    isPast && 'bg-green-600 text-white',
-                    !isActive && !isPast && 'bg-slate-700 text-slate-400'
+                    'w-10 h-10 rounded-xl flex items-center justify-center text-sm font-semibold transition-all duration-300',
+                    isActive && 'bg-white text-gray-900 shadow-lg shadow-white/20',
+                    isPast && 'bg-white text-gray-900',
+                    !isActive && !isPast && 'bg-white/5 border border-white/10 text-white/40'
                   )}
                 >
                   {isPast ? <Check className="w-4 h-4" /> : idx + 1}
@@ -355,32 +419,32 @@ export function TenantAllergyChecker({
       </div>
 
       {/* Main content */}
-      <div className="max-w-7xl mx-auto px-4 pb-8">
+      <div className="relative max-w-4xl mx-auto px-6 pb-12">
         {/* Back button */}
         {currentStep !== 'allergies' && (
           <button
             onClick={handleBack}
-            className="mb-4 flex items-center gap-2 text-slate-400 hover:text-white transition-colors"
+            className="mb-6 flex items-center gap-2 text-white/50 hover:text-white transition-colors group"
           >
-            <ChevronLeft className="w-5 h-5" />
-            Back
+            <ChevronLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
+            <span className="text-sm font-medium">Back</span>
           </button>
         )}
 
         {/* Step: Allergies */}
         {currentStep === 'allergies' && (
-          <div className="space-y-6">
+          <div className="space-y-8">
             <div className="text-center">
-              <h2 className="text-2xl font-bold text-white mb-2">
+              <h2 className="text-3xl font-bold text-white mb-3">
                 Select Allergies
               </h2>
-              <p className="text-slate-400">
+              <p className="text-white/50 text-base">
                 Choose all allergies that apply to this guest
               </p>
             </div>
 
             {/* Allergen grid */}
-            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-3">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
               {pack.allergens.map((allergen) => {
                 const isSelected = selectedAllergens.includes(allergen.id);
                 return (
@@ -388,14 +452,23 @@ export function TenantAllergyChecker({
                     key={allergen.id}
                     onClick={() => handleAllergenToggle(allergen.id)}
                     className={cn(
-                      'p-4 rounded-xl border-2 transition-all flex flex-col items-center gap-2',
+                      'relative p-4 rounded-2xl border transition-all duration-200 flex flex-col items-center gap-2.5',
+                      'hover:scale-[1.02] active:scale-[0.98]',
                       isSelected
-                        ? 'border-amber-500 bg-amber-500/20 text-white'
-                        : 'border-slate-600 bg-slate-800/50 text-slate-300 hover:border-slate-500'
+                        ? 'bg-white/20 border-white/40 shadow-lg shadow-white/10'
+                        : 'bg-white/5 border-white/10 hover:bg-white/10 hover:border-white/20'
                     )}
                   >
+                    {isSelected && (
+                      <div className="absolute top-2 right-2 w-5 h-5 rounded-full bg-white flex items-center justify-center">
+                        <Check className="w-3 h-3 text-gray-900" strokeWidth={3} />
+                      </div>
+                    )}
                     <span className="text-3xl">{allergen.icon}</span>
-                    <span className="text-sm font-medium">{allergen.name}</span>
+                    <span className={cn(
+                      'text-sm font-medium',
+                      isSelected ? 'text-white' : 'text-white/70'
+                    )}>{allergen.name}</span>
                   </button>
                 );
               })}
@@ -403,7 +476,7 @@ export function TenantAllergyChecker({
 
             {/* Custom allergen input */}
             <div className="max-w-md mx-auto">
-              <label className="block text-sm text-slate-400 mb-2">
+              <label className="block text-xs text-white/40 mb-2 font-medium uppercase tracking-wider">
                 Other allergy (optional)
               </label>
               <input
@@ -411,16 +484,21 @@ export function TenantAllergyChecker({
                 value={customAllergenText}
                 onChange={(e) => setCustomAllergenText(e.target.value)}
                 placeholder="Enter other allergy..."
-                className="w-full px-4 py-3 bg-slate-800/50 border border-slate-600 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:border-amber-500"
+                className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-white/30 focus:outline-none focus:bg-white/10 focus:border-white/20 transition-all text-base"
               />
             </div>
 
             {/* Continue button */}
-            <div className="text-center">
+            <div className="pt-2">
               <button
                 onClick={handleContinue}
                 disabled={selectedAllergens.length === 0}
-                className="px-8 py-4 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 disabled:opacity-50 disabled:cursor-not-allowed text-white text-lg font-semibold rounded-xl transition-colors"
+                className={cn(
+                  'w-full max-w-md mx-auto block py-4 px-6 text-base font-semibold rounded-xl transition-all duration-200',
+                  selectedAllergens.length > 0
+                    ? 'bg-white text-gray-900 hover:bg-white/90 shadow-lg shadow-white/20'
+                    : 'bg-white/5 border border-white/10 text-white/30 cursor-not-allowed'
+                )}
               >
                 Continue
               </button>
@@ -430,67 +508,60 @@ export function TenantAllergyChecker({
 
         {/* Step: Dish */}
         {currentStep === 'dish' && (
-          <div className="space-y-6">
+          <div className="space-y-8">
             <div className="text-center">
-              <h2 className="text-2xl font-bold text-white mb-2">Select Dish</h2>
-              <p className="text-slate-400">
-                {isTablet
-                  ? 'Choose a category then select a dish'
-                  : 'Search for a dish or browse by category'}
+              <h2 className="text-3xl font-bold text-white mb-3">Select Dish</h2>
+              <p className="text-white/50 text-base">
+                Search or browse by category
               </p>
             </div>
 
-            {/* Mobile: Search */}
-            {!isTablet && (
-              <div className="max-w-md mx-auto">
-                <div className="relative">
-                  <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
-                  <input
-                    type="text"
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    placeholder="Search dishes..."
-                    className="w-full pl-12 pr-4 py-3 bg-slate-800/50 border border-slate-600 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:border-amber-500"
-                  />
-                </div>
-
-                {/* Search results */}
-                {searchQuery && searchResults.length > 0 && (
-                  <div className="mt-4 space-y-2">
-                    {searchResults.map((item) => (
-                      <button
-                        key={item.id}
-                        onClick={() => handleSelectItem(item)}
-                        className="w-full p-4 bg-slate-800/50 border border-slate-600 rounded-lg text-left hover:border-amber-500/50 transition-colors"
-                      >
-                        <p className="text-white font-medium">{item.name}</p>
-                        <p className="text-xs text-slate-400">
-                          {pack.categories.find((c) => c.id === item.categoryId)?.name}
-                        </p>
-                      </button>
-                    ))}
-                  </div>
-                )}
+            {/* Search */}
+            <div className="max-w-lg mx-auto">
+              <div className="relative">
+                <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/40" />
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="Search dishes..."
+                  className="w-full pl-11 pr-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-white/30 focus:outline-none focus:bg-white/10 focus:border-white/20 transition-all text-base"
+                />
               </div>
-            )}
 
-            {/* Tablet: Category grid */}
-            {isTablet && !selectedCategory && (
-              <div className="grid grid-cols-3 lg:grid-cols-4 gap-4">
+              {/* Search results */}
+              {searchQuery && searchResults.length > 0 && (
+                <div className="mt-3 space-y-2">
+                  {searchResults.map((item) => (
+                    <button
+                      key={item.id}
+                      onClick={() => handleSelectItem(item)}
+                      className="w-full p-4 bg-white/5 border border-white/10 rounded-xl text-left hover:bg-white/10 hover:border-white/20 transition-all"
+                    >
+                      <p className="text-white font-medium">{item.name}</p>
+                      <p className="text-xs text-white/40 mt-0.5">
+                        {pack.categories.find((c) => c.id === item.categoryId)?.name}
+                      </p>
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Category grid */}
+            {!searchQuery && !selectedCategory && (
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
                 {pack.categories.map((category) => (
                   <button
                     key={category.id}
                     onClick={() => setSelectedCategory(category.id)}
-                    className={cn(
-                      'p-6 rounded-xl bg-gradient-to-br text-white transition-transform hover:scale-105',
-                      CATEGORY_COLORS[category.id] || 'from-slate-600 to-slate-700'
-                    )}
+                    className="p-4 rounded-2xl bg-white/5 border border-white/10 text-white transition-all hover:scale-[1.02] hover:bg-white/10 hover:border-white/20 active:scale-[0.98]"
                   >
-                    <span className="text-4xl mb-2 block">
+                    <span className="text-3xl mb-2 block">
                       {category.icon || CATEGORY_ICONS[category.id] || '📋'}
                     </span>
-                    <span className="font-semibold">{category.name}</span>
-                    <span className="text-xs opacity-75 block mt-1">
+                    <span className="font-medium text-sm block text-white/90">{category.name}</span>
+                    <span className="text-xs text-white/40 block mt-0.5">
                       {getItemsByCategory(pack, category.id).length} items
                     </span>
                   </button>
@@ -498,27 +569,27 @@ export function TenantAllergyChecker({
               </div>
             )}
 
-            {/* Tablet: Items in category */}
-            {isTablet && selectedCategory && (
+            {/* Items in category */}
+            {!searchQuery && selectedCategory && (
               <div>
                 <button
                   onClick={() => setSelectedCategory(null)}
-                  className="mb-4 flex items-center gap-2 text-slate-400 hover:text-white transition-colors"
+                  className="mb-4 flex items-center gap-2 text-white/50 hover:text-white transition-colors group"
                 >
-                  <ChevronLeft className="w-5 h-5" />
-                  Back to categories
+                  <ChevronLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
+                  <span className="text-sm font-medium">Back to categories</span>
                 </button>
 
-                <div className="grid grid-cols-2 lg:grid-cols-3 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
                   {categoryItems.map((item) => (
                     <button
                       key={item.id}
                       onClick={() => handleSelectItem(item)}
-                      className="p-4 bg-slate-800/50 border border-slate-600 rounded-lg text-left hover:border-amber-500/50 transition-colors"
+                      className="p-4 bg-white/5 border border-white/10 rounded-xl text-left hover:bg-white/10 hover:border-white/20 transition-all"
                     >
                       <p className="text-white font-medium">{item.name}</p>
                       {item.ticketCode && (
-                        <p className="text-xs text-slate-500 mt-1">{item.ticketCode}</p>
+                        <p className="text-xs text-white/40 mt-0.5">{item.ticketCode}</p>
                       )}
                     </button>
                   ))}
@@ -528,29 +599,61 @@ export function TenantAllergyChecker({
           </div>
         )}
 
+        {/* Step: Protein (for salads) */}
+        {currentStep === 'protein' && selectedItem && (selectedItem as any).proteinOptions && (
+          <div className="space-y-8">
+            <div className="text-center">
+              <h2 className="text-3xl font-bold text-white mb-3">Add Protein?</h2>
+              <p className="text-white/50 text-base">
+                Optional: Add protein to your {selectedItem.name}
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-w-2xl mx-auto">
+              {((selectedItem as any).proteinOptions as ProteinOption[]).map((protein) => (
+                <button
+                  key={protein.id}
+                  onClick={() => handleSelectProtein(protein)}
+                  className="p-4 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 hover:border-white/20 transition-all text-left"
+                >
+                  <div className="font-medium text-white">{protein.name}</div>
+                  <div className="text-xs text-white/40 mt-0.5">{protein.ticketCode}</div>
+                </button>
+              ))}
+              <button
+                onClick={() => handleSelectProtein(null)}
+                className="p-4 bg-white/[0.02] border border-white/5 rounded-xl text-white/40 hover:bg-white/5 hover:border-white/10 transition-all text-left"
+              >
+                <div className="font-medium">No Protein</div>
+                <div className="text-xs mt-0.5">Skip protein add-on</div>
+              </button>
+            </div>
+          </div>
+        )}
+
         {/* Step: Sides */}
         {currentStep === 'sides' && selectedItem?.sides && (
-          <div className="space-y-6">
+          <div className="space-y-8">
             <div className="text-center">
-              <h2 className="text-2xl font-bold text-white mb-2">Select Side</h2>
-              <p className="text-slate-400">
+              <h2 className="text-3xl font-bold text-white mb-3">Select Side</h2>
+              <p className="text-white/50 text-base">
                 Choose a side for {selectedItem.name}
               </p>
             </div>
 
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-3 max-w-2xl mx-auto">
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 max-w-3xl mx-auto">
               {selectedItem.sides.map((side) => (
                 <button
                   key={side.id}
                   onClick={() => handleSelectSide(side.id)}
-                  className="p-4 bg-slate-800/50 border border-slate-600 rounded-lg text-white hover:border-amber-500/50 transition-colors"
+                  className="p-4 bg-white/5 border border-white/10 rounded-xl text-white font-medium text-sm hover:bg-white/10 hover:border-white/20 transition-all"
                 >
                   {side.name}
                 </button>
               ))}
               <button
                 onClick={() => handleSelectSide(null)}
-                className="p-4 bg-slate-800/50 border border-slate-600 rounded-lg text-slate-400 hover:border-amber-500/50 transition-colors"
+                className="p-4 bg-white/[0.02] border border-white/5 rounded-xl text-white/40 font-medium text-sm hover:bg-white/5 hover:border-white/10 transition-all"
               >
                 No side
               </button>
@@ -560,27 +663,27 @@ export function TenantAllergyChecker({
 
         {/* Step: Crust */}
         {currentStep === 'crust' && selectedItem?.crustOptions && (
-          <div className="space-y-6">
+          <div className="space-y-8">
             <div className="text-center">
-              <h2 className="text-2xl font-bold text-white mb-2">Select Crust</h2>
-              <p className="text-slate-400">
+              <h2 className="text-3xl font-bold text-white mb-3">Select Crust</h2>
+              <p className="text-white/50 text-base">
                 Choose a crust for {selectedItem.name}
               </p>
             </div>
 
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-3 max-w-2xl mx-auto">
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 max-w-3xl mx-auto">
               {selectedItem.crustOptions.map((crust) => (
                 <button
                   key={crust.id}
                   onClick={() => handleSelectCrust(crust.id)}
-                  className="p-4 bg-slate-800/50 border border-slate-600 rounded-lg text-white hover:border-amber-500/50 transition-colors"
+                  className="p-4 bg-white/5 border border-white/10 rounded-xl text-white font-medium text-sm hover:bg-white/10 hover:border-white/20 transition-all"
                 >
                   {crust.name}
                 </button>
               ))}
               <button
                 onClick={() => handleSelectCrust(null)}
-                className="p-4 bg-slate-800/50 border border-slate-600 rounded-lg text-slate-400 hover:border-amber-500/50 transition-colors"
+                className="p-4 bg-white/[0.02] border border-white/5 rounded-xl text-white/40 font-medium text-sm hover:bg-white/5 hover:border-white/10 transition-all"
               >
                 No crust
               </button>
@@ -604,7 +707,7 @@ export function TenantAllergyChecker({
 }
 
 // ============================================================================
-// Results View
+// Results View - Modern Light Design
 // ============================================================================
 
 interface ResultsViewProps {
@@ -614,226 +717,329 @@ interface ResultsViewProps {
 }
 
 function ResultsView({ result, selectedAllergens, onStartOver }: ResultsViewProps) {
-  // Status banner colors and icons
   const statusConfig: Record<
     RuleStatus,
-    { bg: string; border: string; text: string; icon: React.ReactNode; label: string }
+    { 
+      cardBg: string;
+      cardBorder: string;
+      iconBg: string;
+      iconColor: string;
+      titleColor: string;
+      subtitleColor: string;
+      icon: React.ReactNode; 
+      title: string;
+      subtitle: string;
+    }
   > = {
     SAFE: {
-      bg: 'bg-green-900/30',
-      border: 'border-green-600',
-      text: 'text-green-400',
-      icon: <Check className="w-8 h-8" />,
-      label: 'Safe to Serve',
+      cardBg: 'bg-emerald-500/20',
+      cardBorder: 'border-emerald-400/30',
+      iconBg: 'bg-emerald-500',
+      iconColor: 'text-white',
+      titleColor: 'text-emerald-300',
+      subtitleColor: 'text-emerald-300/70',
+      icon: <Check className="w-7 h-7" strokeWidth={2.5} />,
+      title: 'Ready to Serve',
+      subtitle: 'All dietary requirements met',
     },
-    MODIFY: {
-      bg: 'bg-amber-900/30',
-      border: 'border-amber-600',
-      text: 'text-amber-400',
-      icon: <AlertTriangle className="w-8 h-8" />,
-      label: 'Modifications Required',
+    MODIFIABLE: {
+      cardBg: 'bg-amber-500/20',
+      cardBorder: 'border-amber-400/30',
+      iconBg: 'bg-amber-500',
+      iconColor: 'text-white',
+      titleColor: 'text-amber-300',
+      subtitleColor: 'text-amber-300/70',
+      icon: <AlertTriangle className="w-7 h-7" strokeWidth={2} />,
+      title: 'Modifications Needed',
+      subtitle: 'Review preparation notes below',
+    },
+    VERIFY_WITH_KITCHEN: {
+      cardBg: 'bg-amber-500/20',
+      cardBorder: 'border-amber-400/30',
+      iconBg: 'bg-amber-500',
+      iconColor: 'text-white',
+      titleColor: 'text-amber-300',
+      subtitleColor: 'text-amber-300/70',
+      icon: <AlertTriangle className="w-7 h-7" strokeWidth={2} />,
+      title: 'Verify With Kitchen',
+      subtitle: 'Manual confirmation required',
+    },
+    NOT_SAFE_NOT_IN_SHEET: {
+      cardBg: 'bg-red-500/20',
+      cardBorder: 'border-red-400/30',
+      iconBg: 'bg-red-500',
+      iconColor: 'text-white',
+      titleColor: 'text-red-300',
+      subtitleColor: 'text-red-300/70',
+      icon: <X className="w-7 h-7" strokeWidth={2.5} />,
+      title: 'Not In Allergy Sheet',
+      subtitle: 'Cannot verify safety',
     },
     UNSAFE: {
-      bg: 'bg-red-900/30',
-      border: 'border-red-600',
-      text: 'text-red-400',
-      icon: <X className="w-8 h-8" />,
-      label: 'Cannot Be Modified',
-    },
-    UNKNOWN: {
-      bg: 'bg-slate-800/50',
-      border: 'border-slate-600',
-      text: 'text-slate-400',
-      icon: <HelpCircle className="w-8 h-8" />,
-      label: 'Verify with Chef',
+      cardBg: 'bg-red-500/20',
+      cardBorder: 'border-red-400/30',
+      iconBg: 'bg-red-500',
+      iconColor: 'text-white',
+      titleColor: 'text-red-300',
+      subtitleColor: 'text-red-300/70',
+      icon: <X className="w-7 h-7" strokeWidth={2.5} />,
+      title: 'Cannot Accommodate',
+      subtitle: 'Please select a different item',
     },
   };
 
   const config = statusConfig[result.overallStatus];
 
   return (
-    <div className="space-y-6 max-w-3xl mx-auto">
-      {/* Status banner */}
-      <div
-        className={cn(
-          'p-6 rounded-xl border-2 flex items-center gap-4',
-          config.bg,
-          config.border
-        )}
-      >
-        <div className={config.text}>{config.icon}</div>
-        <div>
-          <h2 className={cn('text-2xl font-bold', config.text)}>{config.label}</h2>
-          <p className="text-slate-300 mt-1">
-            {selectedAllergens.map((a) => a.name).join(', ')} allergy
-            {selectedAllergens.length > 1 ? 'ies' : 'y'}
-          </p>
+    <div className="max-w-lg mx-auto space-y-4">
+      
+      {/* Status Card */}
+      <div className={cn(
+        'rounded-2xl p-5 border',
+        config.cardBg,
+        config.cardBorder
+      )}>
+        <div className="flex items-center gap-4">
+          <div className={cn(
+            'w-12 h-12 rounded-xl flex items-center justify-center',
+            config.iconBg
+          )}>
+            <div className={config.iconColor}>{config.icon}</div>
+          </div>
+          
+          <div className="flex-1">
+            <h1 className={cn('text-xl font-bold', config.titleColor)}>
+              {config.title}
+            </h1>
+            <p className={cn('text-sm', config.subtitleColor)}>
+              {config.subtitle}
+            </p>
+          </div>
+        </div>
+        
+        {/* Allergen pills */}
+        <div className="flex flex-wrap gap-2 mt-4">
+          {selectedAllergens.map((a) => (
+            <span
+              key={a.id}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/10 border border-white/10 text-white text-sm font-medium"
+            >
+              <span className="text-base">{a.icon}</span>
+              {a.name}
+            </span>
+          ))}
         </div>
       </div>
 
-      {/* Kitchen Ticket */}
-      <Card className="bg-white border-2 border-slate-300">
-        <CardHeader className="bg-slate-900 text-white py-3 rounded-t-lg">
-          <CardTitle className="text-xl text-center">🎫 Kitchen Ticket</CardTitle>
-        </CardHeader>
-        <CardContent className="p-0 divide-y divide-dashed divide-gray-300">
-          {/* Main item */}
-          <div className="p-4">
-            <div className="flex items-start justify-between gap-4">
-              <div>
-                <p className="text-xs text-gray-500 uppercase tracking-wide font-medium">
-                  Main Item
+      {/* Order Card */}
+      <div className="bg-white/5 rounded-2xl border border-white/10 overflow-hidden">
+        
+        {/* Main item */}
+        <div className="p-4">
+          <div className="flex items-start justify-between gap-3">
+            <div className="flex-1">
+              <p className="text-lg font-semibold text-white leading-tight">
+                {result.mainItem.itemName}
+              </p>
+              {result.mainItem.ticketCode && (
+                <p className="text-white/40 text-xs mt-0.5">
+                  {result.mainItem.ticketCode}
                 </p>
-                <p className="font-bold text-gray-900 text-lg">
-                  {result.mainItem.itemName}
-                </p>
-                {result.mainItem.ticketCode && (
-                  <p className="text-xs text-gray-500">{result.mainItem.ticketCode}</p>
-                )}
-              </div>
-              <StatusIndicator status={result.mainItem.status} />
+              )}
             </div>
-            <ModificationsList result={result.mainItem} />
+            <ItemStatusBadge status={result.mainItem.status} />
           </div>
+          <PreparationNotes result={result.mainItem} />
+        </div>
 
-          {/* Side */}
-          {result.sideItem && (
-            <div className="p-4">
-              <div className="flex items-start justify-between gap-4">
-                <div>
-                  <p className="text-xs text-gray-500 uppercase tracking-wide font-medium">
-                    Side
-                  </p>
-                  <p className="font-bold text-gray-900">{result.sideItem.itemName}</p>
-                </div>
-                <StatusIndicator status={result.sideItem.status} />
+        {/* Side item */}
+        {result.sideItem && (
+          <div className="px-4 py-3 border-t border-white/5 bg-white/[0.02]">
+            <div className="flex items-start justify-between gap-3">
+              <div className="flex-1">
+                <p className="text-[10px] font-bold text-white/40 uppercase tracking-wider mb-0.5">
+                  Side
+                </p>
+                <p className="text-base font-semibold text-white">
+                  {result.sideItem.itemName}
+                </p>
               </div>
-              <ModificationsList result={result.sideItem} />
+              <ItemStatusBadge status={result.sideItem.status} />
             </div>
-          )}
+            <PreparationNotes result={result.sideItem} />
+          </div>
+        )}
 
-          {/* Crust */}
-          {result.crustItem && (
-            <div className="p-4">
-              <div className="flex items-start justify-between gap-4">
-                <div>
-                  <p className="text-xs text-gray-500 uppercase tracking-wide font-medium">
-                    Crust
-                  </p>
-                  <p className="font-bold text-gray-900">{result.crustItem.itemName}</p>
-                </div>
-                <StatusIndicator status={result.crustItem.status} />
+        {/* Crust item */}
+        {result.crustItem && (
+          <div className="px-4 py-3 border-t border-white/5">
+            <div className="flex items-start justify-between gap-3">
+              <div className="flex-1">
+                <p className="text-[10px] font-bold text-white/40 uppercase tracking-wider mb-0.5">
+                  Crust
+                </p>
+                <p className="text-base font-semibold text-white">
+                  {result.crustItem.itemName}
+                </p>
               </div>
-              <ModificationsList result={result.crustItem} />
+              <ItemStatusBadge status={result.crustItem.status} />
             </div>
-          )}
+            <PreparationNotes result={result.crustItem} />
+          </div>
+        )}
 
-          {/* Custom allergen warning */}
-          {result.customAllergenWarning && (
-            <div className="p-4 bg-amber-50">
-              <p className="text-amber-800 font-medium flex items-center gap-2">
-                <AlertTriangle className="w-5 h-5" />
+        {/* Custom allergen warning */}
+        {result.customAllergenWarning && (
+          <div className="px-4 py-3 border-t border-white/5 bg-amber-500/10">
+            <div className="flex items-start gap-2">
+              <AlertTriangle className="w-4 h-4 text-amber-400 flex-shrink-0 mt-0.5" strokeWidth={2} />
+              <p className="text-amber-300 text-xs font-medium">
                 {result.customAllergenWarning}
               </p>
             </div>
-          )}
-        </CardContent>
-      </Card>
-
-      {/* Start over button */}
-      <div className="text-center">
-        <button
-          onClick={onStartOver}
-          className="px-8 py-4 bg-slate-700 hover:bg-slate-600 text-white text-lg font-semibold rounded-xl transition-colors"
-        >
-          Start New Check
-        </button>
+          </div>
+        )}
       </div>
 
-      {/* Disclaimer */}
-      <p className="text-center text-xs text-slate-500">
-        {ALWAYS_VERIFY_TEXT}
+      {/* Footer */}
+      <p className="text-center text-white/30 text-xs">
+        Always verify with kitchen staff
       </p>
+
+      {/* Action button */}
+      <button
+        onClick={onStartOver}
+        className="w-full py-4 bg-white hover:bg-white/90 text-gray-900 text-base font-semibold rounded-xl transition-all shadow-lg shadow-white/20"
+      >
+        New Check
+      </button>
     </div>
   );
 }
 
 // ============================================================================
-// Helper Components
+// Helper Components - Modern Light Style
 // ============================================================================
 
-function StatusIndicator({ status }: { status: RuleStatus }) {
-  if (status === 'SAFE') {
-    return (
-      <div className="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center">
-        <Check className="w-6 h-6 text-green-600" />
-      </div>
-    );
-  }
-  if (status === 'MODIFY') {
-    return (
-      <div className="w-12 h-12 rounded-full bg-amber-100 flex items-center justify-center">
-        <AlertTriangle className="w-6 h-6 text-amber-600" />
-      </div>
-    );
-  }
-  if (status === 'UNSAFE') {
-    return (
-      <div className="w-12 h-12 rounded-full bg-red-100 flex items-center justify-center">
-        <X className="w-6 h-6 text-red-600" />
-      </div>
-    );
-  }
+function ItemStatusBadge({ status }: { status: RuleStatus }) {
+  const configs: Record<RuleStatus, { bg: string; text: string; label: string }> = {
+    SAFE: {
+      bg: 'bg-emerald-500',
+      text: 'text-white',
+      label: 'Ready',
+    },
+    MODIFIABLE: {
+      bg: 'bg-amber-500',
+      text: 'text-white',
+      label: 'Modify',
+    },
+    VERIFY_WITH_KITCHEN: {
+      bg: 'bg-amber-500',
+      text: 'text-white',
+      label: 'Verify',
+    },
+    NOT_SAFE_NOT_IN_SHEET: {
+      bg: 'bg-red-500',
+      text: 'text-white',
+      label: 'No',
+    },
+    UNSAFE: {
+      bg: 'bg-red-500',
+      text: 'text-white',
+      label: 'No',
+    },
+  };
+
+  const config = configs[status];
+
   return (
-    <div className="w-12 h-12 rounded-full bg-slate-200 flex items-center justify-center">
-      <HelpCircle className="w-6 h-6 text-slate-600" />
+    <div className={cn(
+      'px-3 py-1 rounded-lg text-xs font-semibold',
+      config.bg,
+      config.text
+    )}>
+      {config.label}
     </div>
   );
 }
 
-interface ModificationsListProps {
+interface PreparationNotesProps {
   result: CheckerResult['mainItem'];
 }
 
-function ModificationsList({ result }: ModificationsListProps) {
+function PreparationNotes({ result }: PreparationNotesProps) {
   if (result.status === 'SAFE') {
     return (
-      <p className="mt-2 text-green-700 font-medium flex items-center gap-2">
-        <Check className="w-4 h-4" />
-        No changes needed
-      </p>
+      <div className="mt-3 flex items-center gap-2 py-2 px-3 bg-emerald-500/10 rounded-lg border border-emerald-500/20">
+        <Check className="w-3.5 h-3.5 text-emerald-400" strokeWidth={2.5} />
+        <span className="text-emerald-400 text-sm font-medium">
+          No changes needed
+        </span>
+      </div>
     );
   }
 
   if (result.status === 'UNSAFE') {
     return (
-      <div className="mt-2">
+      <div className="mt-3 space-y-1.5">
         {result.perAllergen
           .filter((pa) => pa.status === 'UNSAFE')
           .map((pa) => (
-            <p key={pa.allergenId} className="text-red-700 font-medium">
-              ⛔ {pa.notes.join(' • ') || `Cannot remove ${pa.allergenName}`}
-            </p>
+            <div
+              key={pa.allergenId}
+              className="flex items-center gap-2 py-2 px-3 bg-red-500/10 rounded-lg border border-red-500/20"
+            >
+              <X className="w-3.5 h-3.5 text-red-400" strokeWidth={2.5} />
+              <span className="text-red-400 text-sm font-medium">
+                {pa.notes.join(' · ') || `Contains ${pa.allergenName.toLowerCase()}`}
+              </span>
+            </div>
           ))}
       </div>
     );
   }
 
-  if (result.status === 'UNKNOWN') {
+  if (result.status === 'VERIFY_WITH_KITCHEN') {
     return (
-      <div className="mt-2">
+      <div className="mt-3 space-y-1.5">
         {result.perAllergen
-          .filter((pa) => pa.status === 'UNKNOWN')
+          .filter((pa) => pa.status === 'VERIFY_WITH_KITCHEN')
           .map((pa) => (
-            <p key={pa.allergenId} className="text-slate-600">
-              ❓ {pa.notes.join(' • ')}
-            </p>
+            <div
+              key={pa.allergenId}
+              className="flex items-center gap-2 py-2 px-3 bg-amber-500/10 rounded-lg border border-amber-500/20"
+            >
+              <AlertTriangle className="w-3.5 h-3.5 text-amber-400" strokeWidth={2} />
+              <span className="text-amber-400 text-sm font-medium">
+                {pa.notes.join(' · ') || 'Verify with kitchen'}
+              </span>
+            </div>
           ))}
       </div>
     );
   }
 
-  // MODIFY - show substitutions
+  if (result.status === 'NOT_SAFE_NOT_IN_SHEET') {
+    return (
+      <div className="mt-3 space-y-1.5">
+        {result.perAllergen
+          .filter((pa) => pa.status === 'NOT_SAFE_NOT_IN_SHEET')
+          .map((pa) => (
+            <div
+              key={pa.allergenId}
+              className="flex items-center gap-2 py-2 px-3 bg-red-500/10 rounded-lg border border-red-500/20"
+            >
+              <X className="w-3.5 h-3.5 text-red-400" strokeWidth={2.5} />
+              <span className="text-red-400 text-sm font-medium">
+                {pa.allergenName}: Not in allergy sheet
+              </span>
+            </div>
+          ))}
+      </div>
+    );
+  }
+
+  // MODIFIABLE - show modifications
   const modifications = result.perAllergen.flatMap((pa) =>
     pa.substitutions.map((sub) => ({ allergen: pa.allergenName, sub }))
   );
@@ -843,18 +1049,35 @@ function ModificationsList({ result }: ModificationsListProps) {
   }
 
   return (
-    <ul className="mt-3 space-y-1">
-      {modifications.map((mod, idx) => (
-        <li key={idx} className="text-gray-800 font-bold text-lg">
-          {mod.sub.startsWith('NO ') ? (
-            <span className="text-red-700">{mod.sub}</span>
-          ) : mod.sub.startsWith('SUB ') ? (
-            <span className="text-blue-700">{mod.sub}</span>
-          ) : (
-            mod.sub
-          )}
-        </li>
-      ))}
-    </ul>
+    <div className="mt-3 space-y-1.5">
+      {modifications.map((mod, idx) => {
+        const isOmit = mod.sub.startsWith('NO ');
+        const isSub = mod.sub.startsWith('SUB ') || mod.sub.startsWith('GF ');
+        
+        return (
+          <div
+            key={idx}
+            className={cn(
+              'flex items-center gap-2 py-2 px-3 rounded-lg border',
+              isOmit && 'bg-red-500/10 border-red-500/20',
+              isSub && 'bg-blue-500/10 border-blue-500/20',
+              !isOmit && !isSub && 'bg-white/5 border-white/10'
+            )}
+          >
+            {isOmit && <X className="w-3.5 h-3.5 text-red-400" strokeWidth={2.5} />}
+            {isSub && <Check className="w-3.5 h-3.5 text-blue-400" strokeWidth={2.5} />}
+            {!isOmit && !isSub && <AlertTriangle className="w-3.5 h-3.5 text-white/50" strokeWidth={2} />}
+            <span className={cn(
+              'text-sm font-medium',
+              isOmit && 'text-red-400',
+              isSub && 'text-blue-400',
+              !isOmit && !isSub && 'text-white/50'
+            )}>
+              {mod.sub}
+            </span>
+          </div>
+        );
+      })}
+    </div>
   );
 }

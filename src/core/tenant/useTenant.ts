@@ -13,12 +13,13 @@ import {
 import {
   performFullActivation,
   checkAndDownloadUpdate,
+  loadPackFromCache,
   ActivationError,
   PackError,
 } from './packClient';
 
-// Refresh interval: 6 hours
-const REFRESH_INTERVAL_MS = 6 * 60 * 60 * 1000;
+// Default refresh interval: 6 hours (can be overridden per tenant in pack)
+const DEFAULT_REFRESH_INTERVAL_MS = 6 * 60 * 60 * 1000;
 
 export interface UseTenantState {
   tenantContext: TenantContext | null;
@@ -79,14 +80,17 @@ export function useTenant(): UseTenantReturn {
     };
   }, []);
 
-  // Set up refresh interval when we have a tenant context
+  // Set up refresh interval when we have a tenant context and pack
   useEffect(() => {
-    if (tenantContext && !refreshIntervalRef.current) {
+    if (tenantContext && pack && !refreshIntervalRef.current) {
+      // Use pack-specific interval or default to 6 hours
+      const intervalMs = pack.updateIntervalMs || DEFAULT_REFRESH_INTERVAL_MS;
+
       refreshIntervalRef.current = window.setInterval(() => {
         if (navigator.onLine && tenantContext) {
           checkForUpdates();
         }
-      }, REFRESH_INTERVAL_MS);
+      }, intervalMs);
     }
 
     return () => {
@@ -95,12 +99,14 @@ export function useTenant(): UseTenantReturn {
         refreshIntervalRef.current = null;
       }
     };
-  }, [tenantContext]);
+  }, [tenantContext, pack]);
 
   /**
    * Load initial state from storage
    */
   async function loadInitialState() {
+    console.log('[useTenant] Loading initial state...');
+    
     try {
       setLoading(true);
       setError(null);
@@ -108,47 +114,60 @@ export function useTenant(): UseTenantReturn {
 
       // Load tenant context
       const storedContext = await getTenantContext();
+      console.log('[useTenant] Stored context:', storedContext ? 'found' : 'not found');
       
       if (!storedContext) {
         // No activation - show verification page
+        console.log('[useTenant] No activation, showing verification page');
         setLoading(false);
         return;
       }
 
       setTenantContext(storedContext);
 
-      // Load cached pack
-      const cachedPack = await getCachedPack();
+      // Load cached pack with validation
+      console.log('[useTenant] Loading cached pack...');
+      const cachedPackData = await getCachedPack();
+      let validatedPack = cachedPackData ? await loadPackFromCache() : null;
       
-      if (cachedPack) {
-        setPack(cachedPack.pack);
-        setLastUpdated(cachedPack.storedAt);
+      if (validatedPack) {
+        console.log('[useTenant] Cached pack loaded and validated');
+        setPack(validatedPack);
+        setLastUpdated(cachedPackData?.storedAt ?? null);
         setIsUsingCache(true);
+      } else {
+        console.log('[useTenant] No valid cached pack');
       }
 
       // Try to check for updates if online
       if (navigator.onLine && storedContext.deviceToken) {
+        console.log('[useTenant] Online - checking for updates...');
         try {
           const updatedPack = await checkAndDownloadUpdate(storedContext.deviceToken);
           if (updatedPack && isMountedRef.current) {
+            console.log('[useTenant] Update downloaded!');
             setPack(updatedPack);
             setLastUpdated(new Date().toISOString());
             setIsUsingCache(false);
-          } else {
+          } else if (validatedPack) {
+            console.log('[useTenant] No update available, using cache');
             setIsUsingCache(true);
           }
         } catch (updateError) {
           // Failed to update, but we have cache - that's okay
-          console.warn('Failed to check for updates:', updateError);
-          if (!cachedPack) {
+          console.warn('[useTenant] Failed to check for updates:', updateError);
+          if (!validatedPack) {
             // No cache and can't download - this is a problem
             throw updateError;
           }
         }
+      } else {
+        console.log('[useTenant] Offline or no device token, using cache only');
       }
 
       // If no pack at all, we need to download
-      if (!cachedPack && navigator.onLine && storedContext.deviceToken) {
+      if (!validatedPack && navigator.onLine && storedContext.deviceToken) {
+        console.log('[useTenant] No cache, must download...');
         try {
           const updatedPack = await checkAndDownloadUpdate(storedContext.deviceToken);
           if (updatedPack && isMountedRef.current) {
@@ -161,6 +180,7 @@ export function useTenant(): UseTenantReturn {
       }
 
     } catch (err) {
+      console.error('[useTenant] Error loading initial state:', err);
       if (isMountedRef.current) {
         const message = err instanceof Error ? err.message : 'Failed to load';
         const code = err instanceof PackError ? err.code : 'load_failed';
@@ -170,6 +190,7 @@ export function useTenant(): UseTenantReturn {
     } finally {
       if (isMountedRef.current) {
         setLoading(false);
+        console.log('[useTenant] Initial load complete');
       }
     }
   }
@@ -211,11 +232,15 @@ export function useTenant(): UseTenantReturn {
    * Returns true if an update was downloaded
    */
   const checkForUpdates = useCallback(async (): Promise<boolean> => {
+    console.log('[useTenant.checkForUpdates] Starting...');
+    
     if (!tenantContext?.deviceToken) {
+      console.log('[useTenant.checkForUpdates] No device token, aborting');
       return false;
     }
 
     if (!navigator.onLine) {
+      console.log('[useTenant.checkForUpdates] Offline, aborting');
       setIsOffline(true);
       return false;
     }
@@ -224,15 +249,17 @@ export function useTenant(): UseTenantReturn {
       const updatedPack = await checkAndDownloadUpdate(tenantContext.deviceToken);
       
       if (updatedPack && isMountedRef.current) {
+        console.log('[useTenant.checkForUpdates] Update downloaded and applied!');
         setPack(updatedPack);
         setLastUpdated(new Date().toISOString());
         setIsUsingCache(false);
         return true;
       }
       
+      console.log('[useTenant.checkForUpdates] No update needed');
       return false;
     } catch (err) {
-      console.warn('Update check failed:', err);
+      console.warn('[useTenant.checkForUpdates] Failed:', err);
       return false;
     }
   }, [tenantContext]);

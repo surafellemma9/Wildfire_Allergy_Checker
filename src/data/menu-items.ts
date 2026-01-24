@@ -137,6 +137,7 @@ export const menuItems: MenuItem[] = [
     "ticket_code": "CHICKEN SKEWERS",
     "category": "Appetizers",
     "menu": "L & D",
+    
     "description": "Two skewers of chicken breast pieces (5 pieces each on each; equaling about 10 oz. total), marinated in Mediterranean marinade .  Served with a drizzle of yogurt sauce , chicken jus  and a ramekin of yogurt sauce .",
     "ingredients": [
       "chicken",
@@ -569,7 +570,7 @@ export const menuItems: MenuItem[] = [
   },
   {
     "id": "caesar_salad",
-    "dish_name": "Caesar  Salad",
+    "dish_name": "Caesar Salad",
     "ticket_code": "SIDE CAESAR/CAESAR/LG CAESAR",
     "category": "Salads",
     "menu": "L & D",
@@ -610,7 +611,7 @@ export const menuItems: MenuItem[] = [
     "id": "tuscan_kale_and_spinach_salad",
     "dish_name": "Tuscan Kale and Spinach Salad",
     "ticket_code": "SIDE KALE/SM KALE/LG KALE",
-    "category": "Pepper.",
+    "category": "Salads",
     "menu": "L & D",
     "description": "Tuscan Kale and baby spinach tossed with Parmesan cheese, hard -boiled egg and lemon Parmesan v inaigrette (lemon juice, garlic, Dijon mustard , salt, pepper, hous e oil, extra virgin olive oil, P armesan cheese).  Sprinkled with spicy pumpkin seeds  (tossed house oil and black pepper, cumin, chili powder, cayenne pepper, salt, then roasted). OFFER FRESH GROUND PEPPER.",
     "ingredients": [
@@ -663,7 +664,7 @@ export const menuItems: MenuItem[] = [
     "id": "greek_salad",
     "dish_name": "Greek Salad",
     "ticket_code": "SIDE GREEK/SM GREEK/LG GREEK",
-    "category": "Offer Fresh Ground Pepper.",
+    "category": "Salads",
     "menu": "L & D",
     "description": "Chopped iceberg and romaine lettuces tossed with tomatoes, cucumbers, garbanzo beans, celery, red onion, Kalamata  olives, d ill, feta, chopped pepperoncini  and red wine  vinaigrette .  OFFER FRESH GROUND PEPPER.",
     "ingredients": [
@@ -703,7 +704,7 @@ export const menuItems: MenuItem[] = [
     "id": "steak_and_blue_cheese_salad",
     "dish_name": "Steak and Blue Cheese Salad",
     "ticket_code": "STEAKHOUSE",
-    "category": "Offer Fresh Ground Pepper.",
+    "category": "Salads",
     "menu": "L",
     "description": "Field greens and romaine tossed with  tomatoes, cucumbers, scallions  and balsamic vinaigrette .  Topped with blue cheese crumbles, crispy onions  and a drizzle of ranch dressing .  Served with a  6 oz. Coulotte steak seasoned with garlic puree , olive oil  and Wildfire 8 spice  and broiled to medium rare to medium, then sliced.  OFFER FRESH GROUND PEPPER .",
     "ingredients": [
@@ -756,7 +757,7 @@ export const menuItems: MenuItem[] = [
     "id": "wildfire_chopped_salad",
     "dish_name": "Wildfire Chopped Salad",
     "ticket_code": "SM CHOP SALAD/LG CHOP SALAD",
-    "category": "Ground Pepper .",
+    "category": "Salads",
     "menu": "L &D",
     "description": "Chopped iceberg and romaine lettuces with bacon , tomatoes, corn tortilla squares, blue cheese crumbles, scallions, chicken breast that has been marinated in herb chicken marinade  and roa sted and diced , fresh corn  and avoca do. Tossed in a citrus lime vinaigrette  (dry mustard, sugar, garlic, lime juice, red wine vinegar, oregano, al pastor marinade , kosher salt, house oil ).  OFFER FRESH GROUND PEPPER.",
     "ingredients": [
@@ -1142,7 +1143,7 @@ export const menuItems: MenuItem[] = [
     "id": "center_cut_by_master_butchers_from_the_finest_midwestern_beef_tenderloin_basil_hayden_s_bourbon_marinated_tenderloin_tips",
     "dish_name": "Basil Hayden's Bourbon Marinated Tenderloin Tips",
     "ticket_code": "BASIL TIPS",
-    "category": "Filet Mignon",
+    "category": "Steaks and Chops",
     "menu": "L & D",
     "description": "Tenderloin tips in a bourbon marinade .  Broiled to desired temperature.  Brushed with steak butter .  Two 4 oz. tips at lunch, three 4 oz. tips at dinner.  Served with au jus  and roasted onions .  Served with choice of side.",
     "ingredients": [
@@ -1178,7 +1179,7 @@ export const menuItems: MenuItem[] = [
     "id": "petite_filet_mignon_filet_mignon",
     "dish_name": "Petite Filet Mignon/Filet Mignon",
     "ticket_code": "PETITE/FILET",
-    "category": "Filet Mignon",
+    "category": "Steaks and Chops",
     "menu": "L & D",
     "description": "Filet mignon brushed with melted butter and seasoned with salt and pepper, then broiled to desired temperature. Topped with steak butter  and served on a garlic crouton  with au jus . The lunch and dinner petite filets are 7 oz. The dinner filet is 10 oz.  Served with choice of side.",
     "ingredients": [
@@ -1214,7 +1215,7 @@ export const menuItems: MenuItem[] = [
     "id": "horseradish_crusted_filet",
     "dish_name": "Horseradish Crusted Filet",
     "ticket_code": "HORSE FILET",
-    "category": "Filet Mignon",
+    "category": "Steaks and Chops",
     "menu": "D",
     "description": "Filet mignon brushed with melted butter and seasoned with salt and pepper.  Wrapped in bacon, broiled and topped with a horseradish crust .  Served on a garlic crouton  with au jus  and a side of horseradish cream sauce .  The dinner portion is a 10 oz. portion.  Served with choice of side.  Garnished with parsley.  A lunch portion is available with a 7 oz. filet.",
     "ingredients": [
@@ -1253,7 +1254,7 @@ export const menuItems: MenuItem[] = [
     "id": "filet_medallion_duo_filet_medallion_trio",
     "dish_name": "Filet Medallion Duo/Filet Medallion Trio",
     "ticket_code": "DUO/TRIO",
-    "category": "Filet Mignon",
+    "category": "Steaks and Chops",
     "menu": "L (Duo)/D (Trio)",
     "description": "3 oz. f ilet medallions brushed with melted butter and seasoned with salt and pepper.  Broiled to desired temperature and topped with the guest choice of crust s (two or t hree choices).  Crust choices are Horseradish , Blue Cheese , Parmesan , Mushroom , Garlic  (GF) or Peppercorn  (GF).  Duo = two filets.  Trio = three filets.  Served with au jus . Served with choice of side.",
     "ingredients": [
@@ -1292,7 +1293,7 @@ export const menuItems: MenuItem[] = [
     "id": "tenderness_and_taste_brushed_with_our_seasoning_blend_and_broiled_over_glowing_embers_to_your_preferred_temperature_mushroom_crusted_fancy_pork_chops",
     "dish_name": "Mushroom Crusted Fancy Pork Chops",
     "ticket_code": "PORK CHOPS",
-    "category": "Steaks And Chops",
+    "category": "Steaks and Chops",
     "menu": "L & D",
     "description": "All natural boneless pork rib chops brined for 8 hours (sugar, salt, water, fresh oranges, garlic, rosemary, thyme, black peppercorns, crushed red chilies).  Broiled to medium and topped with mushroom crust  and browned under broiler.  The lunch portion is one 8 oz. chop.  The dinner portion is two 8 oz. chops.  Served with au jus  and a choice of side.",
     "ingredients": [
@@ -1332,7 +1333,7 @@ export const menuItems: MenuItem[] = [
     "id": "new_york_strip_steak",
     "dish_name": "New York Strip Steak",
     "ticket_code": "NEW YORK STRIP",
-    "category": "Steaks And Chops",
+    "category": "Steaks and Chops",
     "menu": "D",
     "description": "14 oz. New York strip brushed with melted butter and seasoned with salt and pepper, then broiled to desired temperature. Topped with steak butter and au jus. Served with choice of side.",
     "ingredients": [
@@ -1365,7 +1366,7 @@ export const menuItems: MenuItem[] = [
     "id": "roumanian_skirt_steak",
     "dish_name": "Roumanian Skirt Steak",
     "ticket_code": "SKIRT STEAK",
-    "category": "Steaks And Chops",
+    "category": "Steaks and Chops",
     "menu": "D",
     "description": "12 oz. c enter cut skirt steak marinated in steak marinade , then grilled to desired temperature.  Brushed with steak butter  and served with au jus.   Garnished with roasted red onions .  Served with choice of side.  L unch portion is available upon request with a 6 oz. pi ece.",
     "ingredients": [
@@ -1397,7 +1398,7 @@ export const menuItems: MenuItem[] = [
     "id": "porterhouse",
     "dish_name": "Porterhouse",
     "ticket_code": "PORTERHOUSE",
-    "category": "Steaks And Chops",
+    "category": "Steaks and Chops",
     "menu": "D",
     "description": "The “King” of steaks.  22 oz. porterhouse is two steaks i n one.  One side is a New York strip and the other is a filet mignon.  The steak is brushed with melted butter, seasoned with salt, p epper  and char-crust,  then broiled to desired temperature.  Topped with steak butter  and au jus.   Served with choice of side.",
     "ingredients": [
@@ -1437,7 +1438,7 @@ export const menuItems: MenuItem[] = [
     "id": "char_crust_bone_in_rib_eye",
     "dish_name": "Char -Crust  Bone -In Rib Eye",
     "ticket_code": "RIB EYE",
-    "category": "Steaks And Chops",
+    "category": "Steaks and Chops",
     "menu": "D",
     "description": "20 oz. beef “prime rib” chop brushed with melted butter and seasoned with salt and pepper and char-crust. Broiled to desired temperature .  Topped with steak butter  and au jus .  Served with choice of side.",
     "ingredients": [
@@ -1473,7 +1474,7 @@ export const menuItems: MenuItem[] = [
     "id": "broiled_lamb_porterhouse_chops",
     "dish_name": "Broiled Lamb Porterhouse Chops",
     "ticket_code": "LAMB CHOPS",
-    "category": "Steaks And Chops",
+    "category": "Steaks and Chops",
     "menu": "D",
     "description": "Three 6 oz. Colorado lamb porterhouse chops (part filet and part New York with bone) brushed with melted butter and se asoned with salt and pepper and char–crust. Broiled to order.  Topped with steak butter  and au jus .  Served with mint chimichurri  on the side .  Served with choice of side.",
     "ingredients": [
@@ -1543,7 +1544,7 @@ export const menuItems: MenuItem[] = [
     "id": "oscar_style_added_onto_any_steak",
     "dish_name": "Oscar Style – Added onto any steak",
     "ticket_code": "AD OSCAR",
-    "category": "Steaks And Chops",
+    "category": "Steaks and Chops",
     "menu": "D",
     "description": "Steak is topped with 2 oz. crab meat warmed with a little butter, béarnaise sauce  and 4 oz. blanched asparagus (butter, salt, pepper).",
     "ingredients": [
@@ -1578,7 +1579,7 @@ export const menuItems: MenuItem[] = [
     "id": "roasted_prime_rib",
     "dish_name": "ROASTED PRIME RIB",
     "ticket_code": "OF BEEF AU JUS",
-    "category": "Steaks And Chops",
+    "category": "Steaks and Chops",
     "menu": "D",
     "description": "“King of Roasts” is rubbed with fresh garlic, sea salt, cracked black pepper and slow roasted for six hours and served with horseradish sauce To provide our guests with the best cut of prime rib possible; all of our prime rib is roasted to medium rare to medium.  Rar e is not available (suggest a rib -eye).  If the guest would like well done, we recommend an end cut. Roasted Prime Rib of Beef  10 OZ PRIME/16 OZ PRIME/22 OZ PRIME",
     "ingredients": [
@@ -1619,7 +1620,7 @@ export const menuItems: MenuItem[] = [
     "id": "roasted_prime_rib_of_beef",
     "dish_name": "Roasted Prime Rib of Beef",
     "ticket_code": "10 OZ PRIME/16 OZ PRIME/22 OZ PRIME",
-    "category": "Roasted Prime Rib  Of Beef Au Jus",
+    "category": "Steaks and Chops",
     "menu": "D",
     "description": "The prime ribs are rubbed with house oil , fresh minced garlic, kosher salt, and black pepper.  It is then seared in the oven and slow roasted.  Served with horseradish cream sauce  and au jus.   At lunch the guest has a choice of an 8 oz. (Lunch Cut) or 10 oz. (Regular Cut).  At dinner the guest has a choice of a 10 oz. (Regular Cut), 16 oz. (Queen Cut), or 22 oz. (King Cut) portion.  All served with a choice of side.",
     "ingredients": [
@@ -1666,7 +1667,7 @@ export const menuItems: MenuItem[] = [
     "id": "coconut_shrimp",
     "dish_name": "Coconut Shrimp",
     "ticket_code": "COCO SHRP",
-    "category": "Fresh Fish And Seafood",
+    "category": "Fresh Fish and Seafood",
     "menu": "L & D",
     "description": "16-20 count shrimp are butterflied and then dipped in seasoned flour , lightly beaten eggs whites, and coconut crumbs ( garlic butter , parsley, Japanese bread crumbs , shredded coconut).  Seared on a skillet in the oven.  Served with a ramekin of coconut dipping sauce (reduced coconut milk, dark brown sugar, rice wine vinegar, San J Tamari , ginger, chili paste), which is garnished with fresh chives.  Served with a lemon wedge.  Dinner - 8 shrimp; Lunch - 6 shrimp; Add to entrée - 3 shrimp.  Lunch and dinner entrees served with choice of side.",
     "ingredients": [
@@ -1719,7 +1720,7 @@ export const menuItems: MenuItem[] = [
     "id": "cedar_planked_salmon",
     "dish_name": "Cedar Planked Salmon",
     "ticket_code": "SALMON",
-    "category": "Fresh Fish And Seafood",
+    "category": "Fresh Fish and Seafood",
     "menu": "L & D",
     "description": "Farm raised Atlantic salmon from Canada .  Brushed with BBQ chicken spice .  Baked in the oven on a cedar plank. Glazed with brown sugar, San J Tamari , Dijon  mustard  and butter.  At lunch it is a 6 oz. portion.  At dinner it is an 8 oz. portion.  Served with a choice of side.",
     "ingredients": [
@@ -1757,7 +1758,7 @@ export const menuItems: MenuItem[] = [
     "id": "east_coast_scallops_de_jonghe",
     "dish_name": "East Coast Scallops De Jonghe",
     "ticket_code": "SCALLOP DEJONGHE",
-    "category": "Fresh Fish And Seafood",
+    "category": "Fresh Fish and Seafood",
     "menu": "D",
     "description": "8 scallops equaling 8 oz. (20 count) are placed in a pasta boat with clam juice and topped with the DeJonghe crust . Baked in the oven. S erved with parsley, lemon wedge  and choice of side.",
     "ingredients": [
@@ -1791,7 +1792,7 @@ export const menuItems: MenuItem[] = [
     "id": "lump_crab_cakes",
     "dish_name": "Lump Crab Cakes",
     "ticket_code": "CRAB CAKES",
-    "category": "Fresh Fish And Seafood",
+    "category": "Fresh Fish and Seafood",
     "menu": "L & D",
     "description": "6 oz. crab cake  roasted to a golden brown in the oven.  Lunch portion is one crab cake and dinner portion is two crab cakes.  Served with a ramekin of mustard mayonnaise and a lemon wedge .  Garnished with chives.  Served with choice of side.",
     "ingredients": [
@@ -1823,7 +1824,7 @@ export const menuItems: MenuItem[] = [
     "id": "wildfire_s_macadamia_nut_crusted_halibut",
     "dish_name": "Wildfire’s Macadamia Nut Crusted Halibut",
     "ticket_code": "HALIBUT",
-    "category": "Fresh Fish And Seafood",
+    "category": "Fresh Fish and Seafood",
     "menu": "L & D",
     "description": "Fresh Alaskan h alibut dipped in egg whites, seasoned flour , salt  and pepper.  Crusted with macadamia nuts, garlic butter, salt, pepper, parsley, and Japanese breadcrumbs .  Roasted in the oven with asparagus and served with lemon butter sauce .  Lunch portion is 5 oz.  Dinner portion is 7 oz. Served with choice of side.",
     "ingredients": [
@@ -1866,7 +1867,7 @@ export const menuItems: MenuItem[] = [
     "id": "parmesan_crusted_cod",
     "dish_name": "Parmesan Crusted Cod",
     "ticket_code": "COD",
-    "category": "Fresh Fish And Seafood",
+    "category": "Fresh Fish and Seafood",
     "menu": "L & D",
     "description": "Fresh c od dipped in egg whites, seasoned flour , salt  and pepper.  Crusted with garlic breadcrumbs  and P armesan cheese.  Roasted in the oven with green beans and served with lemon b utter sauce  and dollops of tomato jam . Served with choice of side.  Lunch portion is 5 oz.  Dinner portion is 7 oz.",
     "ingredients": [
@@ -1906,7 +1907,7 @@ export const menuItems: MenuItem[] = [
     "id": "cornbread_crusted_cod",
     "dish_name": "Cornbread Crusted Cod",
     "ticket_code": "COD",
-    "category": "Fresh Fish And Seafood",
+    "category": "Fresh Fish and Seafood",
     "menu": "L & D",
     "description": "Fresh c od dipped in egg whites, seasoned flour , salt and pepper. Crusted with garlic breadcrumbs  and cornbread crumbs .  Roasted in the oven.  Served with blanched shaved Brussel s sprouts tossed in garlic butter , salt and pepper.  Served with cranberry lemon butter  (cranberry sauce , lemon butter sauce ).  Served with choice of side. Lunch portion is 5 oz.  Dinner portion is 7 oz.",
     "ingredients": [
@@ -1946,7 +1947,7 @@ export const menuItems: MenuItem[] = [
     "id": "spit_roasted_half_chicken",
     "dish_name": "Spit Roasted Half Chicken",
     "ticket_code": "HERB CHICKEN",
-    "category": "Chicken And Barbecue",
+    "category": "Chicken and Barbecue",
     "menu": "L & D",
     "description": "½ of a 3¾ pound chicken, marinated in the herb chicken marinade  (cayenne pepper, oregano, thyme, tarragon, curry powder , rosemary, garlic, salt, pepper, bay leaves, olive oil, dried onions, chicken stock , butter, Dijon  mustard ).  Spit roasted and served with chicken juice.   Served with choice of side.",
     "ingredients": [
@@ -1993,7 +1994,7 @@ export const menuItems: MenuItem[] = [
     "id": "barbecued_chicken",
     "dish_name": "Barbecued Chicken",
     "ticket_code": "BBQ CHICKEN",
-    "category": "Chicken And Barbecue",
+    "category": "Chicken and Barbecue",
     "menu": "L & D",
     "description": "½ of a 3¾ pound chicken, marinated in the herb chicken marinade , spit roasted, rubbed with BBQ chicken spice  and brushed with BBQ sauce .  Served with BBQ sauce  and choice of side.",
     "ingredients": [
@@ -2106,7 +2107,7 @@ export const menuItems: MenuItem[] = [
     "id": "lemon_pepper_chicken_breasts",
     "dish_name": "Lemon Pepper Chicken Breasts",
     "ticket_code": "LEMON CHIX",
-    "category": "Chicken And Barbecue",
+    "category": "Chicken and Barbecue",
     "menu": "L & D",
     "description": "Skin on, boneless chicken breast marinated in fresh lemon juice, melted butter, Lawry's seasoning  and cracked black pepper.  Roasted in the oven.  Lunch portion is one 8 oz. breast, and the dinner portion is two 8 oz. breasts.  Served with a squeeze of fresh lemon, grilled lemon slice and chicken juice .  Served with a choice of side.",
     "ingredients": [
@@ -2165,7 +2166,7 @@ export const menuItems: MenuItem[] = [
     "id": "barbecued_baby_back_ribs",
     "dish_name": "Barbecued Baby Back Ribs",
     "ticket_code": "FULL RIBS/HALF RIBS",
-    "category": "All Bbq Dishes Must Be Accompanied By A Bone Bowl",
+    "category": "Chicken and Barbecue",
     "menu": "L & D",
     "description": "Baby b ack pork ribs rubbed with BBQ rib spice  and hot smoked.  B roiled and basted with Wildfire BBQ sauce . Served with coleslaw, applesauce  and BBQ sauce .  A full slab is 1½ pounds (13 ribs).  A half slab is ¾ of a pound (6 - 7 ribs).  Served with a choice of side.",
     "ingredients": [
@@ -2244,7 +2245,7 @@ export const menuItems: MenuItem[] = [
     "id": "chicken_baby_back_ribs_combo",
     "dish_name": "Chicken & Baby Back Ribs Combo",
     "ticket_code": "BBQ COMBO",
-    "category": "All Bbq Dishes Must Be Accompanied By A Bone Bowl",
+    "category": "Chicken and Barbecue",
     "menu": "D",
     "description": "Half slab of baby b ack ribs and ½ of a BBQ chi cken.  Served with coleslaw, applesauce  and BBQ sauce .  Served with a choice of side.",
     "ingredients": [
@@ -2795,6 +2796,41 @@ export const menuItems: MenuItem[] = [
     "cannot_be_made_safe_notes": ""
   },
   {
+    "id": "loaded_baked_potato",
+    "dish_name": "Loaded Baked Potato",
+    "ticket_code": "LOADED POT",
+    "category": "Sides",
+    "menu": "L & D",
+    "description": "Idaho baked potato topped with chives, sour cream, bacon, butter, and cheddar cheese.",
+    "ingredients": [
+      "Idaho potato",
+      "chives",
+      "sour cream",
+      "bacon",
+      "butter",
+      "cheddar cheese",
+      "cheese",
+      "house oil",
+      "salt",
+      "pepper"
+    ],
+    "allergy_raw": "Dairy",
+    "contains_dairy": "Y",
+    "contains_egg": "N",
+    "contains_gluten": "N",
+    "contains_shellfish": "N",
+    "contains_fish": "N",
+    "contains_soy": "N",
+    "contains_nuts": "N",
+    "contains_sesame": "N",
+    "contains_msg": "N",
+    "contains_peanuts": "N",
+    "contains_tree_nuts": "N",
+    "notes": "",
+    "mod_notes": "",
+    "cannot_be_made_safe_notes": "Contains dairy (butter, sour cream, cheddar cheese) which are integral to the dish."
+  },
+  {
     "id": "bbq_rubbed_sweet_potato",
     "dish_name": "BBQ Rubbed Sweet Potato",
     "ticket_code": "SWEET POT",
@@ -3294,7 +3330,7 @@ export const menuItems: MenuItem[] = [
     "id": "grilled_cheese_and_fries",
     "dish_name": "Grilled Cheese and Fries",
     "ticket_code": "KID GR CHEEZ",
-    "category": "Kid’S Menu",
+    "category": "Kids Menu",
     "menu": "L & D",
     "description": "Two slices of multi -grain  bread  buttered on the outside.  Filled with thr ee slices of American cheese and b aked in the oven on a sizzle platter until golden brown.  Served with French fires, applesauce  and a ramekin of ketchup.",
     "ingredients": [
@@ -3326,7 +3362,7 @@ export const menuItems: MenuItem[] = [
     "id": "chicken_fingers_and_fries",
     "dish_name": "Chicken Fingers  and Fries",
     "ticket_code": "KIDS CHICKEN",
-    "category": "Kid’S Menu",
+    "category": "Kids Menu",
     "menu": "L & D",
     "description": "3 Kid ’s chicken f ingers  deep fried  and served French fries,  applesauce  and a ramekin of ketchup.",
     "ingredients": [
@@ -3356,7 +3392,7 @@ export const menuItems: MenuItem[] = [
     "id": "burger_cheeseburger_and_fries",
     "dish_name": "Burger/Cheeseburger  and Fries",
     "ticket_code": "KIDS BURGER/KIDS CHEESEBURGER",
-    "category": "Kid’S Menu",
+    "category": "Kids Menu",
     "menu": "L & D",
     "description": "4 oz. ground beef grilled to well done.  Cheeseburger is  topped with American cheese and s erved with French fries, applesauce  and a ramekin of ketchup.",
     "ingredients": [
@@ -3388,7 +3424,7 @@ export const menuItems: MenuItem[] = [
     "id": "macaroni_and_cheese",
     "dish_name": "Macaroni and Cheese",
     "ticket_code": "KID MAC & CHEZ",
-    "category": "Kid’S Menu",
+    "category": "Kids Menu",
     "menu": "L & D",
     "description": "Elbow macaroni  mixed with whipping cream , whole milk, Land o’Lakes Velvet Yellow Cheese Spread .  Then topped with cheddar cheese slices and baked.  Served with applesauce .",
     "ingredients": [
@@ -3421,7 +3457,7 @@ export const menuItems: MenuItem[] = [
     "id": "available_upon_request_kids_filet_mashed_potato",
     "dish_name": "Available upon request: Kids Filet & Mashed Potato",
     "ticket_code": "KIDS STEAK",
-    "category": "Kid’S Menu",
+    "category": "Kids Menu",
     "menu": "L & D",
     "description": "Two 3 oz. f ilet medallions b rushed with melted butter, salt  and pepper.  Broiled to desired temperature and brushed with steak butter .  Served with au jus , mashed potatoes and applesauce .",
     "ingredients": [
@@ -3492,7 +3528,7 @@ export const menuItems: MenuItem[] = [
     "id": "fresh_mozzarella_flatbread",
     "dish_name": "Fresh Mozzarella Flatbread",
     "ticket_code": "MOZZ PIZZA",
-    "category": "Special Party Items  And Happy Hour :",
+    "category": "Party",
     "menu": "PASE  and HH",
     "description": "6 oz. homemade  flatbread  hand stretched.  Brushed with roasted garlic puree  and then topped with shredded fresh mozzarella, tomato jam  and fresh basil.",
     "ingredients": [
@@ -3527,7 +3563,7 @@ export const menuItems: MenuItem[] = [
     "id": "pasta_and_roasted_vegetable_pasta",
     "dish_name": "Pasta  and Roasted Vegetable Pasta",
     "ticket_code": "PASTA  W/VEG",
-    "category": "Special Party Items  And Happy Hour :",
+    "category": "Party",
     "menu": "Secret/Club",
     "description": "8 oz. of pasta with garlic butter  and roasted vegetables .  Tossed with a tomato basil sauce  and topped with Asiago and goat cheeses.  Baked in the oven and g arnished with basil.",
     "ingredients": [
@@ -3562,7 +3598,7 @@ export const menuItems: MenuItem[] = [
     "id": "roasted_vegetable_vegan_plate",
     "dish_name": "Roasted Vegetable Vegan Plate",
     "ticket_code": "VEGAN PLATE",
-    "category": "Special Party Items  And Happy Hour :",
+    "category": "Party",
     "menu": "Secret/Club",
     "description": "One Portobello mushroom cap  marinated in balsamic vinaigrette , salt, pepper then grilled.  4 oz. of as paragus roasted and tossed with balsamic vinaigrette , salt  and pepper.  8 oz. of roasted market vegetables .  One half of a baked sweet potato .",
     "ingredients": [

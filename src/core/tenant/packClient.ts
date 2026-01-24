@@ -12,6 +12,15 @@ import type {
 } from './packTypes';
 import { saveTenantContext, saveCachedPack, getCachedPack } from './storage';
 import { getOrCreateDeviceFingerprint } from './deviceFingerprint';
+import { validateAndMigratePack, logPackDebugInfo } from './packValidator';
+import {
+  validateActivationCode,
+  validateDeviceFingerprint,
+  validateDeviceToken,
+  checkRateLimit,
+  getRateLimitResetTime,
+} from '../../utils/validation';
+import { devLog } from '../../config/env';
 
 // Supabase Edge Function URLs
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL || '';
@@ -57,7 +66,38 @@ export async function downloadPack(signedUrl: string): Promise<string> {
  * Activate device with activation code
  */
 export async function activateDevice(code: string): Promise<ActivateResponse> {
+  // Client-side rate limiting (5 attempts per minute)
+  if (!checkRateLimit('activation', 5, 60000)) {
+    const resetMs = getRateLimitResetTime('activation');
+    const resetSec = Math.ceil(resetMs / 1000);
+    throw new ActivationError(
+      `Too many activation attempts. Please wait ${resetSec} seconds and try again.`,
+      'rate_limited'
+    );
+  }
+
+  // Validate and sanitize inputs
+  let validatedCode: string;
+  try {
+    validatedCode = validateActivationCode(code);
+  } catch (error) {
+    throw new ActivationError(
+      error instanceof Error ? error.message : 'Invalid activation code format',
+      'invalid_code'
+    );
+  }
+
   const deviceFingerprint = getOrCreateDeviceFingerprint();
+
+  // Validate device fingerprint
+  try {
+    validateDeviceFingerprint(deviceFingerprint);
+  } catch (error) {
+    throw new ActivationError(
+      'Device fingerprint validation failed. Please clear app data and try again.',
+      'invalid_fingerprint'
+    );
+  }
 
   // Check if Supabase is configured
   if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
@@ -75,7 +115,7 @@ export async function activateDevice(code: string): Promise<ActivateResponse> {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
       },
-      body: JSON.stringify({ code, deviceFingerprint }),
+      body: JSON.stringify({ code: validatedCode, deviceFingerprint }),
     });
   } catch (networkError) {
     throw new ActivationError(
@@ -116,6 +156,13 @@ export async function activateDevice(code: string): Promise<ActivateResponse> {
 export async function getLatestPackInfo(
   deviceToken: string
 ): Promise<GetLatestPackResponse> {
+  // Validate device token
+  try {
+    validateDeviceToken(deviceToken);
+  } catch (error) {
+    throw new PackError('Invalid device token', 'invalid_token');
+  }
+
   const response = await fetch(`${FUNCTIONS_URL}/get_latest_pack`, {
     method: 'POST',
     headers: {
@@ -147,24 +194,24 @@ export async function performFullActivation(code: string): Promise<{
   tenantContext: TenantContext;
   pack: TenantPack;
 }> {
-  console.log('[performFullActivation] Starting...');
+  devLog('[performFullActivation] Starting...');
   
   // 1. Activate device
   const activationResponse = await activateDevice(code);
-  console.log('[performFullActivation] Activation response:', {
+  devLog('[performFullActivation] Activation response:', {
     tenantId: activationResponse.tenant.id,
     packVersion: activationResponse.pack.version,
     expectedChecksum: activationResponse.pack.checksum,
   });
 
   // 2. Download pack
-  console.log('[performFullActivation] Downloading pack...');
+  devLog('[performFullActivation] Downloading pack...');
   const packJsonString = await downloadPack(activationResponse.pack.signedUrl);
-  console.log('[performFullActivation] Downloaded bytes:', packJsonString.length);
+  devLog('[performFullActivation] Downloaded bytes:', packJsonString.length);
 
   // 3. Verify checksum
   const computedChecksum = await computeChecksum(packJsonString);
-  console.log('[performFullActivation] Checksum comparison:', {
+  devLog('[performFullActivation] Checksum comparison:', {
     expected: activationResponse.pack.checksum,
     computed: computedChecksum,
     match: computedChecksum === activationResponse.pack.checksum,
@@ -178,11 +225,29 @@ export async function performFullActivation(code: string): Promise<{
     );
   }
 
-  // 4. Parse pack
-  const pack: TenantPack = JSON.parse(packJsonString);
+  // 4. Parse and validate pack
+  devLog('[performFullActivation] Parsing and validating pack...');
+  const rawPack = JSON.parse(packJsonString);
+  const { result: validationResult, pack } = validateAndMigratePack(rawPack);
+  
+  if (!validationResult.valid || !pack) {
+    console.error('[performFullActivation] Pack validation failed:', validationResult.errors);
+    throw new PackError(
+      `Pack validation failed: ${validationResult.errors.join(', ')}`,
+      'pack_invalid'
+    );
+  }
+  
+  if (validationResult.migrated) {
+    devLog('[performFullActivation] Legacy pack was migrated');
+  }
+  
+  // Log pack debug info
+  logPackDebugInfo(pack, activationResponse.pack.checksum, 'activation');
 
   // 5. Save to cache
   await saveCachedPack(pack, activationResponse.pack.checksum);
+  devLog('[performFullActivation] Pack saved to cache');
 
   // 6. Save tenant context
   const tenantContext: TenantContext = {
@@ -203,40 +268,107 @@ export async function performFullActivation(code: string): Promise<{
 export async function checkAndDownloadUpdate(
   deviceToken: string
 ): Promise<TenantPack | null> {
+  devLog('[checkAndDownloadUpdate] Starting update check...');
+  
   // Get current cached version
   const cached = await getCachedPack();
   const currentVersion = cached?.pack.version ?? 0;
+  const currentChecksum = cached?.checksum ?? '';
+  
+  devLog('[checkAndDownloadUpdate] Current cached:', {
+    version: currentVersion,
+    checksum: currentChecksum.substring(0, 16) + '...',
+  });
 
   // Check for latest version
   const latestInfo = await getLatestPackInfo(deviceToken);
+  
+  devLog('[checkAndDownloadUpdate] Latest available:', {
+    version: latestInfo.version,
+    checksum: latestInfo.checksum.substring(0, 16) + '...',
+  });
 
-  // If no update needed
-  if (latestInfo.version <= currentVersion) {
+  // Check by BOTH version AND checksum (in case pack was regenerated at same version)
+  if (latestInfo.version <= currentVersion && latestInfo.checksum === currentChecksum) {
+    devLog('[checkAndDownloadUpdate] No update needed (same version and checksum)');
     return null;
   }
+  
+  devLog('[checkAndDownloadUpdate] Update available! Downloading...');
 
-  // Download new pack
-  const packJsonString = await downloadPack(latestInfo.signedUrl);
+  // Download new pack (add cache-busting)
+  const cacheBustedUrl = latestInfo.signedUrl + (latestInfo.signedUrl.includes('?') ? '&' : '?') + `_t=${Date.now()}`;
+  const packJsonString = await downloadPack(cacheBustedUrl);
+  devLog('[checkAndDownloadUpdate] Downloaded bytes:', packJsonString.length);
 
   // Verify checksum
-  const isValid = await verifyChecksum(packJsonString, latestInfo.checksum);
-  if (!isValid) {
+  const computedChecksum = await computeChecksum(packJsonString);
+  devLog('[checkAndDownloadUpdate] Checksum comparison:', {
+    expected: latestInfo.checksum.substring(0, 16) + '...',
+    computed: computedChecksum.substring(0, 16) + '...',
+    match: computedChecksum === latestInfo.checksum,
+  });
+  
+  if (computedChecksum !== latestInfo.checksum) {
     throw new PackError('Pack checksum verification failed', 'checksum_mismatch');
   }
 
-  // Parse and save
-  const pack: TenantPack = JSON.parse(packJsonString);
+  // Parse and validate
+  devLog('[checkAndDownloadUpdate] Parsing and validating pack...');
+  const rawPack = JSON.parse(packJsonString);
+  const { result: validationResult, pack } = validateAndMigratePack(rawPack);
+  
+  if (!validationResult.valid || !pack) {
+    console.error('[checkAndDownloadUpdate] Pack validation failed:', validationResult.errors);
+    throw new PackError(
+      `Pack validation failed: ${validationResult.errors.join(', ')}`,
+      'pack_invalid'
+    );
+  }
+  
+  if (validationResult.migrated) {
+    devLog('[checkAndDownloadUpdate] Legacy pack was migrated');
+  }
+  
+  // Log pack debug info
+  logPackDebugInfo(pack, latestInfo.checksum, 'update');
+  
+  // Save to cache
   await saveCachedPack(pack, latestInfo.checksum);
+  devLog('[checkAndDownloadUpdate] Pack saved to cache');
 
   return pack;
 }
 
 /**
- * Load pack from cache
+ * Load pack from cache with validation
  */
 export async function loadPackFromCache(): Promise<TenantPack | null> {
+  devLog('[loadPackFromCache] Loading from cache...');
   const cached = await getCachedPack();
-  return cached?.pack ?? null;
+  
+  if (!cached) {
+    devLog('[loadPackFromCache] No cached pack found');
+    return null;
+  }
+  
+  // Validate cached pack (in case schema changed)
+  const { result: validationResult, pack } = validateAndMigratePack(cached.pack);
+  
+  if (!validationResult.valid || !pack) {
+    console.error('[loadPackFromCache] Cached pack is invalid:', validationResult.errors);
+    return null;
+  }
+  
+  if (validationResult.migrated) {
+    devLog('[loadPackFromCache] Cached pack was migrated to new schema');
+    // Save migrated pack back to cache
+    await saveCachedPack(pack, cached.checksum);
+  }
+  
+  logPackDebugInfo(pack, cached.checksum, 'cache');
+  
+  return pack;
 }
 
 // ============================================================================

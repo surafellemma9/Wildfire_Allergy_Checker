@@ -37,6 +37,14 @@ export {
   PackError,
 } from './packClient';
 
+// Pack validator
+export {
+  validateAndMigratePack,
+  runSmokeCheck,
+  logPackDebugInfo,
+} from './packValidator';
+export type { ValidationResult, SmokeCheckResult } from './packValidator';
+
 // Hook
 export { useTenant } from './useTenant';
 export type { UseTenantState, UseTenantActions, UseTenantReturn } from './useTenant';

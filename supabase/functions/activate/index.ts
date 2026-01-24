@@ -44,14 +44,9 @@ Deno.serve(async (req: Request) => {
 
     // Validate environment
     if (!supabaseUrl || !supabaseServiceKey) {
-      console.error('[activate] Missing env vars:', { 
-        hasUrl: !!supabaseUrl, 
-        hasServiceKey: !!supabaseServiceKey 
-      })
+      console.error('[activate] Missing environment configuration')
       return jsonError('Server configuration error', 'config_missing', 500)
     }
-
-    console.log('[activate] Using service role key (first 10 chars):', supabaseServiceKey.substring(0, 10) + '...')
 
     const supabase = createClient(supabaseUrl, supabaseServiceKey, {
       auth: { persistSession: false }

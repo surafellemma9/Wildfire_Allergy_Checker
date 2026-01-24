@@ -7,17 +7,14 @@
  * Usage: 
  *   SUPABASE_URL=xxx SUPABASE_SERVICE_KEY=xxx TENANT_ID=xxx npx tsx scripts/uploadPackToSupabase.ts
  */
-import fs from "fs";
-import path from "path";
-import crypto from "crypto";
-import { createClient } from "@supabase/supabase-js";
-import { fileURLToPath } from "url";
-import { dirname } from "path";
 
-// ✅ ESM-safe __dirname
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+import { createClient } from '@supabase/supabase-js';
+import * as fs from 'fs';
+import * as path from 'path';
+import * as crypto from 'crypto';
 
+// ESM-safe: Use process.cwd() to get project root (scripts run from project root)
+const PROJECT_ROOT = process.cwd();
 
 console.log('[DEBUG] Project root:', PROJECT_ROOT);
 

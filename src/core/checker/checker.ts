@@ -19,6 +19,7 @@ export interface CheckerSelections {
   sideId?: string;
   crustId?: string;
   dressingId?: string;
+  addOnIds?: string[];  // Multiple add-ons can be selected
   customAllergenText?: string;
 }
 
@@ -46,6 +47,7 @@ export interface CheckerResult {
   sideItem?: ItemCheckResult;
   crustItem?: ItemCheckResult;
   dressingItem?: ItemCheckResult;
+  addOnItems?: ItemCheckResult[];  // Multiple add-ons
   customAllergenWarning?: string;
   ticketLines: string[];
 }
@@ -61,7 +63,7 @@ export function checkAllergens(
   pack: TenantPack,
   selections: CheckerSelections
 ): CheckerResult {
-  const { allergenIds, itemId, sideId, crustId, dressingId, customAllergenText } = selections;
+  const { allergenIds, itemId, sideId, crustId, dressingId, addOnIds, customAllergenText } = selections;
 
   // Find the main item
   const mainItem = pack.items.find((i) => i.id === itemId);
@@ -103,6 +105,18 @@ export function checkAllergens(
     }
   }
 
+  // Check add-ons if selected (multiple can be selected)
+  let addOnResults: ItemCheckResult[] | undefined;
+  if (addOnIds && addOnIds.length > 0) {
+    addOnResults = [];
+    for (const addOnId of addOnIds) {
+      const addOnItem = pack.items.find((i) => i.id === addOnId);
+      if (addOnItem) {
+        addOnResults.push(checkItem(pack, addOnItem, allergenIds));
+      }
+    }
+  }
+
   // Handle custom allergen
   let customAllergenWarning: string | undefined;
   if (customAllergenText?.trim()) {
@@ -110,14 +124,18 @@ export function checkAllergens(
   }
 
   // Calculate overall status
-  const allResults = [mainResult, sideResult, crustResult, dressingResult].filter(
-    Boolean
-  ) as ItemCheckResult[];
-  
+  const allResults = [
+    mainResult,
+    sideResult,
+    crustResult,
+    dressingResult,
+    ...(addOnResults || []),
+  ].filter(Boolean) as ItemCheckResult[];
+
   let overallStatus = determineOverallStatus(allResults, !!customAllergenText);
 
   // Generate ticket lines
-  const ticketLines = generateTicketLines(mainResult, sideResult, crustResult, dressingResult, customAllergenWarning);
+  const ticketLines = generateTicketLines(mainResult, sideResult, crustResult, dressingResult, addOnResults, customAllergenWarning);
 
   return {
     overallStatus,
@@ -125,6 +143,7 @@ export function checkAllergens(
     sideItem: sideResult,
     crustItem: crustResult,
     dressingItem: dressingResult,
+    addOnItems: addOnResults,
     customAllergenWarning,
     ticketLines,
   };
@@ -136,6 +155,7 @@ export function checkAllergens(
 
 /**
  * Check a single item against selected allergens
+ * Uses strict per-allergen safety rules from allergy sheets
  */
 function checkItem(
   pack: TenantPack,
@@ -148,36 +168,28 @@ function checkItem(
 
   for (const allergenId of allergenIds) {
     const allergenDef = pack.allergens.find((a) => a.id === allergenId);
+
+    // Use the deterministic evaluation function
+    const status = evaluateDishForAllergen(item, allergenId);
     const rule = item.allergenRules[allergenId];
 
-    if (!rule) {
-      // No rule defined - treat as UNKNOWN
-      perAllergen.push({
-        allergenId,
-        allergenName: allergenDef?.name || allergenId,
-        status: 'UNKNOWN',
-        foundIngredients: [],
-        substitutions: [],
-        notes: ['This dish has not been verified for this allergen. Please consult a manager.'],
-      });
-      itemStatus = worstStatus(itemStatus, 'UNKNOWN');
+    // Build result for this allergen
+    perAllergen.push({
+      allergenId,
+      allergenName: allergenDef?.name || allergenId,
+      status,
+      foundIngredients: rule?.foundIngredients || [],
+      substitutions: rule?.substitutions || [],
+      notes: rule?.notes ? [rule.notes] : [],
+    });
+
+    // Update overall item status (worst status wins)
+    itemStatus = worstStatus(itemStatus, status);
+
+    // Determine if item can be modified
+    // Can only modify if ALL allergens are either SAFE or MODIFIABLE
+    if (status !== 'SAFE' && status !== 'MODIFIABLE') {
       canBeModified = false;
-    } else {
-      perAllergen.push({
-        allergenId,
-        allergenName: allergenDef?.name || allergenId,
-        status: rule.status,
-        foundIngredients: rule.foundIngredients || [],
-        substitutions: rule.substitutions || [],
-        notes: rule.notes ? [rule.notes] : [],
-      });
-
-      itemStatus = worstStatus(itemStatus, rule.status);
-
-      // Can't modify if UNSAFE
-      if (rule.status === 'UNSAFE') {
-        canBeModified = false;
-      }
     }
   }
 
@@ -192,28 +204,81 @@ function checkItem(
 }
 
 /**
- * Determine the worst status (priority: UNSAFE > UNKNOWN > MODIFY > SAFE)
+ * SAFETY-FIRST PRIORITY: Determine the worst status
+ * Priority order (most restrictive to least restrictive):
+ * NOT_SAFE_NOT_IN_SHEET > UNSAFE > VERIFY_WITH_KITCHEN > MODIFIABLE > SAFE
+ *
+ * Rationale:
+ * - NOT_SAFE_NOT_IN_SHEET: Dish not in allergy sheet = cannot verify safety
+ * - UNSAFE: Explicitly cannot be made safe
+ * - VERIFY_WITH_KITCHEN: Needs manual confirmation before serving
+ * - MODIFIABLE: Can be made safe with modifications
+ * - SAFE: Safe as-is
  */
 function worstStatus(current: RuleStatus, next: RuleStatus): RuleStatus {
   const priority: Record<RuleStatus, number> = {
     SAFE: 0,
-    MODIFY: 1,
-    UNKNOWN: 2,
+    MODIFIABLE: 1,
+    VERIFY_WITH_KITCHEN: 2,
     UNSAFE: 3,
+    NOT_SAFE_NOT_IN_SHEET: 4,  // HIGHEST priority = most restrictive
   };
 
   return priority[next] > priority[current] ? next : current;
 }
 
 /**
+ * CORE SAFETY FUNCTION: Evaluate a dish for a specific allergen
+ *
+ * Returns exactly one of:
+ * - SAFE: No modifications needed
+ * - MODIFIABLE: Can be made safe with explicit modifications from allergy sheet
+ * - VERIFY_WITH_KITCHEN: Requires manual kitchen verification (FISH ONLY)
+ * - NOT_SAFE_NOT_IN_SHEET: Not present in allergy sheet for this allergen
+ * - UNSAFE: Cannot be made safe
+ *
+ * BUSINESS RULES:
+ * 1. If dish not in allergen's sheet → NOT_SAFE_NOT_IN_SHEET
+ * 2. VERIFY_WITH_KITCHEN is ONLY allowed for Fish allergen
+ *    - For non-fish allergens, VERIFY status is converted to NOT_SAFE_NOT_IN_SHEET
+ *    - Rationale: Fish preparation varies daily (fresh catch, cooking methods)
+ *    - All other allergens must have deterministic SAFE/MODIFIABLE/UNSAFE rules
+ * 3. Otherwise, use status from allergy sheet
+ * 4. No inference across allergens allowed
+ */
+export function evaluateDishForAllergen(
+  dish: MenuItem,
+  allergenId: string
+): RuleStatus {
+  const rule = dish.allergenRules[allergenId];
+
+  // RULE 1: Not in allergy sheet = NOT SAFE
+  if (!rule) {
+    return 'NOT_SAFE_NOT_IN_SHEET';
+  }
+
+  // RULE 2: VERIFY_WITH_KITCHEN is ONLY allowed for Fish allergen
+  // For all other allergens, VERIFY must be converted to NOT_SAFE (safety-first)
+  if (rule.status === 'VERIFY_WITH_KITCHEN' && allergenId !== 'fish') {
+    return 'NOT_SAFE_NOT_IN_SHEET';
+  }
+
+  // RULE 3: Return the status from the allergy sheet
+  return rule.status;
+}
+
+/**
  * Determine overall status from all checked items
+ * SAFETY RULE: Custom allergens require kitchen verification since they're not in our sheets
  */
 function determineOverallStatus(
   results: ItemCheckResult[],
   hasCustomAllergen: boolean
 ): RuleStatus {
+  // Custom allergens can't be verified against allergy sheets
+  // Must verify with kitchen before serving
   if (hasCustomAllergen) {
-    return 'UNKNOWN';
+    return 'VERIFY_WITH_KITCHEN';
   }
 
   let overall: RuleStatus = 'SAFE';
@@ -233,6 +298,7 @@ function generateTicketLines(
   sideResult?: ItemCheckResult,
   crustResult?: ItemCheckResult,
   dressingResult?: ItemCheckResult,
+  addOnResults?: ItemCheckResult[],
   customWarning?: string
 ): string[] {
   const lines: string[] = [];
@@ -262,6 +328,16 @@ function generateTicketLines(
     lines.push(...formatItemLines(dressingResult));
   }
 
+  // Add add-ons
+  if (addOnResults && addOnResults.length > 0) {
+    lines.push('');
+    lines.push(`--- ADD-ONS ---`);
+    for (const addOnResult of addOnResults) {
+      lines.push(`• ${addOnResult.itemName}:`);
+      lines.push(...formatItemLines(addOnResult).map(line => '  ' + line));
+    }
+  }
+
   // Add custom allergen warning
   if (customWarning) {
     lines.push('');
@@ -272,49 +348,71 @@ function generateTicketLines(
 }
 
 /**
- * Format lines for a single item result
+ * Format lines for a single item result with safety-first messaging
  */
 function formatItemLines(result: ItemCheckResult): string[] {
   const lines: string[] = [];
 
-  // If completely safe, indicate no changes
+  // SAFE - No modifications needed
   if (result.status === 'SAFE') {
-    lines.push('✓ No changes needed');
+    lines.push('✓ SAFE - No changes needed');
     return lines;
   }
 
-  // If unsafe/unknown, indicate cannot serve
+  // NOT_SAFE_NOT_IN_SHEET - Most critical: not in allergy sheet
+  if (result.status === 'NOT_SAFE_NOT_IN_SHEET') {
+    lines.push('🚫 NOT SAFE — NOT IN ALLERGY SHEET');
+    lines.push('   DO NOT SERVE - Cannot verify safety');
+    for (const pa of result.perAllergen) {
+      if (pa.status === 'NOT_SAFE_NOT_IN_SHEET') {
+        lines.push(`   • ${pa.allergenName}: Missing from allergy sheet`);
+      }
+    }
+    return lines;
+  }
+
+  // UNSAFE - Explicitly cannot be made safe
   if (result.status === 'UNSAFE') {
     lines.push('✗ NOT SAFE - Cannot be modified');
     for (const pa of result.perAllergen) {
       if (pa.status === 'UNSAFE') {
-        lines.push(`  • ${pa.allergenName}: ${pa.notes.join(', ') || 'Contains allergen'}`);
+        lines.push(`   • ${pa.allergenName}: ${pa.notes.join(', ') || 'Contains allergen'}`);
       }
     }
     return lines;
   }
 
-  if (result.status === 'UNKNOWN') {
-    lines.push('? UNKNOWN - Verify with chef');
+  // VERIFY_WITH_KITCHEN - Requires manual verification
+  if (result.status === 'VERIFY_WITH_KITCHEN') {
+    lines.push('⚠️  VERIFY WITH THE KITCHEN');
+    lines.push('   Manual confirmation required before serving');
     for (const pa of result.perAllergen) {
-      if (pa.status === 'UNKNOWN') {
-        lines.push(`  • ${pa.allergenName}: ${pa.notes.join(', ')}`);
+      if (pa.status === 'VERIFY_WITH_KITCHEN') {
+        lines.push(`   • ${pa.allergenName}: ${pa.notes.join(', ') || 'Requires verification'}`);
       }
     }
     return lines;
   }
 
-  // MODIFY - list all modifications
-  for (const pa of result.perAllergen) {
-    if (pa.status === 'MODIFY' && pa.substitutions.length > 0) {
-      for (const sub of pa.substitutions) {
-        // Bold formatting for NO/SUB
-        if (sub.startsWith('NO ') || sub.startsWith('SUB ')) {
-          lines.push(`• **${sub}**`);
-        } else {
-          lines.push(`• ${sub}`);
+  // MODIFIABLE - List all required modifications
+  if (result.status === 'MODIFIABLE') {
+    for (const pa of result.perAllergen) {
+      if (pa.status === 'MODIFIABLE' && pa.substitutions.length > 0) {
+        for (const sub of pa.substitutions) {
+          // Bold formatting for NO/SUB (critical modifications)
+          if (sub.startsWith('NO ') || sub.startsWith('SUB ')) {
+            lines.push(`• **${sub}**`);
+          } else {
+            lines.push(`• ${sub}`);
+          }
         }
       }
+    }
+
+    // If no modifications listed but marked as modifiable, show warning
+    if (lines.length === 0) {
+      lines.push('⚠️  VERIFY WITH THE KITCHEN');
+      lines.push('   Marked as modifiable but no modifications specified');
     }
   }
 
@@ -327,22 +425,61 @@ function formatItemLines(result: ItemCheckResult): string[] {
 
 /**
  * Get all items in a category
+ * Uses O(1) index lookup if available, otherwise falls back to O(n) filter
+ *
+ * Performance:
+ * - With index (pack._categoryIndex): O(1) - instant lookup
+ * - Without index (fallback): O(n) - linear search through all items
  */
 export function getItemsByCategory(
   pack: TenantPack,
   categoryId: string
 ): MenuItem[] {
-  return pack.items.filter((item) => item.categoryId === categoryId);
+  // Use O(1) index if available (built during pack validation)
+  if (pack._categoryIndex) {
+    const items = pack._categoryIndex.get(categoryId) || [];
+    // Filter out side-only items from main menu grid
+    return items.filter(item => !item.isSideOnly);
+  }
+
+  // Fallback to O(n) filter (legacy packs or invalid state)
+  const items = pack.items.filter((item) => {
+    // Filter out side-only items
+    if (item.isSideOnly) return false;
+
+    // Primary: match by categoryId
+    if (item.categoryId === categoryId) {
+      return true;
+    }
+
+    // Fallback: if item has legacy 'category' field (name), derive ID and match
+    const legacyCategory = (item as unknown as { category?: string }).category;
+    if (legacyCategory) {
+      const derivedId = legacyCategory
+        .toLowerCase()
+        .replace(/\s+/g, '_')
+        .replace(/[^a-z0-9_]/g, '');
+      if (derivedId === categoryId) {
+        console.warn(`[getItemsByCategory] Item "${item.name}" uses legacy category field`);
+        return true;
+      }
+    }
+
+    return false;
+  });
+
+  return items;
 }
 
 /**
- * Search items by name
+ * Search items by name, excluding side-only items
  */
 export function searchItems(pack: TenantPack, query: string): MenuItem[] {
   const lowerQuery = query.toLowerCase().trim();
   if (!lowerQuery) return [];
 
   return pack.items.filter((item) =>
+    !item.isSideOnly &&  // Filter out side-only items from search
     item.name.toLowerCase().includes(lowerQuery)
   );
 }

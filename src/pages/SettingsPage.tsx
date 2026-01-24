@@ -20,7 +20,8 @@ import {
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import type { TenantContext, TenantPack } from '@/core/tenant';
-import { getDeviceFingerprint } from '@/core/tenant';
+import { getDeviceFingerprint, runSmokeCheck, logPackDebugInfo } from '@/core/tenant';
+import { getCachedPack } from '@/core/tenant';
 
 interface SettingsPageProps {
   tenantContext: TenantContext;
@@ -48,6 +49,8 @@ export function SettingsPage({
   const [isResetting, setIsResetting] = useState(false);
   const [showResetConfirm, setShowResetConfirm] = useState(false);
   const [copiedDeviceId, setCopiedDeviceId] = useState(false);
+  const [showDebug, setShowDebug] = useState(false);
+  const [debugInfo, setDebugInfo] = useState<string | null>(null);
 
   const handleCheckUpdates = async () => {
     setIsCheckingUpdates(true);
@@ -307,6 +310,56 @@ export function SettingsPage({
               </button>
             )}
           </CardContent>
+        </Card>
+
+        {/* Debug Section */}
+        <Card className="bg-slate-800/90 border-slate-700">
+          <CardHeader className="pb-3">
+            <CardTitle 
+              className="text-lg text-white cursor-pointer flex items-center justify-between"
+              onClick={() => setShowDebug(!showDebug)}
+            >
+              <span>🔧 Debug Info</span>
+              <span className="text-sm text-slate-400">{showDebug ? '▼' : '▶'}</span>
+            </CardTitle>
+          </CardHeader>
+          {showDebug && (
+            <CardContent className="space-y-4">
+              <button
+                onClick={async () => {
+                  if (!pack) {
+                    setDebugInfo('No pack loaded');
+                    return;
+                  }
+                  const cached = await getCachedPack();
+                  const smokeCheck = runSmokeCheck(pack, cached?.checksum);
+                  logPackDebugInfo(pack, cached?.checksum, 'settings-page');
+                  setDebugInfo(JSON.stringify(smokeCheck, null, 2));
+                }}
+                className="w-full py-2 px-4 bg-slate-700 hover:bg-slate-600 text-white rounded-lg transition-colors"
+              >
+                Run Smoke Check
+              </button>
+              
+              {debugInfo && (
+                <pre className="bg-slate-900 p-3 rounded-lg text-xs text-green-400 overflow-x-auto whitespace-pre-wrap">
+                  {debugInfo}
+                </pre>
+              )}
+              
+              {pack && (
+                <div className="text-xs text-slate-400 space-y-1">
+                  <p>Pack Version: {pack.version}</p>
+                  <p>Items: {pack.items.length}</p>
+                  <p>Categories: {pack.categories.length}</p>
+                  <p>Allergens: {pack.allergens.length}</p>
+                  <p>---</p>
+                  <p>Sample item categoryId: {pack.items[0]?.categoryId || 'N/A'}</p>
+                  <p>Sample item name: {pack.items[0]?.name || 'N/A'}</p>
+                </div>
+              )}
+            </CardContent>
+          )}
         </Card>
 
         {/* App version */}
