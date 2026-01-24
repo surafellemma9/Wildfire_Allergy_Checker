@@ -6,7 +6,7 @@ import { checkAllergens, type CheckerSelections } from './checker';
 import packData from '../../../generated/tenant-pack-v1.json';
 import type { TenantPack } from '../tenant/packTypes';
 
-const pack = packData as TenantPack;
+const pack = packData as unknown as TenantPack;
 
 describe('Steaks and Chops - Shellfish Allergy Rules', () => {
   const findItem = (name: string) => {

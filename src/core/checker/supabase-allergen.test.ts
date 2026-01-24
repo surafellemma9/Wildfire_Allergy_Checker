@@ -7,31 +7,34 @@
 
 import { describe, it, expect } from 'vitest';
 import { checkAllergens } from './checker';
-import type { MenuItem, AllergenRule, RuleStatus, TenantPack, Allergen } from '../tenant/packTypes';
+import type { MenuItem, AllergenRule, RuleStatus, TenantPack } from '../tenant/packTypes';
 
 // Mock tenant pack structure
 function createMockPack(items: MenuItem[]): TenantPack {
-  const allergens: Allergen[] = [
-    { id: 'dairy', name: 'Dairy' },
-    { id: 'gluten', name: 'Gluten' },
-    { id: 'shellfish', name: 'Shellfish' },
-    { id: 'fish', name: 'Fish' },
-    { id: 'eggs', name: 'Eggs' },
-    { id: 'soy', name: 'Soy' },
-    { id: 'peanuts', name: 'Peanuts' },
-    { id: 'tree_nuts', name: 'Tree Nuts' },
-    { id: 'sesame', name: 'Sesame' },
-    { id: 'garlic', name: 'Garlic' },
-    { id: 'onion', name: 'Onion' },
+  const allergens = [
+    { id: 'dairy', name: 'Dairy', icon: '🥛', description: 'Dairy products' },
+    { id: 'gluten', name: 'Gluten', icon: '🌾', description: 'Gluten-containing grains' },
+    { id: 'shellfish', name: 'Shellfish', icon: '🦐', description: 'Shellfish' },
+    { id: 'fish', name: 'Fish', icon: '🐟', description: 'Fish' },
+    { id: 'eggs', name: 'Eggs', icon: '🥚', description: 'Eggs' },
+    { id: 'soy', name: 'Soy', icon: '🫘', description: 'Soy products' },
+    { id: 'peanuts', name: 'Peanuts', icon: '🥜', description: 'Peanuts' },
+    { id: 'tree_nuts', name: 'Tree Nuts', icon: '🌰', description: 'Tree nuts' },
+    { id: 'sesame', name: 'Sesame', icon: '🫘', description: 'Sesame seeds' },
+    { id: 'garlic', name: 'Garlic', icon: '🧄', description: 'Garlic' },
+    { id: 'onion', name: 'Onion', icon: '🧅', description: 'Onion' },
   ];
 
   return {
     version: 1,
     tenantId: 'test-tenant',
-    tenantName: 'Test Restaurant',
+    conceptName: 'Wildfire',
+    locationName: 'Test Restaurant',
     generatedAt: new Date().toISOString(),
     allergens,
+    categories: [],
     items,
+    stats: { totalItems: items.length, itemsWithRules: 0, totalRules: 0 },
   };
 }
 
@@ -54,7 +57,7 @@ function createTestItem(
   return {
     id,
     name,
-    category,
+    categoryId: category,
     allergenRules: rules,
   };
 }
