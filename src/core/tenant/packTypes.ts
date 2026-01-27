@@ -98,6 +98,7 @@ export interface Category {
   name: string;
   icon?: string;
   sortOrder?: number;
+  needsReview?: boolean; // Flag indicating category needs allergy review
 }
 
 // Allergen definition (for display)

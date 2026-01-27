@@ -1133,10 +1133,20 @@ async function generatePack(): Promise<void> {
     }
   }
   
-  // Sort categories by sortOrder
-  const categories = Array.from(categorySet.values()).sort(
-    (a, b) => (a.sortOrder ?? 99) - (b.sortOrder ?? 99)
-  );
+  // Sort categories by sortOrder and add review flags
+  const categories = Array.from(categorySet.values())
+    .map((cat) => {
+      // Mark categories that need allergy review
+      const needsReview =
+        cat.name.toLowerCase().includes('seafood') ||
+        cat.name.toLowerCase().includes('chicken');
+
+      return {
+        ...cat,
+        needsReview,
+      };
+    })
+    .sort((a, b) => (a.sortOrder ?? 99) - (b.sortOrder ?? 99));
   
   // Build the pack
   const pack: TenantPack = {

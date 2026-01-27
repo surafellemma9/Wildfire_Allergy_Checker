@@ -8,6 +8,9 @@ import type {
   MenuItem,
   RuleStatus,
 } from '../tenant/packTypes';
+import { normalizeDishName } from '../../utils/normalizeDishName';
+import { isDishExcludedFromCategory } from '../../config/categoryExclusions';
+import { filterValidNightlySpecials } from '../../config/nightlySpecials';
 
 // ============================================================================
 // Types
@@ -435,38 +438,56 @@ export function getItemsByCategory(
   pack: TenantPack,
   categoryId: string
 ): MenuItem[] {
+  let items: MenuItem[] = [];
+
   // Use O(1) index if available (built during pack validation)
   if (pack._categoryIndex) {
-    const items = pack._categoryIndex.get(categoryId) || [];
+    items = pack._categoryIndex.get(categoryId) || [];
     // Filter out side-only items from main menu grid
-    return items.filter(item => !item.isSideOnly);
-  }
+    items = items.filter(item => !item.isSideOnly);
+  } else {
+    // Fallback to O(n) filter (legacy packs or invalid state)
+    items = pack.items.filter((item) => {
+      // Filter out side-only items
+      if (item.isSideOnly) return false;
 
-  // Fallback to O(n) filter (legacy packs or invalid state)
-  const items = pack.items.filter((item) => {
-    // Filter out side-only items
-    if (item.isSideOnly) return false;
-
-    // Primary: match by categoryId
-    if (item.categoryId === categoryId) {
-      return true;
-    }
-
-    // Fallback: if item has legacy 'category' field (name), derive ID and match
-    const legacyCategory = (item as unknown as { category?: string }).category;
-    if (legacyCategory) {
-      const derivedId = legacyCategory
-        .toLowerCase()
-        .replace(/\s+/g, '_')
-        .replace(/[^a-z0-9_]/g, '');
-      if (derivedId === categoryId) {
-        console.warn(`[getItemsByCategory] Item "${item.name}" uses legacy category field`);
+      // Primary: match by categoryId
+      if (item.categoryId === categoryId) {
         return true;
       }
-    }
 
-    return false;
+      // Fallback: if item has legacy 'category' field (name), derive ID and match
+      const legacyCategory = (item as unknown as { category?: string }).category;
+      if (legacyCategory) {
+        const derivedId = legacyCategory
+          .toLowerCase()
+          .replace(/\s+/g, '_')
+          .replace(/[^a-z0-9_]/g, '');
+        if (derivedId === categoryId) {
+          console.warn(`[getItemsByCategory] Item "${item.name}" uses legacy category field`);
+          return true;
+        }
+      }
+
+      return false;
+    });
+  }
+
+  // Find the category name for filtering
+  const category = pack.categories?.find(c => c.id === categoryId);
+  const categoryName = category?.name || categoryId;
+
+  // Apply category exclusion filters
+  items = items.filter(item => {
+    return !isDishExcludedFromCategory(categoryName, item.name);
   });
+
+  // Special handling for Nightly Specials category - filter to only valid specials
+  const isNightlySpecials = categoryName.toLowerCase().includes('nightly') ||
+                           categoryName.toLowerCase().includes('special');
+  if (isNightlySpecials) {
+    items = filterValidNightlySpecials(items as any[]) as MenuItem[];
+  }
 
   return items;
 }

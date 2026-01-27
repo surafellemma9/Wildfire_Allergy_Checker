@@ -376,14 +376,21 @@ async function generatePack() {
     item.displayOrder = index;
   });
 
-  // Build categories
+  // Build categories with review flags
   const categories = Array.from(categorySet)
-    .map((catName) => ({
-      id: categoryToId(catName),
-      name: catName,
-      icon: CATEGORY_CONFIG[catName]?.icon || '📋',
-      displayOrder: CATEGORY_CONFIG[catName]?.order ?? 999,
-    }))
+    .map((catName) => {
+      const needsReview =
+        catName.toLowerCase().includes('seafood') ||
+        catName.toLowerCase().includes('chicken');
+
+      return {
+        id: categoryToId(catName),
+        name: catName,
+        icon: CATEGORY_CONFIG[catName]?.icon || '📋',
+        displayOrder: CATEGORY_CONFIG[catName]?.order ?? 999,
+        needsReview,
+      };
+    })
     .sort((a, b) => a.displayOrder - b.displayOrder);
 
   // Build final pack
