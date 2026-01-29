@@ -8,7 +8,6 @@ import type {
   MenuItem,
   RuleStatus,
 } from '../tenant/packTypes';
-import { normalizeDishName } from '../../utils/normalizeDishName';
 import { isDishExcludedFromCategory } from '../../config/categoryExclusions';
 import { filterValidNightlySpecials } from '../../config/nightlySpecials';
 
