@@ -109,6 +109,155 @@ const SALAD_PROTEIN_OPTIONS = [
   },
 ];
 
+// Dressing options for salads with allergen rules based on allergy sheets
+// When sheet says "Field Green Salad - no changes" with these dressings, those dressings are SAFE
+const DRESSING_OPTIONS = [
+  {
+    id: 'no_dressing',
+    name: 'No Dressing',
+    allergenRules: {
+      dairy: { status: 'SAFE', substitutions: [], notes: null },
+      gluten: { status: 'SAFE', substitutions: [], notes: null },
+      shellfish: { status: 'SAFE', substitutions: [], notes: null },
+      soy: { status: 'SAFE', substitutions: [], notes: null },
+      eggs: { status: 'SAFE', substitutions: [], notes: null },
+      peanuts: { status: 'SAFE', substitutions: [], notes: null },
+      tree_nuts: { status: 'SAFE', substitutions: [], notes: null },
+      sesame: { status: 'SAFE', substitutions: [], notes: null },
+      garlic: { status: 'SAFE', substitutions: [], notes: null },
+      onion: { status: 'SAFE', substitutions: [], notes: null },
+    }
+  },
+  {
+    id: 'balsamic_vinaigrette',
+    name: 'Balsamic Vinaigrette',
+    allergenRules: {
+      dairy: { status: 'SAFE', substitutions: [], notes: null },
+      gluten: { status: 'SAFE', substitutions: [], notes: null },
+      shellfish: { status: 'SAFE', substitutions: [], notes: null },
+      soy: { status: 'SAFE', substitutions: [], notes: null },
+      eggs: { status: 'SAFE', substitutions: [], notes: null },
+      peanuts: { status: 'SAFE', substitutions: [], notes: null },
+      tree_nuts: { status: 'SAFE', substitutions: [], notes: null },
+      sesame: { status: 'SAFE', substitutions: [], notes: null },
+      garlic: { status: 'UNSAFE', substitutions: [], notes: 'Contains garlic' },
+      onion: { status: 'UNSAFE', substitutions: [], notes: 'Contains shallots' },
+    }
+  },
+  {
+    id: 'citrus_dressing',
+    name: 'Citrus Dressing',
+    allergenRules: {
+      dairy: { status: 'SAFE', substitutions: [], notes: null },
+      gluten: { status: 'SAFE', substitutions: [], notes: null },
+      shellfish: { status: 'SAFE', substitutions: [], notes: null },
+      soy: { status: 'SAFE', substitutions: [], notes: null },
+      eggs: { status: 'SAFE', substitutions: [], notes: null },
+      peanuts: { status: 'SAFE', substitutions: [], notes: null },
+      tree_nuts: { status: 'SAFE', substitutions: [], notes: null },
+      sesame: { status: 'SAFE', substitutions: [], notes: null },
+      garlic: { status: 'UNSAFE', substitutions: [], notes: 'Contains garlic' },
+      onion: { status: 'SAFE', substitutions: [], notes: null },
+    }
+  },
+  {
+    id: 'blue_cheese_dressing',
+    name: 'Blue Cheese Dressing',
+    allergenRules: {
+      dairy: { status: 'UNSAFE', substitutions: [], notes: 'Contains blue cheese and buttermilk' },
+      gluten: { status: 'SAFE', substitutions: [], notes: null },
+      shellfish: { status: 'SAFE', substitutions: [], notes: null },
+      soy: { status: 'UNSAFE', substitutions: [], notes: 'Contains mayonnaise with soy' },
+      eggs: { status: 'UNSAFE', substitutions: [], notes: 'Contains mayonnaise' },
+      peanuts: { status: 'SAFE', substitutions: [], notes: null },
+      tree_nuts: { status: 'SAFE', substitutions: [], notes: null },
+      sesame: { status: 'SAFE', substitutions: [], notes: null },
+      garlic: { status: 'SAFE', substitutions: [], notes: null },
+      onion: { status: 'SAFE', substitutions: [], notes: null },
+    }
+  },
+  {
+    id: 'caesar_dressing',
+    name: 'Caesar Dressing',
+    allergenRules: {
+      dairy: { status: 'UNSAFE', substitutions: [], notes: 'Contains Asiago cheese' },
+      gluten: { status: 'SAFE', substitutions: [], notes: null },
+      shellfish: { status: 'SAFE', substitutions: [], notes: null },
+      soy: { status: 'SAFE', substitutions: [], notes: null },
+      eggs: { status: 'UNSAFE', substitutions: [], notes: 'Contains egg yolk' },
+      peanuts: { status: 'SAFE', substitutions: [], notes: null },
+      tree_nuts: { status: 'SAFE', substitutions: [], notes: null },
+      sesame: { status: 'SAFE', substitutions: [], notes: null },
+      garlic: { status: 'UNSAFE', substitutions: [], notes: 'Contains garlic' },
+      onion: { status: 'SAFE', substitutions: [], notes: null },
+    }
+  },
+  {
+    id: 'lemon_parmesan_vinaigrette',
+    name: 'Lemon Parmesan Vinaigrette',
+    allergenRules: {
+      dairy: { status: 'UNSAFE', substitutions: [], notes: 'Contains Parmesan cheese' },
+      gluten: { status: 'SAFE', substitutions: [], notes: null },
+      shellfish: { status: 'SAFE', substitutions: [], notes: null },
+      soy: { status: 'SAFE', substitutions: [], notes: null },
+      eggs: { status: 'SAFE', substitutions: [], notes: null },
+      peanuts: { status: 'SAFE', substitutions: [], notes: null },
+      tree_nuts: { status: 'SAFE', substitutions: [], notes: null },
+      sesame: { status: 'SAFE', substitutions: [], notes: null },
+      garlic: { status: 'UNSAFE', substitutions: [], notes: 'Contains garlic' },
+      onion: { status: 'SAFE', substitutions: [], notes: null },
+    }
+  },
+  {
+    id: 'lemon_herb_vinaigrette',
+    name: 'Lemon Herb Vinaigrette',
+    allergenRules: {
+      dairy: { status: 'SAFE', substitutions: [], notes: null },
+      gluten: { status: 'SAFE', substitutions: [], notes: null },
+      shellfish: { status: 'SAFE', substitutions: [], notes: null },
+      soy: { status: 'SAFE', substitutions: [], notes: null },
+      eggs: { status: 'SAFE', substitutions: [], notes: null },
+      peanuts: { status: 'SAFE', substitutions: [], notes: null },
+      tree_nuts: { status: 'SAFE', substitutions: [], notes: null },
+      sesame: { status: 'SAFE', substitutions: [], notes: null },
+      garlic: { status: 'UNSAFE', substitutions: [], notes: 'Contains garlic' },
+      onion: { status: 'UNSAFE', substitutions: [], notes: 'Contains shallots' },
+    }
+  },
+  {
+    id: 'red_wine_vinaigrette',
+    name: 'Red Wine Vinaigrette',
+    allergenRules: {
+      dairy: { status: 'UNSAFE', substitutions: [], notes: 'Contains parmesan' },
+      gluten: { status: 'SAFE', substitutions: [], notes: null },
+      shellfish: { status: 'SAFE', substitutions: [], notes: null },
+      soy: { status: 'SAFE', substitutions: [], notes: null },
+      eggs: { status: 'SAFE', substitutions: [], notes: null },
+      peanuts: { status: 'SAFE', substitutions: [], notes: null },
+      tree_nuts: { status: 'SAFE', substitutions: [], notes: null },
+      sesame: { status: 'SAFE', substitutions: [], notes: null },
+      garlic: { status: 'UNSAFE', substitutions: [], notes: 'Contains garlic puree' },
+      onion: { status: 'SAFE', substitutions: [], notes: null },
+    }
+  },
+  {
+    id: 'ranch_dressing',
+    name: 'Ranch Dressing',
+    allergenRules: {
+      dairy: { status: 'UNSAFE', substitutions: [], notes: 'Contains buttermilk' },
+      gluten: { status: 'SAFE', substitutions: [], notes: null },
+      shellfish: { status: 'SAFE', substitutions: [], notes: null },
+      soy: { status: 'UNSAFE', substitutions: [], notes: 'Contains mayonnaise with soy' },
+      eggs: { status: 'UNSAFE', substitutions: [], notes: 'Contains mayonnaise' },
+      peanuts: { status: 'SAFE', substitutions: [], notes: null },
+      tree_nuts: { status: 'SAFE', substitutions: [], notes: null },
+      sesame: { status: 'SAFE', substitutions: [], notes: null },
+      garlic: { status: 'SAFE', substitutions: [], notes: null },
+      onion: { status: 'SAFE', substitutions: [], notes: null },
+    }
+  },
+];
+
 // Category display order and icons
 const CATEGORY_CONFIG: Record<string, { icon: string; order: number }> = {
   'Appetizers': { icon: '🍤', order: 1 },
@@ -375,9 +524,11 @@ async function generatePack() {
       _ruleCount: itemMods?.size || 0,
     };
 
-    // Add protein options for salads (but not salad add-ons)
+    // Add protein options and dressing options for salads (but not salad add-ons)
     if (effectiveCategory === 'Salads' && !isSaladAddOn) {
       item.proteinOptions = SALAD_PROTEIN_OPTIONS;
+      item.dressingOptions = DRESSING_OPTIONS;
+      item.requiresDressing = true;  // Flag to trigger dressing selection step
     }
 
     // Add add-on options for steaks & filets

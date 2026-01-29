@@ -48,7 +48,14 @@ interface TenantAllergyCheckerProps {
 // ============================================================================
 
 // Step definitions
-type Step = 'allergies' | 'dish' | 'protein' | 'sides' | 'crust' | 'results';
+type Step = 'allergies' | 'dish' | 'dressing' | 'protein' | 'sides' | 'crust' | 'results';
+
+// Dressing option type (for salads)
+interface DressingOption {
+  id: string;
+  name: string;
+  allergenRules: Record<string, { status: string; substitutions: string[]; notes: string | null }>;
+}
 
 // Protein option type (for salads)
 interface ProteinOption {
@@ -101,6 +108,7 @@ export function TenantAllergyChecker({
   const [showIngredientDropdown, setShowIngredientDropdown] = useState(false);
   const [selectedItem, setSelectedItem] = useState<MenuItem | null>(null);
   const [selectedProtein, setSelectedProtein] = useState<ProteinOption | null>(null);
+  const [selectedDressing, setSelectedDressing] = useState<DressingOption | null>(null);
   const [selectedSide, setSelectedSide] = useState<MenuItem | null>(null);
   const [selectedCrust, setSelectedCrust] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
@@ -154,6 +162,20 @@ export function TenantAllergyChecker({
         customIngredients: selectedCustomIngredients.length > 0 ? selectedCustomIngredients : undefined,
       });
 
+      // If dressing is selected, combine its allergen rules with the result
+      if (selectedDressing && result) {
+        for (const allergenResult of result.mainItem.perAllergen) {
+          const dressingRule = selectedDressing.allergenRules[allergenResult.allergenId];
+          if (dressingRule) {
+            if (dressingRule.status === 'UNSAFE') {
+              // If dressing is unsafe for this allergen, mark overall as unsafe
+              allergenResult.status = 'UNSAFE';
+              allergenResult.notes = [...allergenResult.notes, `${selectedDressing.name}: ${dressingRule.notes || 'Contains this allergen'}`];
+            }
+          }
+        }
+      }
+
       // If protein is selected, combine its allergen rules with the result
       if (selectedProtein && result) {
         for (const allergenResult of result.mainItem.perAllergen) {
@@ -175,7 +197,10 @@ export function TenantAllergyChecker({
             }
           }
         }
-        // Recalculate overall status
+      }
+
+      // Recalculate overall status (after dressing and protein)
+      if ((selectedDressing || selectedProtein) && result) {
         const statuses = result.mainItem.perAllergen.map(pa => pa.status);
         if (statuses.includes('UNSAFE') || statuses.includes('NOT_SAFE_NOT_IN_SHEET')) {
           result.overallStatus = 'UNSAFE';
@@ -193,7 +218,7 @@ export function TenantAllergyChecker({
       console.error('Checker error:', error);
       return null;
     }
-  }, [pack, selectedItem, selectedProtein, selectedSide, selectedCrust, selectedAllergens, customAllergenText, selectedCustomIngredients]);
+  }, [pack, selectedItem, selectedDressing, selectedProtein, selectedSide, selectedCrust, selectedAllergens, customAllergenText, selectedCustomIngredients]);
 
   // ========== Handlers ==========
   const handleAcceptDisclaimer = () => {
@@ -212,19 +237,41 @@ export function TenantAllergyChecker({
 
   const handleSelectItem = (item: MenuItem) => {
     setSelectedItem(item);
-    // Check for protein options (salads)
-    const proteinOptions = (item as any).proteinOptions;
+    // Check for dressing options (salads) - dressing comes first
+    const dressingOptions = (item as any).dressingOptions;
+    const requiresDressing = (item as any).requiresDressing;
+    if (requiresDressing && dressingOptions && dressingOptions.length > 0) {
+      setCurrentStep('dressing');
+    } else {
+      // Check for protein options (salads without dressing requirement)
+      const proteinOptions = (item as any).proteinOptions;
+      if (proteinOptions && proteinOptions.length > 0) {
+        setCurrentStep('protein');
+      } else if (item.isEntree && item.sides && item.sides.length > 0) {
+        setCurrentStep('sides');
+      } else if (item.requiresCrust && item.crustOptions && item.crustOptions.length > 0) {
+        setCurrentStep('crust');
+      } else {
+        setCurrentStep('results');
+      }
+    }
+    setSelectedCategory(null);
+    setSearchQuery('');
+  };
+
+  const handleSelectDressing = (dressing: DressingOption) => {
+    setSelectedDressing(dressing);
+    // After dressing, check for protein options
+    const proteinOptions = (selectedItem as any)?.proteinOptions;
     if (proteinOptions && proteinOptions.length > 0) {
       setCurrentStep('protein');
-    } else if (item.isEntree && item.sides && item.sides.length > 0) {
+    } else if (selectedItem?.isEntree && selectedItem?.sides && selectedItem.sides.length > 0) {
       setCurrentStep('sides');
-    } else if (item.requiresCrust && item.crustOptions && item.crustOptions.length > 0) {
+    } else if (selectedItem?.requiresCrust && selectedItem?.crustOptions && selectedItem.crustOptions.length > 0) {
       setCurrentStep('crust');
     } else {
       setCurrentStep('results');
     }
-    setSelectedCategory(null);
-    setSearchQuery('');
   };
 
   const handleSelectProtein = (protein: ProteinOption | null) => {
@@ -258,20 +305,35 @@ export function TenantAllergyChecker({
   const handleBack = () => {
     const proteinOptions = (selectedItem as any)?.proteinOptions;
     const hasProteinOptions = proteinOptions && proteinOptions.length > 0;
+    const dressingOptions = (selectedItem as any)?.dressingOptions;
+    const hasDressingOptions = dressingOptions && dressingOptions.length > 0;
     
     switch (currentStep) {
       case 'dish':
         setCurrentStep('allergies');
         break;
-      case 'protein':
+      case 'dressing':
         setCurrentStep('dish');
         setSelectedItem(null);
+        setSelectedDressing(null);
+        break;
+      case 'protein':
+        if (hasDressingOptions) {
+          setCurrentStep('dressing');
+          setSelectedDressing(null);
+        } else {
+          setCurrentStep('dish');
+          setSelectedItem(null);
+        }
         setSelectedProtein(null);
         break;
       case 'sides':
         if (hasProteinOptions) {
           setCurrentStep('protein');
           setSelectedProtein(null);
+        } else if (hasDressingOptions) {
+          setCurrentStep('dressing');
+          setSelectedDressing(null);
         } else {
           setCurrentStep('dish');
           setSelectedItem(null);
@@ -283,6 +345,9 @@ export function TenantAllergyChecker({
         } else if (hasProteinOptions) {
           setCurrentStep('protein');
           setSelectedProtein(null);
+        } else if (hasDressingOptions) {
+          setCurrentStep('dressing');
+          setSelectedDressing(null);
         } else {
           setCurrentStep('dish');
           setSelectedItem(null);
@@ -296,6 +361,9 @@ export function TenantAllergyChecker({
         } else if (hasProteinOptions) {
           setCurrentStep('protein');
           setSelectedProtein(null);
+        } else if (hasDressingOptions) {
+          setCurrentStep('dressing');
+          setSelectedDressing(null);
         } else {
           setCurrentStep('dish');
           setSelectedItem(null);
@@ -311,6 +379,7 @@ export function TenantAllergyChecker({
     setSelectedCustomIngredients([]);
     setCustomIngredientSearch('');
     setSelectedItem(null);
+    setSelectedDressing(null);
     setSelectedProtein(null);
     setSelectedSide(null);
     setSelectedCrust(null);
@@ -686,6 +755,66 @@ export function TenantAllergyChecker({
                 </div>
               </div>
             )}
+          </div>
+        )}
+
+        {/* Step: Dressing (for salads) */}
+        {currentStep === 'dressing' && selectedItem && (selectedItem as any).dressingOptions && (
+          <div className="space-y-8">
+            <div className="text-center">
+              <h2 className="text-3xl font-bold text-white mb-3">Select Dressing</h2>
+              <p className="text-white/50 text-base">
+                Choose a dressing for {selectedItem.name}
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-w-2xl mx-auto">
+              {((selectedItem as any).dressingOptions as DressingOption[]).map((dressing) => {
+                // Check if this dressing is safe for all selected allergens
+                const unsafeAllergens = selectedAllergens.filter(allergenId => {
+                  const rule = dressing.allergenRules[allergenId];
+                  return rule && rule.status === 'UNSAFE';
+                });
+                const isSafe = unsafeAllergens.length === 0;
+                
+                return (
+                  <button
+                    key={dressing.id}
+                    onClick={() => handleSelectDressing(dressing)}
+                    className={cn(
+                      'p-4 border rounded-xl transition-all text-left',
+                      isSafe
+                        ? 'bg-white/5 border-white/10 hover:bg-white/10 hover:border-white/20'
+                        : 'bg-red-500/10 border-red-500/30 hover:bg-red-500/20'
+                    )}
+                  >
+                    <div className="flex items-center justify-between">
+                      <div className="font-medium text-white">{dressing.name}</div>
+                      {!isSafe && (
+                        <div className="flex items-center gap-1 text-red-400 text-xs">
+                          <AlertTriangle className="w-3 h-3" />
+                          <span>Contains allergen</span>
+                        </div>
+                      )}
+                      {isSafe && dressing.id !== 'no_dressing' && (
+                        <div className="flex items-center gap-1 text-emerald-400 text-xs">
+                          <Check className="w-3 h-3" />
+                          <span>Safe</span>
+                        </div>
+                      )}
+                    </div>
+                    {!isSafe && (
+                      <div className="text-xs text-red-400/70 mt-1">
+                        {unsafeAllergens.map(a => {
+                          const allergen = pack.allergens.find(al => al.id === a);
+                          return allergen?.name || a;
+                        }).join(', ')}
+                      </div>
+                    )}
+                  </button>
+                );
+              })}
+            </div>
           </div>
         )}
 
