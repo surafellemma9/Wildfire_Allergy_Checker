@@ -13,7 +13,10 @@ import { normalizeDishName } from '../utils/normalizeDishName';
  */
 export const CATEGORIES_NEEDING_REVIEW = new Set([
   normalizeDishName('Seafood'),
+  normalizeDishName('Fresh Fish and Seafood'),
+  normalizeDishName('Fresh Seafood'),
   normalizeDishName('Chicken'),
+  normalizeDishName('Chicken and Barbecue'),
 ]);
 
 /**

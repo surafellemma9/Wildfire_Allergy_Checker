@@ -8,6 +8,7 @@ import type {
   MenuItem,
   RuleStatus,
 } from '../tenant/packTypes';
+import { normalizeDishName } from '../../utils/normalizeDishName';
 import { isDishExcludedFromCategory } from '../../config/categoryExclusions';
 import { filterValidNightlySpecials } from '../../config/nightlySpecials';
 
@@ -518,7 +519,7 @@ export function getItemsByCategory(
   pack: TenantPack,
   categoryId: string
 ): MenuItem[] {
-  let items: MenuItem[];
+  let items: MenuItem[] = [];
 
   // Use O(1) index if available (built during pack validation)
   if (pack._categoryIndex) {
@@ -553,14 +554,16 @@ export function getItemsByCategory(
     });
   }
 
-  // Apply category exclusion filters
+  // Find the category name for filtering
   const category = pack.categories?.find(c => c.id === categoryId);
   const categoryName = category?.name || categoryId;
+
+  // Apply category exclusion filters
   items = items.filter(item => {
     return !isDishExcludedFromCategory(categoryName, item.name);
   });
 
-  // Special handling for Nightly Specials category
+  // Special handling for Nightly Specials category - filter to only valid specials
   const isNightlySpecials = categoryName.toLowerCase().includes('nightly') ||
                             categoryId.toLowerCase().includes('nightly');
   if (isNightlySpecials) {

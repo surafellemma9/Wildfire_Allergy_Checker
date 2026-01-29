@@ -14,26 +14,37 @@ import { normalizeDishName } from '../utils/normalizeDishName';
 export const VALID_NIGHTLY_SPECIALS: Record<string, string[]> = {
   monday: [
     normalizeDishName('Southern Fried Chicken'),
+    normalizeDishName('Monday & Tuesday: Southern Fried Chicken'),
   ],
   tuesday: [
     normalizeDishName('Long Island Duck'),
     normalizeDishName('Southern Fried Chicken'),
+    normalizeDishName('Monday & Tuesday: Southern Fried Chicken'),
   ],
   wednesday: [
     normalizeDishName('Long Island Duck'),
     normalizeDishName('Spit Roasted Duck'),
+    normalizeDishName('Wednesday: Spit Roasted Half Long Island Duck'),
   ],
   thursday: [
     normalizeDishName('Braised Short Ribs'),
+    normalizeDishName('Beer Braised Short Ribs'),
+    normalizeDishName('Thursday: Beer Braised Short Ribs'),
   ],
   friday: [
     normalizeDishName('Filet Wellington'),
+    normalizeDishName('Filet Mignon Wellington'),
+    normalizeDishName('Friday & Saturday: Filet Mignon Wellington'),
   ],
   saturday: [
     normalizeDishName('Filet Wellington'),
+    normalizeDishName('Filet Mignon Wellington'),
+    normalizeDishName('Friday & Saturday: Filet Mignon Wellington'),
   ],
   sunday: [
     normalizeDishName('Roast Turkey'),
+    normalizeDishName('Spit Roasted Turkey Dinner'),
+    normalizeDishName('Sunday: Spit Roasted Turkey Dinner'),
   ],
 };
 
