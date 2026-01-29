@@ -113,11 +113,11 @@ const SALAD_PROTEIN_OPTIONS = [
 const CATEGORY_CONFIG: Record<string, { icon: string; order: number }> = {
   'Appetizers': { icon: '🍤', order: 1 },
   'Salads': { icon: '🥗', order: 2 },
-  'Filets': { icon: '🥩', order: 3 },
-  'Steaks and Chops': { icon: '🥩', order: 4 },
-  'Prime Rib': { icon: '🥩', order: 5 },
-  'Fresh Fish and Seafood': { icon: '🐟', order: 6 },
-  'Chicken and Barbecue': { icon: '🍗', order: 7 },
+  'Salad Add-Ons': { icon: '🥗', order: 3 },
+  'Filets': { icon: '🥩', order: 4 },
+  'Steaks and Chops': { icon: '🥩', order: 5 },
+  'Prime Rib': { icon: '🥩', order: 6 },
+  'Fresh Fish and Seafood': { icon: '🐟', order: 7 },
   'Sandwiches: Prime Burgers': { icon: '🍔', order: 8 },
   'Sandwiches: Signatures': { icon: '🥪', order: 9 },
   'Sides': { icon: '🥔', order: 10 },
@@ -127,6 +127,22 @@ const CATEGORY_CONFIG: Record<string, { icon: string; order: number }> = {
   'Desserts': { icon: '🍰', order: 14 },
   'Brunch': { icon: '🍳', order: 15 },
 };
+
+// Items to move to a different category (name pattern -> new category)
+const CATEGORY_OVERRIDES: Array<{ pattern: RegExp; newCategory: string }> = [
+  { pattern: /^Salad with/i, newCategory: 'Salad Add-Ons' },
+];
+
+// Categories to exclude from the pack
+const EXCLUDED_CATEGORIES = [
+  'Chicken and Barbecue',
+  'Kids Menu',
+];
+
+// Specific items to exclude (by name)
+const EXCLUDED_ITEMS = [
+  'Kids Filet',
+];
 
 interface DbMenuItem {
   id: string;
@@ -180,7 +196,7 @@ async function generatePack() {
   console.log('📋 Fetching menu items...');
   const { data: dbMenuItems, error: menuError } = await supabase
     .from('menu_items')
-    .select('id, name, category, description, display_order, is_entree, is_side_only, side_ids')
+    .select('id, name, category, description, display_order, is_entree, is_side_only, side_ids, ticket_code, ingredients, garnishes')
     .eq('tenant_id', TENANT_ID)
     .eq('is_active', true)
     .order('display_order', { ascending: true });
@@ -194,7 +210,16 @@ async function generatePack() {
     console.error('❌ No menu items found in database!');
     process.exit(1);
   }
-  console.log(`   ✓ ${dbMenuItems.length} menu items`);
+  console.log(`   ✓ ${dbMenuItems.length} menu items (before filtering)`);
+
+  // Filter out excluded categories and specific items
+  const filteredMenuItems = dbMenuItems
+    .filter(item => !EXCLUDED_CATEGORIES.includes(item.category))
+    .filter(item => !EXCLUDED_ITEMS.includes(item.name));
+  console.log(`   ✓ ${filteredMenuItems.length} menu items (after excluding categories: ${EXCLUDED_CATEGORIES.join(', ')})`);
+  if (EXCLUDED_ITEMS.length > 0) {
+    console.log(`   ✓ Also excluded items: ${EXCLUDED_ITEMS.join(', ')}`);
+  }
 
   // 3. Fetch allergen modifications WITH menu_item_id
   console.log('📋 Fetching allergen modifications...');
@@ -231,7 +256,7 @@ async function generatePack() {
 
   // Count menu items with rules
   const menuItemsWithRules = modLookup.size;
-  const menuItemsWithoutRules = dbMenuItems.length - menuItemsWithRules;
+  const menuItemsWithoutRules = filteredMenuItems.length - menuItemsWithRules;
 
   console.log(`\n📊 Coverage Report:`);
   console.log(`   Menu items with allergen rules: ${menuItemsWithRules}`);
@@ -244,11 +269,20 @@ async function generatePack() {
   const itemsWithoutRules: string[] = [];
 
   // Get all steak add-ons for linking
-  const steakAddOns = dbMenuItems.filter(item => item.category === 'Steak Add-Ons');
+  const steakAddOns = filteredMenuItems.filter(item => item.category === 'Steak Add-Ons');
   console.log(`   Found ${steakAddOns.length} steak add-ons`);
 
-  const items = dbMenuItems.map((menuItem, index) => {
-    categorySet.add(menuItem.category);
+  const items = filteredMenuItems.map((menuItem, index) => {
+    // Check for category overrides based on item name
+    let effectiveCategory = menuItem.category;
+    for (const override of CATEGORY_OVERRIDES) {
+      if (override.pattern.test(menuItem.name)) {
+        effectiveCategory = override.newCategory;
+        break;
+      }
+    }
+    
+    categorySet.add(effectiveCategory);
 
     // Get allergen rules for this item BY ID
     const itemMods = modLookup.get(menuItem.id);
@@ -314,21 +348,25 @@ async function generatePack() {
       }
     }
 
-    const categoryId = categoryToId(menuItem.category);
+    const categoryId = categoryToId(effectiveCategory);
 
     // Check if this is a steak/filet item that should have add-ons
-    const isSteakOrFilet = menuItem.category === 'Steaks & Filets';
-    const isAddOn = menuItem.category === 'Steak Add-Ons';
+    const isSteakOrFilet = effectiveCategory === 'Steaks & Filets';
+    const isAddOn = effectiveCategory === 'Steak Add-Ons';
+    const isSaladAddOn = effectiveCategory === 'Salad Add-Ons';
 
     const item: any = {
       id: menuItem.id,
       name: menuItem.name,
-      ticketCode: null,
+      ticketCode: menuItem.ticket_code || null,
       categoryId: categoryId,
-      category: menuItem.category,
+      category: effectiveCategory,
       description: menuItem.description || null,
       displayOrder: index,
       allergenRules,
+      // Ingredients for custom allergen search
+      ingredients: menuItem.ingredients || [],
+      garnishes: menuItem.garnishes || [],
       // Brunch-specific flags
       isEntree: menuItem.is_entree || undefined,
       isSideOnly: menuItem.is_side_only || undefined,
@@ -337,8 +375,8 @@ async function generatePack() {
       _ruleCount: itemMods?.size || 0,
     };
 
-    // Add protein options for salads
-    if (menuItem.category === 'Salads') {
+    // Add protein options for salads (but not salad add-ons)
+    if (effectiveCategory === 'Salads' && !isSaladAddOn) {
       item.proteinOptions = SALAD_PROTEIN_OPTIONS;
     }
 
@@ -386,6 +424,56 @@ async function generatePack() {
     }))
     .sort((a, b) => a.displayOrder - b.displayOrder);
 
+  // Build master list of all unique ingredients (for autocomplete)
+  // ONLY EXCLUDE these specific allergens that have dedicated buttons
+  // User can still search for dairy products, shellfish, gluten items, etc.
+  const EXCLUDED_ALLERGEN_KEYWORDS = [
+    // Onion (has dedicated button) - includes onion family
+    'onion', 'onions', 'shallot', 'shallots', 'scallion', 'scallions', 'leek', 'leeks',
+    'green onion', 'green onions', 'red onion', 'white onion', 'yellow onion', 'chive', 'chives',
+    // Garlic (has dedicated button)
+    'garlic',
+    // Eggs (has dedicated button)
+    'egg', 'eggs',
+    // Sesame (has dedicated button)
+    'sesame', 'sesame seeds', 'sesame oil', 'tahini',
+    // Soy (has dedicated button)
+    'soy', 'soy sauce', 'tofu', 'edamame', 'miso', 'tempeh', 'soybean', 'soya',
+    // Peanuts (has dedicated button)
+    'peanut', 'peanuts', 'peanut butter', 'peanut oil',
+    // Tree Nuts (has dedicated button)
+    'almond', 'almonds', 'walnut', 'walnuts', 'pecan', 'pecans', 'cashew', 'cashews',
+    'pistachio', 'pistachios', 'hazelnut', 'hazelnuts', 'macadamia', 'pine nut', 'pine nuts',
+    'tree nut', 'tree nuts',
+  ];
+  
+  const isExcludedAllergen = (ingredient: string): boolean => {
+    const lower = ingredient.toLowerCase();
+    return EXCLUDED_ALLERGEN_KEYWORDS.some(keyword => 
+      lower === keyword || lower.includes(keyword)
+    );
+  };
+
+  const allIngredientsSet = new Set<string>();
+  const allGarnishesSet = new Set<string>();
+  for (const item of items) {
+    for (const ing of (item.ingredients || [])) {
+      const lowerIng = ing.toLowerCase();
+      if (!isExcludedAllergen(lowerIng)) {
+        allIngredientsSet.add(lowerIng);
+      }
+    }
+    for (const gar of (item.garnishes || [])) {
+      const lowerGar = gar.toLowerCase();
+      if (!isExcludedAllergen(lowerGar)) {
+        allGarnishesSet.add(lowerGar);
+      }
+    }
+  }
+  const allIngredients = Array.from(allIngredientsSet).sort();
+  const allGarnishes = Array.from(allGarnishesSet).sort();
+  console.log(`   Found ${allIngredients.length} unique ingredients, ${allGarnishes.length} unique garnishes (after excluding allergens)`);
+
   // Build final pack
   const pack = {
     tenantId: tenant.id,
@@ -394,6 +482,8 @@ async function generatePack() {
     version: 1,
     generatedAt: new Date().toISOString(),
     allergens: ALLERGEN_DEFINITIONS,
+    allIngredients,
+    allGarnishes,
     categories: categories,
     items,
     stats: {

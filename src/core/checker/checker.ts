@@ -8,6 +8,8 @@ import type {
   MenuItem,
   RuleStatus,
 } from '../tenant/packTypes';
+import { isDishExcludedFromCategory } from '../../config/categoryExclusions';
+import { filterValidNightlySpecials } from '../../config/nightlySpecials';
 
 // ============================================================================
 // Types
@@ -21,6 +23,13 @@ export interface CheckerSelections {
   dressingId?: string;
   addOnIds?: string[];  // Multiple add-ons can be selected
   customAllergenText?: string;
+  customIngredients?: string[];  // Specific ingredients to check for
+}
+
+export interface IngredientCheckResult {
+  ingredient: string;
+  foundIn: 'ingredients' | 'garnishes' | 'not_found';
+  itemName: string;
 }
 
 export interface PerAllergenResult {
@@ -49,6 +58,7 @@ export interface CheckerResult {
   dressingItem?: ItemCheckResult;
   addOnItems?: ItemCheckResult[];  // Multiple add-ons
   customAllergenWarning?: string;
+  customIngredientResults?: IngredientCheckResult[];  // Results of custom ingredient checks
   ticketLines: string[];
 }
 
@@ -63,7 +73,7 @@ export function checkAllergens(
   pack: TenantPack,
   selections: CheckerSelections
 ): CheckerResult {
-  const { allergenIds, itemId, sideId, crustId, dressingId, addOnIds, customAllergenText } = selections;
+  const { allergenIds, itemId, sideId, crustId, dressingId, addOnIds, customAllergenText, customIngredients } = selections;
 
   // Find the main item
   const mainItem = pack.items.find((i) => i.id === itemId);
@@ -117,10 +127,35 @@ export function checkAllergens(
     }
   }
 
-  // Handle custom allergen
+  // Handle custom allergen text (free-form)
   let customAllergenWarning: string | undefined;
   if (customAllergenText?.trim()) {
     customAllergenWarning = `Custom allergen "${customAllergenText}" detected. Please consult the chef - automatic checking is not available.`;
+  }
+
+  // Handle custom ingredient checks (searchable from master list)
+  let customIngredientResults: IngredientCheckResult[] | undefined;
+  if (customIngredients && customIngredients.length > 0) {
+    customIngredientResults = [];
+    
+    // Check main item
+    for (const ingredient of customIngredients) {
+      const result = checkIngredientInItem(mainItem, ingredient);
+      customIngredientResults.push(result);
+    }
+    
+    // Check side if selected
+    if (sideId) {
+      const sideItem = pack.items.find((i) => i.id === sideId);
+      if (sideItem) {
+        for (const ingredient of customIngredients) {
+          const result = checkIngredientInItem(sideItem, ingredient);
+          if (result.foundIn !== 'not_found') {
+            customIngredientResults.push(result);
+          }
+        }
+      }
+    }
   }
 
   // Calculate overall status
@@ -132,7 +167,7 @@ export function checkAllergens(
     ...(addOnResults || []),
   ].filter(Boolean) as ItemCheckResult[];
 
-  let overallStatus = determineOverallStatus(allResults, !!customAllergenText);
+  let overallStatus = determineOverallStatus(allResults, !!customAllergenText, customIngredientResults);
 
   // Generate ticket lines
   const ticketLines = generateTicketLines(mainResult, sideResult, crustResult, dressingResult, addOnResults, customAllergenWarning);
@@ -145,7 +180,41 @@ export function checkAllergens(
     dressingItem: dressingResult,
     addOnItems: addOnResults,
     customAllergenWarning,
+    customIngredientResults,
     ticketLines,
+  };
+}
+
+/**
+ * Check if a specific ingredient is in an item's ingredients or garnishes
+ */
+function checkIngredientInItem(item: MenuItem, ingredient: string): IngredientCheckResult {
+  const lowerIngredient = ingredient.toLowerCase();
+  
+  // Check ingredients array
+  const ingredients: string[] = item.ingredients || [];
+  if (ingredients.some(ing => ing.toLowerCase() === lowerIngredient)) {
+    return {
+      ingredient,
+      foundIn: 'ingredients',
+      itemName: item.name,
+    };
+  }
+  
+  // Check garnishes array
+  const garnishes: string[] = item.garnishes || [];
+  if (garnishes.some(gar => gar.toLowerCase() === lowerIngredient)) {
+    return {
+      ingredient,
+      foundIn: 'garnishes',
+      itemName: item.name,
+    };
+  }
+  
+  return {
+    ingredient,
+    foundIn: 'not_found',
+    itemName: item.name,
   };
 }
 
@@ -273,9 +342,23 @@ export function evaluateDishForAllergen(
  */
 function determineOverallStatus(
   results: ItemCheckResult[],
-  hasCustomAllergen: boolean
+  hasCustomAllergen: boolean,
+  customIngredientResults?: IngredientCheckResult[]
 ): RuleStatus {
-  // Custom allergens can't be verified against allergy sheets
+  // Check custom ingredients - ingredients = UNSAFE, garnishes only = MODIFIABLE
+  if (customIngredientResults && customIngredientResults.length > 0) {
+    const hasIngredientMatch = customIngredientResults.some(r => r.foundIn === 'ingredients');
+    const hasGarnishMatch = customIngredientResults.some(r => r.foundIn === 'garnishes');
+    
+    if (hasIngredientMatch) {
+      return 'UNSAFE';
+    }
+    if (hasGarnishMatch) {
+      return 'MODIFIABLE';
+    }
+  }
+
+  // Custom allergens (free text) can't be verified against allergy sheets
   // Must verify with kitchen before serving
   if (hasCustomAllergen) {
     return 'VERIFY_WITH_KITCHEN';
@@ -435,38 +518,54 @@ export function getItemsByCategory(
   pack: TenantPack,
   categoryId: string
 ): MenuItem[] {
+  let items: MenuItem[];
+
   // Use O(1) index if available (built during pack validation)
   if (pack._categoryIndex) {
-    const items = pack._categoryIndex.get(categoryId) || [];
+    items = pack._categoryIndex.get(categoryId) || [];
     // Filter out side-only items from main menu grid
-    return items.filter(item => !item.isSideOnly);
-  }
+    items = items.filter(item => !item.isSideOnly);
+  } else {
+    // Fallback to O(n) filter (legacy packs or invalid state)
+    items = pack.items.filter((item) => {
+      // Filter out side-only items
+      if (item.isSideOnly) return false;
 
-  // Fallback to O(n) filter (legacy packs or invalid state)
-  const items = pack.items.filter((item) => {
-    // Filter out side-only items
-    if (item.isSideOnly) return false;
-
-    // Primary: match by categoryId
-    if (item.categoryId === categoryId) {
-      return true;
-    }
-
-    // Fallback: if item has legacy 'category' field (name), derive ID and match
-    const legacyCategory = (item as unknown as { category?: string }).category;
-    if (legacyCategory) {
-      const derivedId = legacyCategory
-        .toLowerCase()
-        .replace(/\s+/g, '_')
-        .replace(/[^a-z0-9_]/g, '');
-      if (derivedId === categoryId) {
-        console.warn(`[getItemsByCategory] Item "${item.name}" uses legacy category field`);
+      // Primary: match by categoryId
+      if (item.categoryId === categoryId) {
         return true;
       }
-    }
 
-    return false;
+      // Fallback: if item has legacy 'category' field (name), derive ID and match
+      const legacyCategory = (item as unknown as { category?: string }).category;
+      if (legacyCategory) {
+        const derivedId = legacyCategory
+          .toLowerCase()
+          .replace(/\s+/g, '_')
+          .replace(/[^a-z0-9_]/g, '');
+        if (derivedId === categoryId) {
+          console.warn(`[getItemsByCategory] Item "${item.name}" uses legacy category field`);
+          return true;
+        }
+      }
+
+      return false;
+    });
+  }
+
+  // Apply category exclusion filters
+  const category = pack.categories?.find(c => c.id === categoryId);
+  const categoryName = category?.name || categoryId;
+  items = items.filter(item => {
+    return !isDishExcludedFromCategory(categoryName, item.name);
   });
+
+  // Special handling for Nightly Specials category
+  const isNightlySpecials = categoryName.toLowerCase().includes('nightly') ||
+                            categoryId.toLowerCase().includes('nightly');
+  if (isNightlySpecials) {
+    items = filterValidNightlySpecials(items as any[]) as MenuItem[];
+  }
 
   return items;
 }

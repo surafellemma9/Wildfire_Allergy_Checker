@@ -96,6 +96,9 @@ export function TenantAllergyChecker({
   const [currentStep, setCurrentStep] = useState<Step>('allergies');
   const [selectedAllergens, setSelectedAllergens] = useState<string[]>([]);
   const [customAllergenText, setCustomAllergenText] = useState('');
+  const [customIngredientSearch, setCustomIngredientSearch] = useState('');
+  const [selectedCustomIngredients, setSelectedCustomIngredients] = useState<string[]>([]);
+  const [showIngredientDropdown, setShowIngredientDropdown] = useState(false);
   const [selectedItem, setSelectedItem] = useState<MenuItem | null>(null);
   const [selectedProtein, setSelectedProtein] = useState<ProteinOption | null>(null);
   const [selectedSide, setSelectedSide] = useState<MenuItem | null>(null);
@@ -119,8 +122,27 @@ export function TenantAllergyChecker({
     return getItemsByCategory(pack, selectedCategory);
   }, [pack, selectedCategory]);
 
+  // Get all available ingredients for autocomplete (from pack)
+  const allIngredients = useMemo(() => {
+    // Combine ingredients and garnishes into one searchable list
+    const ingredients = pack.allIngredients || [];
+    const garnishes = pack.allGarnishes || [];
+    return [...new Set([...ingredients, ...garnishes])].sort();
+  }, [pack]);
+
+  // Filter ingredients based on search
+  const filteredIngredients = useMemo(() => {
+    if (!customIngredientSearch.trim()) return [];
+    const search = customIngredientSearch.toLowerCase();
+    return allIngredients
+      .filter(ing => ing.toLowerCase().includes(search))
+      .filter(ing => !selectedCustomIngredients.includes(ing)) // Don't show already selected
+      .slice(0, 10);
+  }, [allIngredients, customIngredientSearch, selectedCustomIngredients]);
+
   const checkerResult: CheckerResult | null = useMemo(() => {
-    if (!selectedItem || selectedAllergens.length === 0) return null;
+    // Allow checking with either allergens OR custom ingredients
+    if (!selectedItem || (selectedAllergens.length === 0 && selectedCustomIngredients.length === 0)) return null;
 
     try {
       const result = checkAllergens(pack, {
@@ -129,6 +151,7 @@ export function TenantAllergyChecker({
         sideId: selectedSide?.id,
         crustId: selectedCrust || undefined,
         customAllergenText: customAllergenText.trim() || undefined,
+        customIngredients: selectedCustomIngredients.length > 0 ? selectedCustomIngredients : undefined,
       });
 
       // If protein is selected, combine its allergen rules with the result
@@ -170,7 +193,7 @@ export function TenantAllergyChecker({
       console.error('Checker error:', error);
       return null;
     }
-  }, [pack, selectedItem, selectedProtein, selectedSide, selectedCrust, selectedAllergens, customAllergenText]);
+  }, [pack, selectedItem, selectedProtein, selectedSide, selectedCrust, selectedAllergens, customAllergenText, selectedCustomIngredients]);
 
   // ========== Handlers ==========
   const handleAcceptDisclaimer = () => {
@@ -285,6 +308,8 @@ export function TenantAllergyChecker({
     setCurrentStep('allergies');
     setSelectedAllergens([]);
     setCustomAllergenText('');
+    setSelectedCustomIngredients([]);
+    setCustomIngredientSearch('');
     setSelectedItem(null);
     setSelectedProtein(null);
     setSelectedSide(null);
@@ -294,7 +319,7 @@ export function TenantAllergyChecker({
   };
 
   const handleContinue = () => {
-    if (currentStep === 'allergies' && selectedAllergens.length > 0) {
+    if (currentStep === 'allergies' && (selectedAllergens.length > 0 || selectedCustomIngredients.length > 0)) {
       setCurrentStep('dish');
     }
   };
@@ -474,28 +499,93 @@ export function TenantAllergyChecker({
               })}
             </div>
 
-            {/* Custom allergen input */}
+            {/* Custom ingredient search with autocomplete */}
             <div className="max-w-md mx-auto">
               <label className="block text-xs text-white/40 mb-2 font-medium uppercase tracking-wider">
-                Other allergy (optional)
+                Check for specific ingredient (optional)
               </label>
-              <input
-                type="text"
-                value={customAllergenText}
-                onChange={(e) => setCustomAllergenText(e.target.value)}
-                placeholder="Enter other allergy..."
-                className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-white/30 focus:outline-none focus:bg-white/10 focus:border-white/20 transition-all text-base"
-              />
+              
+              {/* Selected ingredients pills */}
+              {selectedCustomIngredients.length > 0 && (
+                <div className="flex flex-wrap gap-2 mb-3">
+                  {selectedCustomIngredients.map(ing => (
+                    <span
+                      key={ing}
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/20 border border-white/30 text-white text-sm font-medium"
+                    >
+                      {ing}
+                      <button
+                        onClick={() => setSelectedCustomIngredients(prev => prev.filter(i => i !== ing))}
+                        className="hover:text-red-300 transition-colors"
+                      >
+                        <X className="w-3.5 h-3.5" />
+                      </button>
+                    </span>
+                  ))}
+                </div>
+              )}
+              
+              {/* Search input with dropdown */}
+              <div className="relative">
+                <input
+                  type="text"
+                  value={customIngredientSearch}
+                  onChange={(e) => {
+                    setCustomIngredientSearch(e.target.value);
+                    setShowIngredientDropdown(true);
+                  }}
+                  onFocus={() => setShowIngredientDropdown(true)}
+                  onBlur={() => setTimeout(() => setShowIngredientDropdown(false), 200)}
+                  placeholder={allIngredients.length > 0 ? "Search ingredients..." : "No ingredient data available"}
+                  disabled={allIngredients.length === 0}
+                  className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-white/30 focus:outline-none focus:bg-white/10 focus:border-white/20 transition-all text-base disabled:opacity-50"
+                />
+                
+                {/* Autocomplete dropdown */}
+                {showIngredientDropdown && filteredIngredients.length > 0 && (
+                  <div className="absolute z-50 w-full mt-2 bg-gray-900 border border-white/20 rounded-xl overflow-hidden shadow-xl">
+                    {filteredIngredients.map(ing => (
+                      <button
+                        key={ing}
+                        onMouseDown={(e) => {
+                          e.preventDefault();
+                          setSelectedCustomIngredients(prev => [...prev, ing]);
+                          setCustomIngredientSearch('');
+                          setShowIngredientDropdown(false);
+                        }}
+                        className="w-full px-4 py-3 text-left text-white hover:bg-white/10 transition-colors border-b border-white/5 last:border-b-0"
+                      >
+                        {ing}
+                      </button>
+                    ))}
+                  </div>
+                )}
+                
+                {/* Show message if searching but no results */}
+                {showIngredientDropdown && customIngredientSearch.trim() && filteredIngredients.length === 0 && (
+                  <div className="absolute z-50 w-full mt-2 bg-gray-900 border border-white/20 rounded-xl overflow-hidden shadow-xl">
+                    <div className="px-4 py-3 text-white/50 text-sm">
+                      No matching ingredients found
+                    </div>
+                  </div>
+                )}
+              </div>
+              
+              {allIngredients.length > 0 && (
+                <p className="text-xs text-white/30 mt-2">
+                  {allIngredients.length} ingredients available to search
+                </p>
+              )}
             </div>
 
             {/* Continue button */}
             <div className="pt-2">
               <button
                 onClick={handleContinue}
-                disabled={selectedAllergens.length === 0}
+                disabled={selectedAllergens.length === 0 && selectedCustomIngredients.length === 0}
                 className={cn(
                   'w-full max-w-md mx-auto block py-4 px-6 text-base font-semibold rounded-xl transition-all duration-200',
-                  selectedAllergens.length > 0
+                  (selectedAllergens.length > 0 || selectedCustomIngredients.length > 0)
                     ? 'bg-white text-gray-900 hover:bg-white/90 shadow-lg shadow-white/20'
                     : 'bg-white/5 border border-white/10 text-white/30 cursor-not-allowed'
                 )}
@@ -836,20 +926,33 @@ function ResultsView({ result, selectedAllergens, onStartOver }: ResultsViewProp
         
         {/* Main item */}
         <div className="p-4">
-          <div className="flex items-start justify-between gap-3">
-            <div className="flex-1">
-              <p className="text-lg font-semibold text-white leading-tight">
-                {result.mainItem.itemName}
-              </p>
-              {result.mainItem.ticketCode && (
-                <p className="text-white/40 text-xs mt-0.5">
-                  {result.mainItem.ticketCode}
-                </p>
-              )}
-            </div>
-            <ItemStatusBadge status={result.mainItem.status} />
-          </div>
-          <PreparationNotes result={result.mainItem} />
+          {(() => {
+            // Check if only custom ingredients were selected (no standard allergens)
+            const onlyCustomIngredients = selectedAllergens.length === 0;
+            const hasCustomIngredientMatch = result.customIngredientResults?.some(r => r.foundIn !== 'not_found');
+            const suppressStandardNotes = onlyCustomIngredients && hasCustomIngredientMatch;
+            
+            return (
+              <>
+                <div className="flex items-start justify-between gap-3">
+                  <div className="flex-1">
+                    <p className="text-lg font-semibold text-white leading-tight">
+                      {result.mainItem.itemName}
+                    </p>
+                    {result.mainItem.ticketCode && (
+                      <p className="text-white/40 text-xs mt-0.5">
+                        {result.mainItem.ticketCode}
+                      </p>
+                    )}
+                  </div>
+                  {/* Hide status badge when only checking custom ingredients that were found */}
+                  {!suppressStandardNotes && <ItemStatusBadge status={result.mainItem.status} />}
+                </div>
+                {/* Hide preparation notes when only checking custom ingredients that were found */}
+                {!suppressStandardNotes && <PreparationNotes result={result.mainItem} />}
+              </>
+            );
+          })()}
         </div>
 
         {/* Side item */}
@@ -896,6 +999,49 @@ function ResultsView({ result, selectedAllergens, onStartOver }: ResultsViewProp
               <p className="text-amber-300 text-xs font-medium">
                 {result.customAllergenWarning}
               </p>
+            </div>
+          </div>
+        )}
+
+        {/* Custom ingredient check results */}
+        {result.customIngredientResults && result.customIngredientResults.length > 0 && (
+          <div className="px-4 py-3 border-t border-white/5">
+            <p className="text-[10px] font-bold text-white/40 uppercase tracking-wider mb-2">
+              Ingredient Check
+            </p>
+            <div className="space-y-1.5">
+              {result.customIngredientResults.map((ingResult, idx) => {
+                // Determine styling based on where ingredient was found
+                const isIngredient = ingResult.foundIn === 'ingredients';
+                const isGarnish = ingResult.foundIn === 'garnishes';
+                const notFound = ingResult.foundIn === 'not_found';
+                
+                return (
+                  <div
+                    key={idx}
+                    className={cn(
+                      'flex items-center gap-2 py-2 px-3 rounded-lg border',
+                      isIngredient && 'bg-red-500/10 border-red-500/20',
+                      isGarnish && 'bg-amber-500/10 border-amber-500/20',
+                      notFound && 'bg-emerald-500/10 border-emerald-500/20'
+                    )}
+                  >
+                    {isIngredient && <X className="w-3.5 h-3.5 text-red-400" strokeWidth={2.5} />}
+                    {isGarnish && <AlertTriangle className="w-3.5 h-3.5 text-amber-400" strokeWidth={2} />}
+                    {notFound && <Check className="w-3.5 h-3.5 text-emerald-400" strokeWidth={2.5} />}
+                    <span className={cn(
+                      'text-sm font-medium',
+                      isIngredient && 'text-red-400',
+                      isGarnish && 'text-amber-400',
+                      notFound && 'text-emerald-400'
+                    )}>
+                      {isIngredient && `Contains ${ingResult.ingredient}`}
+                      {isGarnish && `No ${ingResult.ingredient} (garnish can be removed)`}
+                      {notFound && `No ${ingResult.ingredient} found`}
+                    </span>
+                  </div>
+                );
+              })}
             </div>
           </div>
         )}

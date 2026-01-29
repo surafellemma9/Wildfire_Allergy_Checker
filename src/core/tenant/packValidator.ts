@@ -167,10 +167,14 @@ export function validateAndMigratePack(pack: unknown): {
       ticketCode: typeof item.ticketCode === 'string' ? item.ticketCode : undefined,
       description: typeof item.description === 'string' ? item.description : undefined,
       isEntree: typeof item.isEntree === 'boolean' ? item.isEntree : undefined,
+      isSideOnly: typeof item.isSideOnly === 'boolean' ? item.isSideOnly : undefined,
       requiresCrust: typeof item.requiresCrust === 'boolean' ? item.requiresCrust : undefined,
       sides: Array.isArray(item.sides) ? item.sides : undefined,
       crustOptions: Array.isArray(item.crustOptions) ? item.crustOptions : undefined,
       dressingOptions: Array.isArray(item.dressingOptions) ? item.dressingOptions : undefined,
+      // Ingredients for custom allergen search
+      ingredients: Array.isArray(item.ingredients) ? item.ingredients : undefined,
+      garnishes: Array.isArray(item.garnishes) ? item.garnishes : undefined,
       allergenRules,
     });
   }
@@ -191,6 +195,9 @@ export function validateAndMigratePack(pack: unknown): {
     generatedAt: typeof p.generatedAt === 'string' ? p.generatedAt : new Date().toISOString(),
     updateIntervalMs: typeof p.updateIntervalMs === 'number' ? p.updateIntervalMs : undefined,
     allergens: Array.isArray(p.allergens) ? p.allergens : [],
+    // Master ingredient lists for autocomplete
+    allIngredients: Array.isArray(p.allIngredients) ? p.allIngredients : undefined,
+    allGarnishes: Array.isArray(p.allGarnishes) ? p.allGarnishes : undefined,
     categories: Array.isArray(p.categories) ? p.categories : [],
     items: migratedItems,
   };

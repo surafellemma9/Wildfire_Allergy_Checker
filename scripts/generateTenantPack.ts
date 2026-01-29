@@ -1020,11 +1020,11 @@ function buildAllergenRules(item: typeof menuItems[0]): Record<string, AllergenR
         if (modRule.modifications.length === 0) {
           // Modifiable but no changes needed
           rules[id] = { status: 'SAFE' };
-        } else {
-          rules[id] = {
-            status: 'MODIFY',
+      } else {
+        rules[id] = {
+          status: 'MODIFY',
             substitutions: modRule.modifications,
-          };
+        };
         }
       }
     } else if (contains) {

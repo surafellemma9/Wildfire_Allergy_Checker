@@ -88,6 +88,10 @@ export interface MenuItem {
   dressingOptions?: DressingOption[];
   addOnOptions?: AddOnOption[];  // Multiple add-ons can be selected
 
+  // Ingredients for custom allergen search
+  ingredients?: string[];
+  garnishes?: string[];
+
   // Allergen rules keyed by allergenId
   allergenRules: Record<string, AllergenRule>;
 }
@@ -98,6 +102,7 @@ export interface Category {
   name: string;
   icon?: string;
   sortOrder?: number;
+  needsReview?: boolean;  // Flag indicating category needs allergy review
 }
 
 // Allergen definition (for display)
@@ -120,6 +125,10 @@ export interface TenantPack {
 
   // Allergen definitions for UI display
   allergens: AllergenDef[];
+
+  // Master list of all ingredients for autocomplete search
+  allIngredients?: string[];
+  allGarnishes?: string[];
 
   // Menu categories
   categories: Category[];
