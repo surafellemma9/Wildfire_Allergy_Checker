@@ -126,7 +126,7 @@ describe('Wildfire Dairy Allergy Modifications', () => {
       // Note: dish name has double spaces "Caesar  Salad"
       // Caesar Salad is NOT on the dairy modifications safe list in the official document
       // because the dressing contains asiago and parmesan and is tossed with the salad
-      const result = checkDairy('Caesar  Salad');
+      const result = checkDairy('Caesar Salad');
       expect(result).not.toBeNull();
       if (result) {
         expect(result.overallStatus).toBe('unsafe');

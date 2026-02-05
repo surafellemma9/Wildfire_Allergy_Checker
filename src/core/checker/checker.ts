@@ -7,6 +7,7 @@ import type {
   TenantPack,
   MenuItem,
   RuleStatus,
+  DressingOption,
 } from '../tenant/packTypes';
 import { isDishExcludedFromCategory } from '../../config/categoryExclusions';
 import { filterValidNightlySpecials } from '../../config/nightlySpecials';
@@ -106,12 +107,13 @@ export function checkAllergens(
     }
   }
 
-  // Check dressing if selected
+  // Check dressing if selected (dressings are in mainItem.dressingOptions, not pack.items)
   let dressingResult: ItemCheckResult | undefined;
-  if (dressingId) {
-    const dressingItem = pack.items.find((i) => i.id === dressingId);
-    if (dressingItem) {
-      dressingResult = checkItem(pack, dressingItem, allergenIds);
+  let selectedDressing: typeof mainItem.dressingOptions extends (infer T)[] | undefined ? T : never = undefined;
+  if (dressingId && mainItem.dressingOptions) {
+    selectedDressing = mainItem.dressingOptions.find((d) => d.id === dressingId);
+    if (selectedDressing) {
+      dressingResult = checkDressingItem(pack, selectedDressing, allergenIds);
     }
   }
 
@@ -134,26 +136,49 @@ export function checkAllergens(
   }
 
   // Handle custom ingredient checks (searchable from master list)
+  // Check ALL items (main, side, dressing) and report where ingredient is found
   let customIngredientResults: IngredientCheckResult[] | undefined;
   if (customIngredients && customIngredients.length > 0) {
     customIngredientResults = [];
     
-    // Check main item
     for (const ingredient of customIngredients) {
-      const result = checkIngredientInItem(mainItem, ingredient);
-      customIngredientResults.push(result);
-    }
-    
-    // Check side if selected
-    if (sideId) {
-      const sideItem = pack.items.find((i) => i.id === sideId);
-      if (sideItem) {
-        for (const ingredient of customIngredients) {
-          const result = checkIngredientInItem(sideItem, ingredient);
-          if (result.foundIn !== 'not_found') {
-            customIngredientResults.push(result);
+      let found = false;
+      
+      // Check main item
+      const mainResult = checkIngredientInItem(mainItem, ingredient);
+      if (mainResult.foundIn !== 'not_found') {
+        customIngredientResults.push(mainResult);
+        found = true;
+      }
+      
+      // Check side if selected
+      if (sideId) {
+        const sideItem = pack.items.find((i) => i.id === sideId);
+        if (sideItem) {
+          const sideResult = checkIngredientInItem(sideItem, ingredient);
+          if (sideResult.foundIn !== 'not_found') {
+            customIngredientResults.push(sideResult);
+            found = true;
           }
         }
+      }
+      
+      // Check dressing if selected
+      if (selectedDressing && selectedDressing.ingredients) {
+        const dressingResult = checkIngredientInDressing(selectedDressing, ingredient);
+        if (dressingResult.foundIn !== 'not_found') {
+          customIngredientResults.push(dressingResult);
+          found = true;
+        }
+      }
+      
+      // Only add "not found" if ingredient wasn't found in ANY item
+      if (!found) {
+        customIngredientResults.push({
+          ingredient,
+          foundIn: 'not_found',
+          itemName: mainItem.name,
+        });
       }
     }
   }
@@ -218,6 +243,29 @@ function checkIngredientInItem(item: MenuItem, ingredient: string): IngredientCh
   };
 }
 
+/**
+ * Check if a specific ingredient is in a dressing's ingredients
+ */
+function checkIngredientInDressing(dressing: DressingOption, ingredient: string): IngredientCheckResult {
+  const lowerIngredient = ingredient.toLowerCase();
+  
+  // Check ingredients array
+  const ingredients: string[] = dressing.ingredients || [];
+  if (ingredients.some(ing => ing.toLowerCase().includes(lowerIngredient) || lowerIngredient.includes(ing.toLowerCase()))) {
+    return {
+      ingredient,
+      foundIn: 'ingredients',
+      itemName: dressing.name,
+    };
+  }
+  
+  return {
+    ingredient,
+    foundIn: 'not_found',
+    itemName: dressing.name,
+  };
+}
+
 // ============================================================================
 // Helper Functions
 // ============================================================================
@@ -266,6 +314,56 @@ function checkItem(
     itemId: item.id,
     itemName: item.name,
     ticketCode: item.ticketCode,
+    status: itemStatus,
+    canBeModified,
+    perAllergen,
+  };
+}
+
+/**
+ * Check a dressing option against selected allergens
+ * Dressings have their own allergenRules structure
+ */
+function checkDressingItem(
+  pack: TenantPack,
+  dressing: DressingOption,
+  allergenIds: string[]
+): ItemCheckResult {
+  const perAllergen: PerAllergenResult[] = [];
+  let itemStatus: RuleStatus = 'SAFE';
+  let canBeModified = true;
+
+  for (const allergenId of allergenIds) {
+    const allergenDef = pack.allergens.find((a) => a.id === allergenId);
+    
+    // Get the dressing's allergen rule
+    const rule = dressing.allergenRules?.[allergenId];
+    
+    // If no rule, assume VERIFY_WITH_KITCHEN (safest approach)
+    let status: RuleStatus = rule?.status || 'VERIFY_WITH_KITCHEN';
+
+    perAllergen.push({
+      allergenId,
+      allergenName: allergenDef?.name || allergenId,
+      status,
+      foundIngredients: [],
+      substitutions: rule?.substitutions || [],
+      notes: rule?.notes ? [rule.notes] : [],
+    });
+
+    // Update overall item status (worst status wins)
+    itemStatus = worstStatus(itemStatus, status);
+
+    // Determine if item can be modified
+    if (status !== 'SAFE' && status !== 'MODIFIABLE') {
+      canBeModified = false;
+    }
+  }
+
+  return {
+    itemId: dressing.id,
+    itemName: dressing.name,
+    ticketCode: undefined,
     status: itemStatus,
     canBeModified,
     perAllergen,
@@ -523,9 +621,20 @@ export function getItemsByCategory(
   // Use O(1) index if available (built during pack validation)
   if (pack._categoryIndex) {
     items = pack._categoryIndex.get(categoryId) || [];
+    // #region agent log - H3: Log items from category index before filtering
+    if (categoryId === 'salads') {
+      console.log('[DEBUG-H3] Index items before filter:', {categoryId,indexCount:items.length,indexItems:items.map(i=>({name:i.name,isSideOnly:i.isSideOnly})),hasKale:items.some(i=>i.name?.toLowerCase().includes('kale'))});
+    }
+    // #endregion
     // Filter out side-only items from main menu grid
     items = items.filter(item => !item.isSideOnly);
   } else {
+    // #region agent log - H4: Log fallback path usage
+    if (categoryId === 'salads') {
+      const allSalads = pack.items.filter(i => i.categoryId === categoryId || (i as any).category?.toLowerCase() === 'salads');
+      console.log('[DEBUG-H4] Using fallback filter:', {categoryId,allSaladsInPack:allSalads.map(i=>({name:i.name,categoryId:i.categoryId,isSideOnly:i.isSideOnly})),hasKale:allSalads.some(i=>i.name?.toLowerCase().includes('kale'))});
+    }
+    // #endregion
     // Fallback to O(n) filter (legacy packs or invalid state)
     items = pack.items.filter((item) => {
       // Filter out side-only items
@@ -557,10 +666,22 @@ export function getItemsByCategory(
   const category = pack.categories?.find(c => c.id === categoryId);
   const categoryName = category?.name || categoryId;
 
+  // #region agent log - H5: Log items before exclusion filter
+  if (categoryId === 'salads') {
+    console.log('[DEBUG-H5] Items before exclusion filter:', {categoryId,itemCount:items.length,itemNames:items.map(i=>i.name),hasKale:items.some(i=>i.name?.toLowerCase().includes('kale'))});
+  }
+  // #endregion
+
   // Apply category exclusion filters
   items = items.filter(item => {
     return !isDishExcludedFromCategory(categoryName, item.name);
   });
+
+  // #region agent log - H5b: Log items after exclusion filter
+  if (categoryId === 'salads') {
+    console.log('[DEBUG-H5b] Items after exclusion filter:', {categoryId,itemCount:items.length,itemNames:items.map(i=>i.name),hasKale:items.some(i=>i.name?.toLowerCase().includes('kale'))});
+  }
+  // #endregion
 
   // Special handling for Nightly Specials category - filter to only valid specials
   const isNightlySpecials = categoryName.toLowerCase().includes('nightly') ||

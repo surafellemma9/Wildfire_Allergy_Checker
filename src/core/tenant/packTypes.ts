@@ -60,6 +60,8 @@ export interface DressingOption {
   id: string;
   name: string;
   safeAlternatives?: string[];
+  ingredients?: string[];  // Ingredients in the dressing for custom allergen search
+  allergenRules?: Record<string, AllergenRule>;  // Allergen rules for this dressing
 }
 
 // Add-on option (for steaks)

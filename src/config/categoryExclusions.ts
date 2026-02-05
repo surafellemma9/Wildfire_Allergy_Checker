@@ -12,76 +12,12 @@ import { normalizeDishName } from '../utils/normalizeDishName';
 
 /**
  * Map of category names to arrays of excluded dish names (normalized)
+ * 
+ * NOTE: Exclusions disabled - app now shows exactly what's in Supabase database.
+ * If you need to hide items, update the database directly (set is_active=false).
  */
 export const CATEGORY_EXCLUSIONS: Record<string, string[]> = {
-  // Appetizers - remove these dishes
-  'appetizers': [
-    normalizeDishName('Sea scallops'),
-  ],
-
-  // Salads - remove these dishes
-  'salads': [
-    normalizeDishName('Steak and Blue Cheese Salad'),
-    normalizeDishName('Tuscan Kale and Spinach Salad'),
-    normalizeDishName('Wildfire Chopped Salad'),
-  ],
-
-  // Sides - remove these dishes
-  'sides': [
-    normalizeDishName('Broccoli with Lemon Vinaigrette'),
-    normalizeDishName('Steamed Broccoli'),
-  ],
-
-  // Sandwiches - remove these dishes
-  'sandwiches': [
-    normalizeDishName('Grilled Chicken Club'),
-    normalizeDishName('Blackened New York Steak Sandwich'),
-    normalizeDishName('Open Faced Mediterranean Salmon'),
-    normalizeDishName('Prime Rib French Dip'),
-    normalizeDishName('Roasted Prime Rib French Dip'),
-    normalizeDishName('Sliced Turkey Sandwich'),
-    normalizeDishName('Thick Prime Angus Burger'),
-  ],
-
-  // Sandwiches: Prime Burgers - same exclusions as sandwiches
-  'sandwiches: prime burgers': [
-    normalizeDishName('Grilled Chicken Club'),
-    normalizeDishName('Blackened New York Steak Sandwich'),
-    normalizeDishName('Open Faced Mediterranean Salmon'),
-    normalizeDishName('Prime Rib French Dip'),
-    normalizeDishName('Roasted Prime Rib French Dip'),
-    normalizeDishName('Sliced Turkey Sandwich'),
-    normalizeDishName('Thick Prime Angus Burger'),
-  ],
-
-  // Sandwiches: Signatures - same exclusions as sandwiches
-  'sandwiches: signatures': [
-    normalizeDishName('Grilled Chicken Club'),
-    normalizeDishName('Blackened New York Steak Sandwich'),
-    normalizeDishName('Open Faced Mediterranean Salmon'),
-    normalizeDishName('Prime Rib French Dip'),
-    normalizeDishName('Roasted Prime Rib French Dip'),
-    normalizeDishName('Sliced Turkey Sandwich'),
-    normalizeDishName('Thick Prime Angus Burger'),
-  ],
-
-  // Steaks and Chops - remove these dishes
-  'steaks and chops': [
-    normalizeDishName('Filet Mignon'),
-    normalizeDishName('Petite Filet Mignon'),
-  ],
-
-  // Steaks & Filets - alternative category name
-  'steaks & filets': [
-    normalizeDishName('Filet Mignon'),
-    normalizeDishName('Petite Filet Mignon'),
-  ],
-
-  // Steaks - alternative category name
-  'steaks': [
-    normalizeDishName('Filet Mignon'),
-    normalizeDishName('Petite Filet Mignon'),
-  ],
+  // All exclusions removed - data comes directly from Supabase
 };
 
 /**

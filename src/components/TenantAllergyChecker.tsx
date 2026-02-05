@@ -3,7 +3,7 @@
  * Uses TenantPack data for allergen checking instead of hardcoded data
  */
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { cn } from '@/lib/utils';
 import {
   Info,
@@ -125,9 +125,22 @@ export function TenantAllergyChecker({
     return searchItems(pack, searchQuery).slice(0, 20);
   }, [pack, searchQuery]);
 
+  // #region agent log - H1: Log pack version and total items
+  useEffect(() => {
+    const kaleItems = pack.items?.filter((i: any)=>i.name?.toLowerCase().includes('kale')).map((i: any)=>({name:i.name,categoryId:i.categoryId,isSideOnly:i.isSideOnly}));
+    console.log('[DEBUG-H1] Pack loaded:', {version:pack.version,totalItems:pack.items?.length,kaleItems});
+  }, [pack]);
+  // #endregion
+
   const categoryItems = useMemo(() => {
     if (!selectedCategory) return [];
-    return getItemsByCategory(pack, selectedCategory);
+    const items = getItemsByCategory(pack, selectedCategory);
+    // #region agent log - H2: Log category items when salads selected
+    if (selectedCategory === 'salads') {
+      console.log('[DEBUG-H2] Salads category items:', {count:items.length,itemNames:items.map((i: any)=>i.name),hasKale:items.some((i: any)=>i.name?.toLowerCase().includes('kale'))});
+    }
+    // #endregion
+    return items;
   }, [pack, selectedCategory]);
 
   // Get all available ingredients for autocomplete (from pack)
@@ -138,15 +151,52 @@ export function TenantAllergyChecker({
     return [...new Set([...ingredients, ...garnishes])].sort();
   }, [pack]);
 
-  // Filter ingredients based on search
+  // Get ingredient groups from pack (for smart search)
+  const ingredientGroups = useMemo(() => {
+    return (pack as any).ingredientGroups || {};
+  }, [pack]);
+
+  // Filter ingredients based on search - with ingredient group support
   const filteredIngredients = useMemo(() => {
     if (!customIngredientSearch.trim()) return [];
     const search = customIngredientSearch.toLowerCase();
-    return allIngredients
+    
+    // Results will include both specific ingredients AND group matches
+    const results: Array<{ type: 'specific' | 'group'; name: string; ingredients: string[] }> = [];
+    
+    // 1. Check for group matches (e.g., "tomato" matches tomato group)
+    for (const [groupName, groupIngredients] of Object.entries(ingredientGroups)) {
+      if (groupName.includes(search) && (groupIngredients as string[]).length > 0) {
+        const unselectedIngredients = (groupIngredients as string[]).filter(
+          ing => !selectedCustomIngredients.includes(ing)
+        );
+        if (unselectedIngredients.length > 0) {
+          results.push({
+            type: 'group',
+            name: groupName,
+            ingredients: unselectedIngredients,
+          });
+        }
+      }
+    }
+    
+    // 2. Also include specific ingredient matches
+    const specificMatches = allIngredients
       .filter(ing => ing.toLowerCase().includes(search))
-      .filter(ing => !selectedCustomIngredients.includes(ing)) // Don't show already selected
-      .slice(0, 10);
-  }, [allIngredients, customIngredientSearch, selectedCustomIngredients]);
+      .filter(ing => !selectedCustomIngredients.includes(ing));
+    
+    for (const ing of specificMatches) {
+      // Don't duplicate if already in a group result
+      const alreadyInGroup = results.some(r => 
+        r.type === 'group' && r.ingredients.includes(ing)
+      );
+      if (!alreadyInGroup) {
+        results.push({ type: 'specific', name: ing, ingredients: [ing] });
+      }
+    }
+    
+    return results.slice(0, 15);
+  }, [allIngredients, ingredientGroups, customIngredientSearch, selectedCustomIngredients]);
 
   const checkerResult: CheckerResult | null = useMemo(() => {
     // Allow checking with either allergens OR custom ingredients
@@ -158,6 +208,7 @@ export function TenantAllergyChecker({
         itemId: selectedItem.id,
         sideId: selectedSide?.id,
         crustId: selectedCrust || undefined,
+        dressingId: selectedDressing?.id,  // Pass dressing for ingredient checking
         customAllergenText: customAllergenText.trim() || undefined,
         customIngredients: selectedCustomIngredients.length > 0 ? selectedCustomIngredients : undefined,
       });
@@ -199,17 +250,23 @@ export function TenantAllergyChecker({
         }
       }
 
-      // Recalculate overall status (after dressing and protein)
+      // Recalculate overall status AND main item status (after dressing and protein)
       if ((selectedDressing || selectedProtein) && result) {
         const statuses = result.mainItem.perAllergen.map(pa => pa.status);
         if (statuses.includes('UNSAFE') || statuses.includes('NOT_SAFE_NOT_IN_SHEET')) {
           result.overallStatus = 'UNSAFE';
+          result.mainItem.status = 'UNSAFE';
+          // Clear substitutions when unsafe - don't show modifications
+          result.mainItem.substitutions = [];
         } else if (statuses.includes('VERIFY_WITH_KITCHEN')) {
           result.overallStatus = 'VERIFY_WITH_KITCHEN';
+          result.mainItem.status = 'VERIFY_WITH_KITCHEN';
         } else if (statuses.includes('MODIFIABLE')) {
           result.overallStatus = 'MODIFIABLE';
+          result.mainItem.status = 'MODIFIABLE';
         } else {
           result.overallStatus = 'SAFE';
+          result.mainItem.status = 'SAFE';
         }
       }
 
@@ -239,11 +296,12 @@ export function TenantAllergyChecker({
     setSelectedItem(item);
     // Check for dressing options (salads) - dressing comes first
     const dressingOptions = (item as any).dressingOptions;
-    const requiresDressing = (item as any).requiresDressing;
-    if (requiresDressing && dressingOptions && dressingOptions.length > 0) {
+    
+    // If item has dressing options, go to dressing step (no separate flag needed)
+    if (dressingOptions && dressingOptions.length > 0) {
       setCurrentStep('dressing');
     } else {
-      // Check for protein options (salads without dressing requirement)
+      // Check for protein options (salads without dressing options)
       const proteinOptions = (item as any).proteinOptions;
       if (proteinOptions && proteinOptions.length > 0) {
         setCurrentStep('protein');
@@ -610,21 +668,37 @@ export function TenantAllergyChecker({
                   className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-white/30 focus:outline-none focus:bg-white/10 focus:border-white/20 transition-all text-base disabled:opacity-50"
                 />
                 
-                {/* Autocomplete dropdown */}
+                {/* Autocomplete dropdown with group support */}
                 {showIngredientDropdown && filteredIngredients.length > 0 && (
-                  <div className="absolute z-50 w-full mt-2 bg-gray-900 border border-white/20 rounded-xl overflow-hidden shadow-xl">
-                    {filteredIngredients.map(ing => (
+                  <div className="absolute z-50 w-full mt-2 bg-gray-900 border border-white/20 rounded-xl overflow-hidden shadow-xl max-h-80 overflow-y-auto">
+                    {filteredIngredients.map((item, idx) => (
                       <button
-                        key={ing}
+                        key={`${item.type}-${item.name}-${idx}`}
                         onMouseDown={(e) => {
                           e.preventDefault();
-                          setSelectedCustomIngredients(prev => [...prev, ing]);
+                          // Add all ingredients from this result (group or single)
+                          setSelectedCustomIngredients(prev => [...prev, ...item.ingredients]);
                           setCustomIngredientSearch('');
                           setShowIngredientDropdown(false);
                         }}
-                        className="w-full px-4 py-3 text-left text-white hover:bg-white/10 transition-colors border-b border-white/5 last:border-b-0"
+                        className="w-full px-4 py-3 text-left hover:bg-white/10 transition-colors border-b border-white/5 last:border-b-0"
                       >
-                        {ing}
+                        {item.type === 'group' ? (
+                          <div>
+                            <div className="flex items-center gap-2">
+                              <span className="text-amber-400 font-semibold capitalize">{item.name}</span>
+                              <span className="text-xs text-white/40 bg-white/10 px-2 py-0.5 rounded">
+                                {item.ingredients.length} items
+                              </span>
+                            </div>
+                            <div className="text-xs text-white/50 mt-1 truncate">
+                              {item.ingredients.slice(0, 3).join(', ')}
+                              {item.ingredients.length > 3 && ` +${item.ingredients.length - 3} more`}
+                            </div>
+                          </div>
+                        ) : (
+                          <span className="text-white">{item.name}</span>
+                        )}
                       </button>
                     ))}
                   </div>
@@ -917,6 +991,7 @@ export function TenantAllergyChecker({
             selectedAllergens={pack.allergens.filter((a) =>
               selectedAllergens.includes(a.id)
             )}
+            selectedDressing={selectedDressing}
             onStartOver={handleStartOver}
           />
         )}
@@ -932,10 +1007,11 @@ export function TenantAllergyChecker({
 interface ResultsViewProps {
   result: CheckerResult;
   selectedAllergens: AllergenDef[];
+  selectedDressing: DressingOption | null;
   onStartOver: () => void;
 }
 
-function ResultsView({ result, selectedAllergens, onStartOver }: ResultsViewProps) {
+function ResultsView({ result, selectedAllergens, selectedDressing, onStartOver }: ResultsViewProps) {
   const statusConfig: Record<
     RuleStatus,
     { 
@@ -1071,6 +1147,12 @@ function ResultsView({ result, selectedAllergens, onStartOver }: ResultsViewProp
                     {result.mainItem.ticketCode && (
                       <p className="text-white/40 text-xs mt-0.5">
                         {result.mainItem.ticketCode}
+                      </p>
+                    )}
+                    {/* Show selected dressing if applicable */}
+                    {selectedDressing && (
+                      <p className="text-white/60 text-sm mt-1">
+                        with <span className="text-white/80 font-medium">{selectedDressing.name}</span>
                       </p>
                     )}
                   </div>

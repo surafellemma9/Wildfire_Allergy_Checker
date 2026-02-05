@@ -109,8 +109,17 @@ const SALAD_PROTEIN_OPTIONS = [
   },
 ];
 
-// Dressing options for salads with allergen rules based on allergy sheets
-// When sheet says "Field Green Salad - no changes" with these dressings, those dressings are SAFE
+// Dressing options for salads with allergen rules based on official allergy sheets
+// SAFE dressings per allergen (from allergy sheets):
+// - Dairy: Balsamic, Citrus, Lemon Herb
+// - Onion: Caesar, Lemon Parmesan, Blue Cheese, Red Wine
+// - Gluten: Ranch, Balsamic, Caesar, Citrus, Red Wine, Blue Cheese
+// - Soy: Citrus, Red Wine, Caesar, Lemon Herb, Lemon Parmesan, Balsamic
+// - Garlic: Blue Cheese ONLY
+// - Shellfish: All except Caesar (anchovy)
+// - Sesame: All except Caesar
+// - Egg: Balsamic, Citrus, Lemon Parmesan, Red Wine, Lemon Herb
+// - Peanut/Tree Nut: ALL safe
 const DRESSING_OPTIONS = [
   {
     id: 'no_dressing',
@@ -131,6 +140,7 @@ const DRESSING_OPTIONS = [
   {
     id: 'balsamic_vinaigrette',
     name: 'Balsamic Vinaigrette',
+    ingredients: ['house oil', 'balsamic vinegar', 'white balsamic vinegar', 'sugar', 'shallots', 'garlic', 'Dijon mustard', 'salt', 'pepper'],
     allergenRules: {
       dairy: { status: 'SAFE', substitutions: [], notes: null },
       gluten: { status: 'SAFE', substitutions: [], notes: null },
@@ -147,6 +157,8 @@ const DRESSING_OPTIONS = [
   {
     id: 'citrus_dressing',
     name: 'Citrus Dressing',
+    // Contains: dry mustard, sugar, garlic, lime juice, red wine vinegar, oregano, chilies, al pastor marinade, kosher salt, house oil
+    ingredients: ['dry mustard', 'sugar', 'garlic', 'lime juice', 'red wine vinegar', 'oregano', 'chilies', 'al pastor marinade', 'kosher salt', 'house oil'],
     allergenRules: {
       dairy: { status: 'SAFE', substitutions: [], notes: null },
       gluten: { status: 'SAFE', substitutions: [], notes: null },
@@ -157,12 +169,13 @@ const DRESSING_OPTIONS = [
       tree_nuts: { status: 'SAFE', substitutions: [], notes: null },
       sesame: { status: 'SAFE', substitutions: [], notes: null },
       garlic: { status: 'UNSAFE', substitutions: [], notes: 'Contains garlic' },
-      onion: { status: 'SAFE', substitutions: [], notes: null },
+      onion: { status: 'UNSAFE', substitutions: [], notes: 'Not listed as safe for onion allergy' },
     }
   },
   {
     id: 'blue_cheese_dressing',
     name: 'Blue Cheese Dressing',
+    ingredients: ['mayonnaise', 'buttermilk', 'salt', 'pepper', 'blue cheese crumbles', 'tabasco sauce'],
     allergenRules: {
       dairy: { status: 'UNSAFE', substitutions: [], notes: 'Contains blue cheese and buttermilk' },
       gluten: { status: 'SAFE', substitutions: [], notes: null },
@@ -179,15 +192,16 @@ const DRESSING_OPTIONS = [
   {
     id: 'caesar_dressing',
     name: 'Caesar Dressing',
+    ingredients: ['anchovy', 'garlic', 'lemon juice', 'Dijon mustard', 'Asiago cheese', 'pasteurized egg yolk', 'red wine vinegar', 'house oil', 'salt', 'pepper'],
     allergenRules: {
       dairy: { status: 'UNSAFE', substitutions: [], notes: 'Contains Asiago cheese' },
       gluten: { status: 'SAFE', substitutions: [], notes: null },
-      shellfish: { status: 'SAFE', substitutions: [], notes: null },
+      shellfish: { status: 'UNSAFE', substitutions: [], notes: 'Contains anchovy' },
       soy: { status: 'SAFE', substitutions: [], notes: null },
       eggs: { status: 'UNSAFE', substitutions: [], notes: 'Contains egg yolk' },
       peanuts: { status: 'SAFE', substitutions: [], notes: null },
       tree_nuts: { status: 'SAFE', substitutions: [], notes: null },
-      sesame: { status: 'SAFE', substitutions: [], notes: null },
+      sesame: { status: 'UNSAFE', substitutions: [], notes: 'Not listed as safe for sesame allergy' },
       garlic: { status: 'UNSAFE', substitutions: [], notes: 'Contains garlic' },
       onion: { status: 'SAFE', substitutions: [], notes: null },
     }
@@ -195,9 +209,10 @@ const DRESSING_OPTIONS = [
   {
     id: 'lemon_parmesan_vinaigrette',
     name: 'Lemon Parmesan Vinaigrette',
+    ingredients: ['lemon juice', 'garlic', 'Dijon mustard', 'salt', 'black pepper', 'house oil', 'extra virgin olive oil', 'Parmesan cheese'],
     allergenRules: {
       dairy: { status: 'UNSAFE', substitutions: [], notes: 'Contains Parmesan cheese' },
-      gluten: { status: 'SAFE', substitutions: [], notes: null },
+      gluten: { status: 'UNSAFE', substitutions: [], notes: 'Not listed as safe for gluten allergy' },
       shellfish: { status: 'SAFE', substitutions: [], notes: null },
       soy: { status: 'SAFE', substitutions: [], notes: null },
       eggs: { status: 'SAFE', substitutions: [], notes: null },
@@ -211,9 +226,10 @@ const DRESSING_OPTIONS = [
   {
     id: 'lemon_herb_vinaigrette',
     name: 'Lemon Herb Vinaigrette',
+    ingredients: ['lemon juice', 'red wine vinegar', 'water', 'lemon zest', 'shallots', 'garlic', 'salt', 'pepper', 'Old Bay Seasoning', 'sugar', 'Dijon mustard', 'house oil', 'extra virgin olive oil', 'thyme', 'basil'],
     allergenRules: {
       dairy: { status: 'SAFE', substitutions: [], notes: null },
-      gluten: { status: 'SAFE', substitutions: [], notes: null },
+      gluten: { status: 'UNSAFE', substitutions: [], notes: 'Not listed as safe for gluten allergy' },
       shellfish: { status: 'SAFE', substitutions: [], notes: null },
       soy: { status: 'SAFE', substitutions: [], notes: null },
       eggs: { status: 'SAFE', substitutions: [], notes: null },
@@ -227,6 +243,7 @@ const DRESSING_OPTIONS = [
   {
     id: 'red_wine_vinaigrette',
     name: 'Red Wine Vinaigrette',
+    ingredients: ['red wine vinegar', 'sugar', 'salt', 'pepper', 'oregano', 'thyme', 'basil', 'garlic puree', 'red chilies', 'parmesan', 'house oil'],
     allergenRules: {
       dairy: { status: 'UNSAFE', substitutions: [], notes: 'Contains parmesan' },
       gluten: { status: 'SAFE', substitutions: [], notes: null },
@@ -243,6 +260,7 @@ const DRESSING_OPTIONS = [
   {
     id: 'ranch_dressing',
     name: 'Ranch Dressing',
+    ingredients: ['buttermilk', 'mayonnaise', 'Hidden Valley Ranch Dry Dressing'],
     allergenRules: {
       dairy: { status: 'UNSAFE', substitutions: [], notes: 'Contains buttermilk' },
       gluten: { status: 'SAFE', substitutions: [], notes: null },
@@ -252,8 +270,8 @@ const DRESSING_OPTIONS = [
       peanuts: { status: 'SAFE', substitutions: [], notes: null },
       tree_nuts: { status: 'SAFE', substitutions: [], notes: null },
       sesame: { status: 'SAFE', substitutions: [], notes: null },
-      garlic: { status: 'SAFE', substitutions: [], notes: null },
-      onion: { status: 'SAFE', substitutions: [], notes: null },
+      garlic: { status: 'UNSAFE', substitutions: [], notes: 'Not listed as safe for garlic allergy' },
+      onion: { status: 'UNSAFE', substitutions: [], notes: 'Not listed as safe for onion allergy' },
     }
   },
 ];
@@ -632,6 +650,67 @@ async function generatePack() {
   const allGarnishes = Array.from(allGarnishesSet).sort();
   console.log(`   Found ${allIngredients.length} unique ingredients, ${allGarnishes.length} unique garnishes (after excluding allergens)`);
 
+  // ============================================================================
+  // INGREDIENT GROUPING: Extract base ingredients from composite ingredients
+  // This allows users to search "tomato" and find "tomato jam", "tomato basil sauce", etc.
+  // ============================================================================
+  
+  // Common base ingredients to detect in composite ingredients
+  const BASE_INGREDIENT_KEYWORDS = [
+    'tomato', 'basil', 'lemon', 'lime', 'orange', 'apple', 'apricot',
+    'honey', 'mustard', 'vinegar', 'wine', 'butter', 'cream', 'cheese',
+    'bacon', 'ham', 'chicken', 'beef', 'pork', 'lamb', 'fish', 'salmon', 'tuna',
+    'shrimp', 'crab', 'lobster', 'scallop',
+    'mushroom', 'pepper', 'carrot', 'celery', 'cucumber', 'spinach', 'kale',
+    'potato', 'corn', 'bean', 'rice', 'pasta', 'bread',
+    'herb', 'thyme', 'rosemary', 'oregano', 'parsley', 'cilantro', 'dill',
+    'cinnamon', 'vanilla', 'chocolate', 'caramel', 'maple',
+    'worcestershire', 'horseradish', 'mayo', 'mayonnaise', 'ranch', 'caesar',
+    'balsamic', 'olive', 'avocado', 'mango', 'berry', 'strawberry', 'blueberry',
+  ];
+  
+  // Build ingredient groups: base ingredient -> specific ingredients that contain it
+  const ingredientGroupsMap = new Map<string, Set<string>>();
+  const allSearchableIngredients = [...allIngredients, ...allGarnishes];
+  
+  for (const ingredient of allSearchableIngredients) {
+    const lower = ingredient.toLowerCase();
+    
+    // Check each base keyword
+    for (const baseKeyword of BASE_INGREDIENT_KEYWORDS) {
+      if (lower.includes(baseKeyword)) {
+        if (!ingredientGroupsMap.has(baseKeyword)) {
+          ingredientGroupsMap.set(baseKeyword, new Set());
+        }
+        ingredientGroupsMap.get(baseKeyword)!.add(ingredient);
+      }
+    }
+    
+    // Also extract words from the ingredient itself as potential base ingredients
+    // e.g., "tomato basil sauce" -> ["tomato", "basil", "sauce"]
+    const words = lower.split(/[\s\-_,]+/).filter(w => w.length > 2);
+    for (const word of words) {
+      // Skip common filler words
+      if (['and', 'the', 'with', 'for', 'sauce', 'dressing', 'jam', 'paste', 'juice', 'oil', 'stock', 'broth'].includes(word)) {
+        continue;
+      }
+      if (!ingredientGroupsMap.has(word)) {
+        ingredientGroupsMap.set(word, new Set());
+      }
+      ingredientGroupsMap.get(word)!.add(ingredient);
+    }
+  }
+  
+  // Convert to object format: { baseName: [specific1, specific2, ...] }
+  // Only include groups with more than 1 ingredient (single-ingredient groups aren't useful for grouping)
+  const ingredientGroups: Record<string, string[]> = {};
+  for (const [base, specifics] of ingredientGroupsMap.entries()) {
+    // Include all groups (even single-ingredient) for better search experience
+    ingredientGroups[base] = Array.from(specifics).sort();
+  }
+  
+  console.log(`   Built ${Object.keys(ingredientGroups).length} ingredient groups for smart search`);
+
   // Build final pack
   const pack = {
     tenantId: tenant.id,
@@ -642,6 +721,7 @@ async function generatePack() {
     allergens: ALLERGEN_DEFINITIONS,
     allIngredients,
     allGarnishes,
+    ingredientGroups,  // Maps base ingredients to specific ingredients for smart search
     categories: categories,
     items,
     stats: {
