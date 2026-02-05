@@ -3,7 +3,7 @@
   "conceptName": "Wildfire",
   "locationName": "Tysons Corner",
   "version": 1,
-  "generatedAt": "2026-02-04T23:36:36.871Z",
+  "generatedAt": "2026-02-05T00:45:57.042Z",
   "allergens": [
     {
       "id": "dairy",
@@ -72,21 +72,25 @@
     "baby spinach",
     "bacon",
     "balsamic vinaigrette",
+    "balsamic vinegar",
+    "basil",
+    "basil hayden bourbon",
     "bay leaves",
-    "bbq chicken spice",
     "bison meatballs",
     "black pepper",
     "blue cheese crumbles",
+    "brown sugar",
     "butter",
     "buttermilk",
     "calamari",
+    "calcium silicate",
     "canola oil",
     "carrot",
     "celery",
     "chicken breast",
     "chicken jus",
-    "chicken marinade",
     "chicken stock",
+    "chili pepper",
     "clam juice",
     "cooking spray",
     "coriander",
@@ -105,43 +109,51 @@
     "fresh corn",
     "garbanzo beans",
     "goat cheese",
-    "grilled chicken breast",
     "heavy cream",
     "house oil",
     "iceberg lettuce",
+    "jim beam bourbon",
     "kalamata olives",
     "kosher salt",
     "lemon juice",
+    "lemon zest",
     "lime juice",
     "lobster base",
+    "maltodextrin",
     "marinated chicken",
     "mayonnaise",
+    "natural flavors",
     "old bay",
     "old bay seasoning",
     "olive oil",
     "oregano",
     "panko breadcrumbs",
+    "paprika",
     "parmesan cheese",
     "parsley",
     "pepper",
     "pepperoncini",
+    "red chilies",
     "red wine vinegar",
     "romaine lettuce",
-    "salmon fillet",
-    "salmon glaze",
+    "rosemary",
+    "sage",
+    "salmon",
     "salt",
     "saltine crackers",
+    "san j tamari",
     "scallops",
     "seasoned flour",
     "sherry",
     "shredded carrots",
     "shrimp",
     "shrimp poaching liquid",
+    "silicon dioxide",
     "sliced cucumbers",
-    "steak butter",
+    "steak sauce",
     "sugar",
     "super lump crab meat",
-    "tenderloin tips",
+    "tenderloin tip",
     "thyme",
     "tomato basil sauce",
     "tomato jam",
@@ -149,6 +161,7 @@
     "tomato wedges",
     "tomatoes",
     "tuscan kale",
+    "water",
     "white wine",
     "wildfire 8 spice",
     "worcestershire sauce"
@@ -196,10 +209,27 @@
       "bacon"
     ],
     "balsamic": [
-      "balsamic vinaigrette"
+      "balsamic vinaigrette",
+      "balsamic vinegar"
     ],
     "vinaigrette": [
       "balsamic vinaigrette"
+    ],
+    "vinegar": [
+      "balsamic vinegar",
+      "red wine vinegar"
+    ],
+    "basil": [
+      "basil",
+      "basil hayden bourbon",
+      "tomato basil sauce"
+    ],
+    "hayden": [
+      "basil hayden bourbon"
+    ],
+    "bourbon": [
+      "basil hayden bourbon",
+      "jim beam bourbon"
     ],
     "bay": [
       "bay leaves",
@@ -209,22 +239,6 @@
     "leaves": [
       "bay leaves"
     ],
-    "chicken": [
-      "bbq chicken spice",
-      "chicken breast",
-      "chicken jus",
-      "chicken marinade",
-      "chicken stock",
-      "grilled chicken breast",
-      "marinated chicken"
-    ],
-    "bbq": [
-      "bbq chicken spice"
-    ],
-    "spice": [
-      "bbq chicken spice",
-      "wildfire 8 spice"
-    ],
     "bison": [
       "bison meatballs"
     ],
@@ -233,6 +247,7 @@
     ],
     "pepper": [
       "black pepper",
+      "chili pepper",
       "pepper",
       "pepperoncini",
       "red pepper"
@@ -246,16 +261,28 @@
     "crumbles": [
       "blue cheese crumbles"
     ],
+    "brown": [
+      "brown sugar"
+    ],
+    "sugar": [
+      "brown sugar",
+      "sugar"
+    ],
     "butter": [
       "butter",
-      "buttermilk",
-      "steak butter"
+      "buttermilk"
     ],
     "buttermilk": [
       "buttermilk"
     ],
     "calamari": [
       "calamari"
+    ],
+    "calcium": [
+      "calcium silicate"
+    ],
+    "silicate": [
+      "calcium silicate"
     ],
     "canola": [
       "canola oil"
@@ -267,15 +294,20 @@
     "celery": [
       "celery"
     ],
-    "breast": [
+    "chicken": [
       "chicken breast",
-      "grilled chicken breast"
+      "chicken jus",
+      "chicken stock",
+      "marinated chicken"
+    ],
+    "breast": [
+      "chicken breast"
     ],
     "jus": [
       "chicken jus"
     ],
-    "marinade": [
-      "chicken marinade"
+    "chili": [
+      "chili pepper"
     ],
     "clam": [
       "clam juice"
@@ -305,7 +337,7 @@
     ],
     "steak": [
       "coulotte steak",
-      "steak butter"
+      "steak sauce"
     ],
     "crab": [
       "crab",
@@ -378,9 +410,6 @@
     "goat": [
       "goat cheese"
     ],
-    "grilled": [
-      "grilled chicken breast"
-    ],
     "cream": [
       "heavy cream"
     ],
@@ -396,6 +425,12 @@
     "lettuce": [
       "iceberg lettuce",
       "romaine lettuce"
+    ],
+    "jim": [
+      "jim beam bourbon"
+    ],
+    "beam": [
+      "jim beam bourbon"
     ],
     "kalamata": [
       "kalamata olives"
@@ -413,7 +448,11 @@
     "lemon": [
       "lemon juice",
       "lemon wedge",
-      "lemon wedges"
+      "lemon wedges",
+      "lemon zest"
+    ],
+    "zest": [
+      "lemon zest"
     ],
     "lime": [
       "lime juice"
@@ -423,6 +462,9 @@
     ],
     "base": [
       "lobster base"
+    ],
+    "maltodextrin": [
+      "maltodextrin"
     ],
     "marinated": [
       "marinated chicken"
@@ -434,6 +476,12 @@
     "mayonnaise": [
       "mayonnaise",
       "mustard mayonnaise"
+    ],
+    "natural": [
+      "natural flavors"
+    ],
+    "flavors": [
+      "natural flavors"
     ],
     "old": [
       "old bay",
@@ -451,6 +499,9 @@
     "breadcrumbs": [
       "panko breadcrumbs"
     ],
+    "paprika": [
+      "paprika"
+    ],
     "parmesan": [
       "parmesan cheese"
     ],
@@ -460,35 +511,41 @@
     "pepperoncini": [
       "pepperoncini"
     ],
-    "vinegar": [
+    "red": [
+      "red chilies",
+      "red pepper",
       "red wine vinegar"
+    ],
+    "chilies": [
+      "red chilies"
     ],
     "wine": [
       "red wine vinegar",
       "white wine"
     ],
-    "red": [
-      "red pepper",
-      "red wine vinegar"
-    ],
     "romaine": [
       "romaine lettuce"
     ],
+    "rosemary": [
+      "rosemary"
+    ],
+    "sage": [
+      "sage"
+    ],
     "salmon": [
-      "salmon fillet",
-      "salmon glaze"
-    ],
-    "fillet": [
-      "salmon fillet"
-    ],
-    "glaze": [
-      "salmon glaze"
+      "salmon"
     ],
     "saltine": [
       "saltine crackers"
     ],
     "crackers": [
       "saltine crackers"
+    ],
+    "san": [
+      "san j tamari"
+    ],
+    "tamari": [
+      "san j tamari"
     ],
     "scallop": [
       "scallops"
@@ -518,11 +575,14 @@
     "liquid": [
       "shrimp poaching liquid"
     ],
+    "silicon": [
+      "silicon dioxide"
+    ],
+    "dioxide": [
+      "silicon dioxide"
+    ],
     "sliced": [
       "sliced cucumbers"
-    ],
-    "sugar": [
-      "sugar"
     ],
     "super": [
       "super lump crab meat"
@@ -534,10 +594,10 @@
       "super lump crab meat"
     ],
     "tenderloin": [
-      "tenderloin tips"
+      "tenderloin tip"
     ],
-    "tips": [
-      "tenderloin tips"
+    "tip": [
+      "tenderloin tip"
     ],
     "thyme": [
       "thyme"
@@ -548,9 +608,6 @@
       "tomato paste",
       "tomato wedges",
       "tomatoes"
-    ],
-    "basil": [
-      "tomato basil sauce"
     ],
     "wedges": [
       "lemon wedges",
@@ -565,10 +622,16 @@
     "tuscan": [
       "tuscan kale"
     ],
+    "water": [
+      "water"
+    ],
     "white": [
       "white wine"
     ],
     "wildfire": [
+      "wildfire 8 spice"
+    ],
+    "spice": [
       "wildfire 8 spice"
     ],
     "worcestershire": [
@@ -7128,177 +7191,181 @@
       "requiresDressing": true
     },
     {
-      "id": "f4792adf-23df-4193-a799-2869b52d82f4",
-      "name": "Salad with Grilled Chicken",
-      "ticketCode": null,
+      "id": "04b9817e-dc40-4fd9-94e3-34127a715ed5",
+      "name": "Crispy Calamari",
+      "ticketCode": "AD Calamari",
       "categoryId": "salad_addons",
       "category": "Salad Add-Ons",
       "description": null,
       "displayOrder": 16,
       "allergenRules": {
         "dairy": {
-          "status": "SAFE",
+          "status": "UNSAFE",
           "substitutions": [],
-          "notes": "Protein add-on",
+          "notes": "Contains buttermilk in breading",
           "requiresVerification": false
         },
         "gluten": {
-          "status": "SAFE",
+          "status": "UNSAFE",
           "substitutions": [],
-          "notes": null,
+          "notes": "Contains seasoned flour",
           "requiresVerification": false
         },
         "shellfish": {
-          "status": "NOT_SAFE_NOT_IN_SHEET",
+          "status": "UNSAFE",
           "substitutions": [],
-          "notes": "NOT IN ALLERGY SHEET - Cannot verify safety",
+          "notes": "Calamari is shellfish",
           "requiresVerification": false
         },
         "soy": {
           "status": "SAFE",
           "substitutions": [],
-          "notes": null,
+          "notes": "No changes needed",
           "requiresVerification": false
         },
         "eggs": {
           "status": "SAFE",
           "substitutions": [],
-          "notes": null,
+          "notes": "No changes needed",
           "requiresVerification": false
         },
         "peanuts": {
-          "status": "NOT_SAFE_NOT_IN_SHEET",
+          "status": "SAFE",
           "substitutions": [],
-          "notes": "NOT IN ALLERGY SHEET - Cannot verify safety",
+          "notes": "No changes needed",
           "requiresVerification": false
         },
         "tree_nuts": {
-          "status": "NOT_SAFE_NOT_IN_SHEET",
+          "status": "SAFE",
           "substitutions": [],
-          "notes": "NOT IN ALLERGY SHEET - Cannot verify safety",
+          "notes": "No changes needed",
           "requiresVerification": false
         },
         "sesame": {
           "status": "SAFE",
           "substitutions": [],
-          "notes": null,
+          "notes": "No changes needed",
           "requiresVerification": false
         },
         "garlic": {
           "status": "SAFE",
           "substitutions": [],
-          "notes": null,
+          "notes": "No changes needed",
           "requiresVerification": false
         },
         "onion": {
-          "status": "MODIFIABLE",
-          "substitutions": [
-            "no marinade",
-            "sub plain chicken"
-          ],
-          "notes": null,
+          "status": "SAFE",
+          "substitutions": [],
+          "notes": "No changes needed",
           "requiresVerification": false
         }
       },
       "ingredients": [
-        "grilled chicken breast",
-        "chicken marinade"
+        "calamari",
+        "buttermilk",
+        "seasoned flour"
       ],
-      "garnishes": [],
+      "garnishes": [
+        "lemon wedge"
+      ],
       "_hasRules": true,
-      "_ruleCount": 7
+      "_ruleCount": 10
     },
     {
-      "id": "18e78de2-730b-413d-b886-ab005a8d9707",
-      "name": "Salad with Salmon",
-      "ticketCode": null,
+      "id": "1b07487d-0f2c-4674-a212-bead7eaa8ec7",
+      "name": "Grilled Chicken",
+      "ticketCode": "AD Grilled Chicken",
       "categoryId": "salad_addons",
       "category": "Salad Add-Ons",
       "description": null,
       "displayOrder": 17,
       "allergenRules": {
         "dairy": {
-          "status": "MODIFIABLE",
-          "substitutions": [
-            "no glaze"
-          ],
-          "notes": "Protein add-on",
+          "status": "SAFE",
+          "substitutions": [],
+          "notes": "No changes needed",
           "requiresVerification": false
         },
         "gluten": {
           "status": "SAFE",
           "substitutions": [],
-          "notes": null,
+          "notes": "No changes needed",
           "requiresVerification": false
         },
         "shellfish": {
-          "status": "NOT_SAFE_NOT_IN_SHEET",
+          "status": "SAFE",
           "substitutions": [],
-          "notes": "NOT IN ALLERGY SHEET - Cannot verify safety",
+          "notes": "No changes needed",
           "requiresVerification": false
         },
         "soy": {
-          "status": "MODIFIABLE",
-          "substitutions": [
-            "no salmon glaze"
-          ],
-          "notes": null,
+          "status": "SAFE",
+          "substitutions": [],
+          "notes": "No changes needed",
           "requiresVerification": false
         },
         "eggs": {
           "status": "SAFE",
           "substitutions": [],
-          "notes": null,
+          "notes": "No changes needed",
           "requiresVerification": false
         },
         "peanuts": {
-          "status": "NOT_SAFE_NOT_IN_SHEET",
+          "status": "SAFE",
           "substitutions": [],
-          "notes": "NOT IN ALLERGY SHEET - Cannot verify safety",
+          "notes": "No changes needed",
           "requiresVerification": false
         },
         "tree_nuts": {
-          "status": "NOT_SAFE_NOT_IN_SHEET",
+          "status": "SAFE",
           "substitutions": [],
-          "notes": "NOT IN ALLERGY SHEET - Cannot verify safety",
+          "notes": "No changes needed",
           "requiresVerification": false
         },
         "sesame": {
           "status": "SAFE",
           "substitutions": [],
-          "notes": null,
+          "notes": "No changes needed",
           "requiresVerification": false
         },
         "garlic": {
-          "status": "MODIFIABLE",
-          "substitutions": [
-            "no BBQ chicken spice"
-          ],
-          "notes": null,
+          "status": "SAFE",
+          "substitutions": [],
+          "notes": "No changes needed",
           "requiresVerification": false
         },
         "onion": {
-          "status": "MODIFIABLE",
-          "substitutions": [
-            "no BBQ spice"
-          ],
-          "notes": null,
+          "status": "SAFE",
+          "substitutions": [],
+          "notes": "No changes needed",
           "requiresVerification": false
         }
       },
       "ingredients": [
-        "salmon fillet",
-        "salmon glaze",
-        "BBQ chicken spice"
+        "chicken breast",
+        "water",
+        "salt",
+        "sugar",
+        "thyme",
+        "parsley",
+        "basil",
+        "sage",
+        "chives",
+        "rosemary",
+        "garlic",
+        "red chilies",
+        "lemon zest",
+        "lemon juice",
+        "house oil"
       ],
       "garnishes": [],
       "_hasRules": true,
-      "_ruleCount": 7
+      "_ruleCount": 10
     },
     {
-      "id": "82584f94-7097-4a4a-9604-d6dedb0aac7c",
-      "name": "Salad with Steak",
-      "ticketCode": null,
+      "id": "6c078c95-05e1-4819-b483-b1677e5efc1d",
+      "name": "Salmon",
+      "ticketCode": "AD Salmon",
       "categoryId": "salad_addons",
       "category": "Salad Add-Ons",
       "description": null,
@@ -7307,154 +7374,195 @@
         "dairy": {
           "status": "MODIFIABLE",
           "substitutions": [
-            "no steak butter"
+            "NO salmon glaze"
           ],
-          "notes": "Protein add-on",
+          "notes": "Salmon glaze contains butter",
           "requiresVerification": false
         },
         "gluten": {
-          "status": "NOT_SAFE_NOT_IN_SHEET",
+          "status": "SAFE",
           "substitutions": [],
-          "notes": "NOT IN ALLERGY SHEET - Cannot verify safety",
+          "notes": "No changes needed",
           "requiresVerification": false
         },
         "shellfish": {
-          "status": "NOT_SAFE_NOT_IN_SHEET",
+          "status": "SAFE",
           "substitutions": [],
-          "notes": "NOT IN ALLERGY SHEET - Cannot verify safety",
+          "notes": "No changes needed",
           "requiresVerification": false
         },
         "soy": {
           "status": "MODIFIABLE",
           "substitutions": [
-            "no marinade on steak"
+            "NO salmon glaze"
           ],
-          "notes": null,
+          "notes": "Salmon glaze contains San J Tamari (soy)",
           "requiresVerification": false
         },
         "eggs": {
           "status": "SAFE",
           "substitutions": [],
-          "notes": null,
+          "notes": "No changes needed",
           "requiresVerification": false
         },
         "peanuts": {
-          "status": "NOT_SAFE_NOT_IN_SHEET",
+          "status": "SAFE",
           "substitutions": [],
-          "notes": "NOT IN ALLERGY SHEET - Cannot verify safety",
+          "notes": "No changes needed",
           "requiresVerification": false
         },
         "tree_nuts": {
-          "status": "NOT_SAFE_NOT_IN_SHEET",
+          "status": "SAFE",
           "substitutions": [],
-          "notes": "NOT IN ALLERGY SHEET - Cannot verify safety",
+          "notes": "No changes needed",
           "requiresVerification": false
         },
         "sesame": {
           "status": "SAFE",
           "substitutions": [],
-          "notes": null,
+          "notes": "No changes needed",
           "requiresVerification": false
         },
         "garlic": {
-          "status": "NOT_SAFE_NOT_IN_SHEET",
-          "substitutions": [],
-          "notes": "NOT IN ALLERGY SHEET - Cannot verify safety",
+          "status": "MODIFIABLE",
+          "substitutions": [
+            "NO BBQ chicken spice"
+          ],
+          "notes": "BBQ chicken spice contains garlic",
           "requiresVerification": false
         },
         "onion": {
           "status": "MODIFIABLE",
           "substitutions": [
-            "no bourbon marinade"
+            "NO BBQ chicken spice"
           ],
-          "notes": null,
+          "notes": "BBQ chicken spice contains onion",
           "requiresVerification": false
         }
       },
-      "ingredients": [],
+      "ingredients": [
+        "salmon",
+        "chili pepper",
+        "salt",
+        "paprika",
+        "garlic",
+        "sugar",
+        "onion",
+        "natural flavors",
+        "maltodextrin",
+        "calcium silicate",
+        "silicon dioxide",
+        "brown sugar",
+        "San J Tamari",
+        "Dijon mustard",
+        "butter"
+      ],
       "garnishes": [],
       "_hasRules": true,
-      "_ruleCount": 5
+      "_ruleCount": 10
     },
     {
-      "id": "d6202e39-967a-4985-9e9d-751829963731",
-      "name": "Salad with Tenderloin Tip",
-      "ticketCode": null,
+      "id": "a4ad6155-ec24-4634-960b-b09164e6ee6e",
+      "name": "Sliced Tenderloin",
+      "ticketCode": "AD Steak",
       "categoryId": "salad_addons",
       "category": "Salad Add-Ons",
       "description": null,
       "displayOrder": 19,
       "allergenRules": {
         "dairy": {
-          "status": "NOT_SAFE_NOT_IN_SHEET",
-          "substitutions": [],
-          "notes": "NOT IN ALLERGY SHEET - Cannot verify safety",
+          "status": "MODIFIABLE",
+          "substitutions": [
+            "NO steak butter"
+          ],
+          "notes": "Steak butter contains butter",
           "requiresVerification": false
         },
         "gluten": {
           "status": "MODIFIABLE",
           "substitutions": [
-            "GF steak butter"
+            "NO soy"
           ],
-          "notes": null,
+          "notes": "San J Tamari contains wheat",
           "requiresVerification": false
         },
         "shellfish": {
-          "status": "NOT_SAFE_NOT_IN_SHEET",
+          "status": "SAFE",
           "substitutions": [],
-          "notes": "NOT IN ALLERGY SHEET - Cannot verify safety",
+          "notes": "No changes needed",
           "requiresVerification": false
         },
         "soy": {
-          "status": "NOT_SAFE_NOT_IN_SHEET",
-          "substitutions": [],
-          "notes": "NOT IN ALLERGY SHEET - Cannot verify safety",
+          "status": "MODIFIABLE",
+          "substitutions": [
+            "NO steak marinade"
+          ],
+          "notes": "Steak marinade contains San J Tamari (soy)",
           "requiresVerification": false
         },
         "eggs": {
-          "status": "NOT_SAFE_NOT_IN_SHEET",
+          "status": "SAFE",
           "substitutions": [],
-          "notes": "NOT IN ALLERGY SHEET - Cannot verify safety",
+          "notes": "No changes needed",
           "requiresVerification": false
         },
         "peanuts": {
-          "status": "NOT_SAFE_NOT_IN_SHEET",
+          "status": "SAFE",
           "substitutions": [],
-          "notes": "NOT IN ALLERGY SHEET - Cannot verify safety",
+          "notes": "No changes needed",
           "requiresVerification": false
         },
         "tree_nuts": {
-          "status": "NOT_SAFE_NOT_IN_SHEET",
+          "status": "SAFE",
           "substitutions": [],
-          "notes": "NOT IN ALLERGY SHEET - Cannot verify safety",
+          "notes": "No changes needed",
           "requiresVerification": false
         },
         "sesame": {
-          "status": "NOT_SAFE_NOT_IN_SHEET",
+          "status": "SAFE",
           "substitutions": [],
-          "notes": "NOT IN ALLERGY SHEET - Cannot verify safety",
+          "notes": "No changes needed",
           "requiresVerification": false
         },
         "garlic": {
-          "status": "NOT_SAFE_NOT_IN_SHEET",
-          "substitutions": [],
-          "notes": "NOT IN ALLERGY SHEET - Cannot verify safety",
+          "status": "MODIFIABLE",
+          "substitutions": [
+            "NO steak marinade"
+          ],
+          "notes": "Steak marinade contains garlic",
           "requiresVerification": false
         },
         "onion": {
-          "status": "NOT_SAFE_NOT_IN_SHEET",
-          "substitutions": [],
-          "notes": "NOT IN ALLERGY SHEET - Cannot verify safety",
+          "status": "MODIFIABLE",
+          "substitutions": [
+            "NO steak marinade"
+          ],
+          "notes": "Steak marinade contains red onion",
           "requiresVerification": false
         }
       },
       "ingredients": [
-        "tenderloin tips",
-        "steak butter"
+        "tenderloin tip",
+        "Basil Hayden bourbon",
+        "Jim Beam bourbon",
+        "olive oil",
+        "Dijon mustard",
+        "San J Tamari",
+        "red wine vinegar",
+        "steak sauce",
+        "brown sugar",
+        "red onion",
+        "garlic",
+        "salt",
+        "pepper",
+        "balsamic vinegar",
+        "Worcestershire sauce",
+        "sugar",
+        "butter"
       ],
       "garnishes": [],
       "_hasRules": true,
-      "_ruleCount": 1
+      "_ruleCount": 10
     },
     {
       "id": "b685ec2b-e11c-4e16-a520-09da84960664",
@@ -19158,7 +19266,7 @@
   "stats": {
     "totalItems": 160,
     "totalCategories": 17,
-    "totalLinkedRules": 740,
+    "totalLinkedRules": 760,
     "totalUnlinkedRules": 3,
     "itemsWithRules": 149,
     "itemsWithoutRules": 11,

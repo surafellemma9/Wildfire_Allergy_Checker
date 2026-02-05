@@ -257,7 +257,7 @@ export function TenantAllergyChecker({
           result.overallStatus = 'UNSAFE';
           result.mainItem.status = 'UNSAFE';
           // Clear substitutions when unsafe - don't show modifications
-          result.mainItem.substitutions = [];
+          result.mainItem.perAllergen = result.mainItem.perAllergen.map(pa => ({ ...pa, substitutions: [] }));
         } else if (statuses.includes('VERIFY_WITH_KITCHEN')) {
           result.overallStatus = 'VERIFY_WITH_KITCHEN';
           result.mainItem.status = 'VERIFY_WITH_KITCHEN';

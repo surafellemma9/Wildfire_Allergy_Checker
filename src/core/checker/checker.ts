@@ -109,7 +109,7 @@ export function checkAllergens(
 
   // Check dressing if selected (dressings are in mainItem.dressingOptions, not pack.items)
   let dressingResult: ItemCheckResult | undefined;
-  let selectedDressing: typeof mainItem.dressingOptions extends (infer T)[] | undefined ? T : never = undefined;
+  let selectedDressing: DressingOption | undefined = undefined;
   if (dressingId && mainItem.dressingOptions) {
     selectedDressing = mainItem.dressingOptions.find((d) => d.id === dressingId);
     if (selectedDressing) {

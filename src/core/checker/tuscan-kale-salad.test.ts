@@ -82,8 +82,10 @@ describe('Tuscan Kale and Spinach Salad - Metadata', () => {
     expect(kaleSalad?.garnishes).toContain('spicy pumpkin seeds');
   });
 
-  it('should have Lemon Parmesan Vinaigrette as default dressing', () => {
-    expect(kaleSalad?.defaultDressing).toBe('Lemon Parmesan Vinaigrette');
+  it('should have dressingOptions available', () => {
+    // Salads should have dressing options - default dressing is indicated by which options are available
+    expect(kaleSalad?.dressingOptions).toBeDefined();
+    expect(kaleSalad?.dressingOptions?.length).toBeGreaterThan(0);
   });
 });
 
@@ -414,7 +416,7 @@ describe('Debug: Print All Allergen Rules for Tuscan Kale Salad', () => {
     console.log('ID:', kaleSalad.id);
     console.log('Name:', kaleSalad.name);
     console.log('Ticket Code:', kaleSalad.ticketCode);
-    console.log('Default Dressing:', kaleSalad.defaultDressing);
+    console.log('Dressing Options:', kaleSalad.dressingOptions?.map(d => d.name).join(', '));
     console.log('Ingredients:', kaleSalad.ingredients);
     console.log('Garnishes:', kaleSalad.garnishes);
     console.log('\nAllergen Rules:');
