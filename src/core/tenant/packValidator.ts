@@ -198,6 +198,12 @@ export function validateAndMigratePack(pack: unknown): {
     // Master ingredient lists for autocomplete
     allIngredients: Array.isArray(p.allIngredients) ? p.allIngredients : undefined,
     allGarnishes: Array.isArray(p.allGarnishes) ? p.allGarnishes : undefined,
+    // Ingredient groups for smart search
+    ingredientGroups: p.ingredientGroups && typeof p.ingredientGroups === 'object' ? p.ingredientGroups as Record<string, string[]> : undefined,
+    // Breads with ingredients and allergens
+    breads: Array.isArray(p.breads) ? p.breads : undefined,
+    // Compound ingredients (sauces, marinades, seasonings) with breakdowns
+    compoundIngredients: Array.isArray(p.compoundIngredients) ? p.compoundIngredients : undefined,
     categories: Array.isArray(p.categories) ? p.categories : [],
     items: migratedItems,
   };

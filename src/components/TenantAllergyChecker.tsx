@@ -113,6 +113,7 @@ export function TenantAllergyChecker({
   const [selectedCrust, setSelectedCrust] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [showAllIngredients, setShowAllIngredients] = useState(false);
   const [disclaimerAccepted, setDisclaimerAccepted] = useState(
     localStorage.getItem('wildfire_disclaimer_accepted') === 'true'
   );
@@ -125,22 +126,10 @@ export function TenantAllergyChecker({
     return searchItems(pack, searchQuery).slice(0, 20);
   }, [pack, searchQuery]);
 
-  // #region agent log - H1: Log pack version and total items
-  useEffect(() => {
-    const kaleItems = pack.items?.filter((i: any)=>i.name?.toLowerCase().includes('kale')).map((i: any)=>({name:i.name,categoryId:i.categoryId,isSideOnly:i.isSideOnly}));
-    console.log('[DEBUG-H1] Pack loaded:', {version:pack.version,totalItems:pack.items?.length,kaleItems});
-  }, [pack]);
-  // #endregion
 
   const categoryItems = useMemo(() => {
     if (!selectedCategory) return [];
-    const items = getItemsByCategory(pack, selectedCategory);
-    // #region agent log - H2: Log category items when salads selected
-    if (selectedCategory === 'salads') {
-      console.log('[DEBUG-H2] Salads category items:', {count:items.length,itemNames:items.map((i: any)=>i.name),hasKale:items.some((i: any)=>i.name?.toLowerCase().includes('kale'))});
-    }
-    // #endregion
-    return items;
+    return getItemsByCategory(pack, selectedCategory);
   }, [pack, selectedCategory]);
 
   // Get all available ingredients for autocomplete (from pack)
@@ -436,6 +425,7 @@ export function TenantAllergyChecker({
     setCustomAllergenText('');
     setSelectedCustomIngredients([]);
     setCustomIngredientSearch('');
+    setShowAllIngredients(false);
     setSelectedItem(null);
     setSelectedDressing(null);
     setSelectedProtein(null);
@@ -446,7 +436,7 @@ export function TenantAllergyChecker({
   };
 
   const handleContinue = () => {
-    if (currentStep === 'allergies' && (selectedAllergens.length > 0 || selectedCustomIngredients.length > 0)) {
+    if (currentStep === 'allergies' && (selectedAllergens.length > 0 || selectedCustomIngredients.length > 0 || showAllIngredients)) {
       setCurrentStep('dish');
     }
   };
@@ -632,6 +622,21 @@ export function TenantAllergyChecker({
                 Check for specific ingredient (optional)
               </label>
               
+              {/* Show All Ingredients mode pill */}
+              {showAllIngredients && (
+                <div className="flex flex-wrap gap-2 mb-3">
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-cyan-500/20 border border-cyan-400/30 text-cyan-300 text-sm font-medium">
+                    📋 Show All Ingredients
+                    <button
+                      onClick={() => setShowAllIngredients(false)}
+                      className="hover:text-red-300 transition-colors"
+                    >
+                      <X className="w-3.5 h-3.5" />
+                    </button>
+                  </span>
+                </div>
+              )}
+              
               {/* Selected ingredients pills */}
               {selectedCustomIngredients.length > 0 && (
                 <div className="flex flex-wrap gap-2 mb-3">
@@ -719,21 +724,52 @@ export function TenantAllergyChecker({
                   {allIngredients.length} ingredients available to search
                 </p>
               )}
+              
+              {/* View Ingredients Button - separate from allergy check */}
+              <div className="mt-4 pt-4 border-t border-white/10">
+                <p className="text-xs text-white/40 mb-2 text-center">
+                  Or view full ingredient list of a dish
+                </p>
+                <button
+                  onClick={() => {
+                    setShowAllIngredients(true);
+                    setSelectedAllergens([]);
+                    setSelectedCustomIngredients([]);
+                  }}
+                  className={cn(
+                    'w-full py-3 px-4 rounded-xl font-medium text-sm transition-all flex items-center justify-center gap-2',
+                    showAllIngredients
+                      ? 'bg-cyan-500/20 border border-cyan-400/40 text-cyan-300'
+                      : 'bg-white/5 border border-white/10 text-white/70 hover:bg-white/10 hover:text-white'
+                  )}
+                >
+                  <Info className="w-4 h-4" />
+                  {showAllIngredients ? 'Ingredient View Mode Active' : 'View Dish Ingredients'}
+                </button>
+                {showAllIngredients && (
+                  <button
+                    onClick={() => setShowAllIngredients(false)}
+                    className="w-full mt-2 py-2 text-xs text-white/40 hover:text-white/60 transition-colors"
+                  >
+                    Cancel and return to allergy check
+                  </button>
+                )}
+              </div>
             </div>
 
             {/* Continue button */}
             <div className="pt-2">
               <button
                 onClick={handleContinue}
-                disabled={selectedAllergens.length === 0 && selectedCustomIngredients.length === 0}
+                disabled={selectedAllergens.length === 0 && selectedCustomIngredients.length === 0 && !showAllIngredients}
                 className={cn(
                   'w-full max-w-md mx-auto block py-4 px-6 text-base font-semibold rounded-xl transition-all duration-200',
-                  (selectedAllergens.length > 0 || selectedCustomIngredients.length > 0)
+                  (selectedAllergens.length > 0 || selectedCustomIngredients.length > 0 || showAllIngredients)
                     ? 'bg-white text-gray-900 hover:bg-white/90 shadow-lg shadow-white/20'
                     : 'bg-white/5 border border-white/10 text-white/30 cursor-not-allowed'
                 )}
               >
-                Continue
+                {showAllIngredients ? 'View Ingredients' : 'Continue'}
               </button>
             </div>
           </div>
@@ -985,7 +1021,15 @@ export function TenantAllergyChecker({
         )}
 
         {/* Step: Results */}
-        {currentStep === 'results' && checkerResult && (
+        {currentStep === 'results' && showAllIngredients && selectedItem && (
+          <IngredientsView
+            item={selectedItem}
+            dressing={selectedDressing}
+            pack={pack}
+            onStartOver={handleStartOver}
+          />
+        )}
+        {currentStep === 'results' && !showAllIngredients && checkerResult && (
           <ResultsView
             result={checkerResult}
             selectedAllergens={pack.allergens.filter((a) =>
@@ -1396,7 +1440,148 @@ function PreparationNotes({ result }: PreparationNotesProps) {
     );
   }
 
-  // MODIFIABLE - show modifications
+  // MODIFIABLE - Use consolidated results with component-based grouping
+  if (result.consolidated) {
+    const { bread, removals, substitutions, preparation } = result.consolidated;
+    
+    // Check if there are any modifications at all
+    const hasModifications = 
+      bread.selected ||
+      removals.sauce.length > 0 ||
+      removals.garnish.length > 0 ||
+      removals.seasoning.length > 0 ||
+      removals.other.length > 0 ||
+      substitutions.protein.length > 0 ||
+      substitutions.other.length > 0 ||
+      preparation.length > 0;
+    
+    if (!hasModifications) {
+      return null;
+    }
+
+    return (
+      <div className="mt-3 space-y-3">
+        {/* BREAD - Single best option */}
+        {bread.selected && (
+          <div className="space-y-1.5">
+            <div className="text-[10px] font-bold text-white/40 uppercase tracking-wider">
+              Bread
+            </div>
+            <div
+              className={cn(
+                'flex items-center gap-2 py-2 px-3 rounded-lg border',
+                bread.selected.toLowerCase().startsWith('no ')
+                  ? 'bg-red-500/10 border-red-500/20'
+                  : 'bg-blue-500/10 border-blue-500/20'
+              )}
+            >
+              {bread.selected.toLowerCase().startsWith('no ') ? (
+                <X className="w-3.5 h-3.5 text-red-400" strokeWidth={2.5} />
+              ) : (
+                <Check className="w-3.5 h-3.5 text-blue-400" strokeWidth={2.5} />
+              )}
+              <span className={cn(
+                'text-sm font-medium',
+                bread.selected.toLowerCase().startsWith('no ')
+                  ? 'text-red-400'
+                  : 'text-blue-400'
+              )}>
+                {bread.selected}
+              </span>
+            </div>
+            {/* Show rejected bread options */}
+            {bread.rejected.length > 0 && (
+              <div className="text-xs text-amber-400/70 pl-1">
+                <span className="text-amber-400/50">Unavailable: </span>
+                {bread.rejected.map((r, i) => (
+                  <span key={i}>
+                    {i > 0 && ', '}
+                    {r.option.replace(/^(NO |SUB )/i, '')} ({r.reason.toLowerCase()})
+                  </span>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* PROTEIN substitutions */}
+        {substitutions.protein.length > 0 && (
+          <div className="space-y-1.5">
+            <div className="text-[10px] font-bold text-white/40 uppercase tracking-wider">
+              Protein
+            </div>
+            {substitutions.protein.map((sub, idx) => (
+              <div
+                key={`protein-${idx}`}
+                className="flex items-center gap-2 py-2 px-3 rounded-lg border bg-blue-500/10 border-blue-500/20"
+              >
+                <Check className="w-3.5 h-3.5 text-blue-400" strokeWidth={2.5} />
+                <span className="text-blue-400 text-sm font-medium">{sub}</span>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* REMOVE section - grouped sauces, garnishes, seasonings */}
+        {(removals.sauce.length > 0 || removals.garnish.length > 0 || 
+          removals.seasoning.length > 0 || removals.other.length > 0) && (
+          <div className="space-y-1.5">
+            <div className="text-[10px] font-bold text-white/40 uppercase tracking-wider">
+              Remove
+            </div>
+            <div className="flex flex-wrap gap-1.5">
+              {[...removals.sauce, ...removals.garnish, ...removals.seasoning, ...removals.other].map((removal, idx) => (
+                <div
+                  key={`removal-${idx}`}
+                  className="flex items-center gap-1.5 py-1.5 px-2.5 rounded-lg border bg-red-500/10 border-red-500/20"
+                >
+                  <X className="w-3 h-3 text-red-400" strokeWidth={2.5} />
+                  <span className="text-red-400 text-xs font-medium">
+                    {removal.replace(/^NO /i, '')}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* PREPARATION instructions */}
+        {preparation.length > 0 && (
+          <div className="space-y-1.5">
+            <div className="text-[10px] font-bold text-white/40 uppercase tracking-wider">
+              Preparation
+            </div>
+            {preparation.map((prep, idx) => (
+              <div
+                key={`prep-${idx}`}
+                className="flex items-center gap-2 py-2 px-3 rounded-lg border bg-amber-500/10 border-amber-500/20"
+              >
+                <AlertTriangle className="w-3.5 h-3.5 text-amber-400" strokeWidth={2} />
+                <span className="text-amber-400 text-sm font-medium">{prep}</span>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* Other substitutions */}
+        {substitutions.other.length > 0 && (
+          <div className="space-y-1.5">
+            {substitutions.other.map((sub, idx) => (
+              <div
+                key={`other-${idx}`}
+                className="flex items-center gap-2 py-2 px-3 rounded-lg border bg-blue-500/10 border-blue-500/20"
+              >
+                <Check className="w-3.5 h-3.5 text-blue-400" strokeWidth={2.5} />
+                <span className="text-blue-400 text-sm font-medium">{sub}</span>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    );
+  }
+
+  // Fallback: Legacy path using perAllergen (for items without consolidated data)
   const modifications = result.perAllergen.flatMap((pa) =>
     pa.substitutions.map((sub) => ({ allergen: pa.allergenName, sub }))
   );
@@ -1435,6 +1620,269 @@ function PreparationNotes({ result }: PreparationNotesProps) {
           </div>
         );
       })}
+    </div>
+  );
+}
+
+// ============================================================================
+// Ingredients View - Show Full Ingredient List
+// ============================================================================
+
+interface IngredientsViewProps {
+  item: MenuItem;
+  dressing: DressingOption | null;
+  pack: TenantPack;
+  onStartOver: () => void;
+}
+
+function IngredientsView({ item, dressing, pack, onStartOver }: IngredientsViewProps) {
+  // Get item ingredients from pack
+  const itemIngredients = (item as any).ingredients || [];
+  const itemGarnishes = (item as any).garnishes || [];
+  
+  // Get dressing ingredients directly from the dressing option object
+  const dressingIngredients = (dressing as any)?.ingredients || [];
+  
+  // Get bread info from the item's defaultBread (now comes from Supabase via pack)
+  const defaultBread = (item as any).defaultBread;
+  const breadName = defaultBread?.name || null;
+  const breadIngredients = defaultBread?.ingredients || [];
+  const breadAllergens = defaultBread?.allergens || [];
+  
+  // Get compound ingredients lookup from pack for detailed breakdowns
+  const compoundIngredients = pack.compoundIngredients || [];
+  
+  // Function to find compound ingredient breakdown by name
+  const findCompoundIngredient = (ingredientName: string) => {
+    const lower = ingredientName.toLowerCase();
+    return compoundIngredients.find((ci: any) => 
+      ci.name.toLowerCase() === lower ||
+      lower.includes(ci.name.toLowerCase()) ||
+      ci.name.toLowerCase().includes(lower)
+    );
+  };
+  
+  // Check which ingredients have detailed breakdowns
+  const ingredientsWithBreakdown = itemIngredients.map((ing: string) => ({
+    name: ing,
+    breakdown: findCompoundIngredient(ing),
+  }));
+  
+  const garnishesWithBreakdown = itemGarnishes.map((gar: string) => ({
+    name: gar,
+    breakdown: findCompoundIngredient(gar),
+  }));
+
+  return (
+    <div className="max-w-lg mx-auto space-y-4">
+      
+      {/* Header Card */}
+      <div className="rounded-2xl p-5 border bg-cyan-500/20 border-cyan-400/30">
+        <div className="flex items-center gap-4">
+          <div className="w-12 h-12 rounded-xl flex items-center justify-center bg-cyan-500">
+            <Info className="w-7 h-7 text-white" />
+          </div>
+          
+          <div className="flex-1">
+            <h1 className="text-xl font-bold text-cyan-300">
+              Ingredient Information
+            </h1>
+            <p className="text-sm text-cyan-300/70">
+              Full ingredient list for this dish
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* Main Content Card */}
+      <div className="bg-white/5 rounded-2xl border border-white/10 overflow-hidden">
+        
+        {/* Dish Name */}
+        <div className="p-4 border-b border-white/10">
+          <p className="text-lg font-semibold text-white leading-tight">
+            {item.name}
+          </p>
+          {(item as any).ticketCode && (
+            <p className="text-white/40 text-xs mt-0.5">
+              {(item as any).ticketCode}
+            </p>
+          )}
+          {dressing && (
+            <p className="text-white/60 text-sm mt-1">
+              with <span className="text-white/80 font-medium">{dressing.name}</span>
+            </p>
+          )}
+        </div>
+
+        {/* Main Ingredients Section with Breakdowns */}
+        {ingredientsWithBreakdown.length > 0 && (
+          <div className="p-4 border-b border-white/5">
+            <div className="text-[10px] font-bold text-white/40 uppercase tracking-wider mb-3">
+              Main Ingredients
+            </div>
+            <div className="space-y-3">
+              {ingredientsWithBreakdown.map((item: any, idx: number) => (
+                <div key={idx}>
+                  <div className="flex flex-wrap gap-2">
+                    <span className={cn(
+                      "px-3 py-1.5 rounded-lg text-sm",
+                      item.breakdown 
+                        ? "bg-blue-500/20 border border-blue-400/30 text-blue-300" 
+                        : "bg-white/10 border border-white/10 text-white"
+                    )}>
+                      {item.name}
+                      {item.breakdown && <span className="ml-1 text-blue-400/60">↓</span>}
+                    </span>
+                  </div>
+                  {/* Show breakdown if available */}
+                  {item.breakdown && (
+                    <div className="mt-2 ml-4 p-2 rounded-lg bg-blue-500/5 border border-blue-400/10">
+                      <div className="text-[9px] font-semibold text-blue-400/70 uppercase mb-1">
+                        {item.breakdown.category}: {item.breakdown.name}
+                      </div>
+                      <div className="flex flex-wrap gap-1">
+                        {item.breakdown.ingredients.map((subIng: string, subIdx: number) => (
+                          <span key={subIdx} className="px-2 py-0.5 rounded bg-blue-500/10 text-blue-300/80 text-xs">
+                            {subIng}
+                          </span>
+                        ))}
+                      </div>
+                      {item.breakdown.allergens?.length > 0 && (
+                        <div className="mt-1 text-[9px] text-red-400/80">
+                          ⚠️ Contains: {item.breakdown.allergens.join(', ')}
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Garnishes Section with Breakdowns */}
+        {garnishesWithBreakdown.length > 0 && (
+          <div className="p-4 border-b border-white/5">
+            <div className="text-[10px] font-bold text-white/40 uppercase tracking-wider mb-3">
+              Garnishes <span className="text-white/30">(can be removed)</span>
+            </div>
+            <div className="space-y-3">
+              {garnishesWithBreakdown.map((item: any, idx: number) => (
+                <div key={idx}>
+                  <div className="flex flex-wrap gap-2">
+                    <span className={cn(
+                      "px-3 py-1.5 rounded-lg text-sm",
+                      item.breakdown 
+                        ? "bg-amber-500/20 border border-amber-400/30 text-amber-300" 
+                        : "bg-amber-500/10 border border-amber-500/20 text-amber-300"
+                    )}>
+                      {item.name}
+                      {item.breakdown && <span className="ml-1 text-amber-400/60">↓</span>}
+                    </span>
+                  </div>
+                  {/* Show breakdown if available */}
+                  {item.breakdown && (
+                    <div className="mt-2 ml-4 p-2 rounded-lg bg-amber-500/5 border border-amber-400/10">
+                      <div className="text-[9px] font-semibold text-amber-400/70 uppercase mb-1">
+                        {item.breakdown.category}: {item.breakdown.name}
+                      </div>
+                      <div className="flex flex-wrap gap-1">
+                        {item.breakdown.ingredients.map((subIng: string, subIdx: number) => (
+                          <span key={subIdx} className="px-2 py-0.5 rounded bg-amber-500/10 text-amber-300/80 text-xs">
+                            {subIng}
+                          </span>
+                        ))}
+                      </div>
+                      {item.breakdown.allergens?.length > 0 && (
+                        <div className="mt-1 text-[9px] text-red-400/80">
+                          ⚠️ Contains: {item.breakdown.allergens.join(', ')}
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Bread Section (for sandwiches) - Now from Supabase */}
+        {breadName && (
+          <div className="p-4 border-b border-white/5">
+            <div className="flex items-center justify-between mb-3">
+              <div className="text-[10px] font-bold text-white/40 uppercase tracking-wider">
+                Bread: {breadName}
+              </div>
+              {breadAllergens.length > 0 && (
+                <div className="flex items-center gap-1.5">
+                  <AlertTriangle className="w-3 h-3 text-red-400" />
+                  <span className="text-[10px] font-bold text-red-400 uppercase tracking-wider">
+                    Contains: {breadAllergens.join(', ')}
+                  </span>
+                </div>
+              )}
+            </div>
+            {breadIngredients.length > 0 ? (
+              <div className="flex flex-wrap gap-2">
+                {breadIngredients.map((ing: string, idx: number) => (
+                  <span
+                    key={idx}
+                    className="px-3 py-1.5 rounded-lg bg-cyan-500/10 border border-cyan-500/20 text-cyan-300 text-sm"
+                  >
+                    {ing}
+                  </span>
+                ))}
+              </div>
+            ) : (
+              <p className="text-white/40 text-sm">Bread ingredient details not available</p>
+            )}
+          </div>
+        )}
+
+        {/* Dressing Section (for salads) */}
+        {dressing && dressingIngredients.length > 0 && (
+          <div className="p-4 border-b border-white/5">
+            <div className="text-[10px] font-bold text-white/40 uppercase tracking-wider mb-3">
+              {dressing.name} Ingredients
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {dressingIngredients.map((ing: string, idx: number) => (
+                <span
+                  key={idx}
+                  className="px-3 py-1.5 rounded-lg bg-purple-500/10 border border-purple-500/20 text-purple-300 text-sm"
+                >
+                  {ing}
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* No ingredients available */}
+        {itemIngredients.length === 0 && itemGarnishes.length === 0 && (
+          <div className="p-4">
+            <div className="flex items-center gap-2 py-3 px-4 bg-amber-500/10 rounded-lg border border-amber-500/20">
+              <AlertTriangle className="w-4 h-4 text-amber-400" />
+              <span className="text-amber-300 text-sm font-medium">
+                Ingredient details not available for this item
+              </span>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Footer Note */}
+      <p className="text-center text-white/30 text-xs">
+        For allergy information, please start a new check with allergens selected
+      </p>
+
+      {/* Action button */}
+      <button
+        onClick={onStartOver}
+        className="w-full py-4 bg-white hover:bg-white/90 text-gray-900 text-base font-semibold rounded-xl transition-all shadow-lg shadow-white/20"
+      >
+        New Check
+      </button>
     </div>
   );
 }

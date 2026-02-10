@@ -15,4 +15,7 @@ export type {
   PerAllergenResult,
   ItemCheckResult,
   CheckerResult,
+  ConsolidatedModifications,
+  ModificationCategory,
+  BreadResolution,
 } from './checker';

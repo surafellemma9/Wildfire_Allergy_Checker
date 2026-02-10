@@ -94,6 +94,14 @@ export interface MenuItem {
   ingredients?: string[];
   garnishes?: string[];
 
+  // Default bread info (for sandwiches)
+  defaultBread?: {
+    id: string;
+    name: string;
+    ingredients: string[];
+    allergens: string[];
+  };
+
   // Allergen rules keyed by allergenId
   allergenRules: Record<string, AllergenRule>;
 }
@@ -115,6 +123,24 @@ export interface AllergenDef {
 }
 
 // Complete Tenant Pack structure
+// Bread type with ingredients and allergens
+export interface BreadType {
+  id: string;
+  name: string;
+  ingredients: string[];
+  allergens: string[];
+}
+
+// Compound ingredient (sauce, marinade, seasoning) with breakdown
+export interface CompoundIngredient {
+  id: string;
+  name: string;
+  category: string;  // 'sauce' | 'marinade' | 'seasoning' | 'glaze' | etc.
+  ingredients: string[];
+  allergens: string[];
+  notes?: string;
+}
+
 export interface TenantPack {
   tenantId: string;
   conceptName: string;
@@ -131,6 +157,15 @@ export interface TenantPack {
   // Master list of all ingredients for autocomplete search
   allIngredients?: string[];
   allGarnishes?: string[];
+
+  // Ingredient groups for smart search (base ingredient -> specific ingredients)
+  ingredientGroups?: Record<string, string[]>;
+
+  // Bread types with ingredients and allergens
+  breads?: BreadType[];
+
+  // Compound ingredients (sauces, marinades, seasonings) with breakdowns
+  compoundIngredients?: CompoundIngredient[];
 
   // Menu categories
   categories: Category[];

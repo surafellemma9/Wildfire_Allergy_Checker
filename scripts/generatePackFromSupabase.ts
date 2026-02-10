@@ -281,18 +281,25 @@ const CATEGORY_CONFIG: Record<string, { icon: string; order: number }> = {
   'Appetizers': { icon: '🍤', order: 1 },
   'Salads': { icon: '🥗', order: 2 },
   'Salad Add-Ons': { icon: '🥗', order: 3 },
-  'Filets': { icon: '🥩', order: 4 },
-  'Steaks and Chops': { icon: '🥩', order: 5 },
-  'Prime Rib': { icon: '🥩', order: 6 },
-  'Fresh Fish and Seafood': { icon: '🐟', order: 7 },
-  'Sandwiches: Prime Burgers': { icon: '🍔', order: 8 },
-  'Sandwiches: Signatures': { icon: '🥪', order: 9 },
-  'Sides': { icon: '🥔', order: 10 },
-  'Nightly Specials': { icon: '⭐', order: 11 },
-  'Special Party Items': { icon: '🎉', order: 12 },
-  'Kids Menu': { icon: '👶', order: 13 },
-  'Desserts': { icon: '🍰', order: 14 },
-  'Brunch': { icon: '🍳', order: 15 },
+  'Sandwiches': { icon: '🍔', order: 4 },  // Burgers & Sandwiches - right after Salads
+  'Sides': { icon: '🥔', order: 5 },
+  'Filets': { icon: '🥩', order: 6 },
+  'Steaks and Chops': { icon: '🥩', order: 7 },
+  'Steaks & Filets': { icon: '🥩', order: 8 },
+  'Steak Add-Ons': { icon: '🥩', order: 9 },
+  'Prime Rib': { icon: '🥩', order: 10 },
+  'Seafood': { icon: '🐟', order: 11 },
+  'Fresh Fish and Seafood': { icon: '🐟', order: 12 },
+  'Chicken': { icon: '🍗', order: 13 },
+  'BBQ': { icon: '🍖', order: 14 },
+  'Nightly Specials': { icon: '⭐', order: 15 },
+  'Specials': { icon: '⭐', order: 16 },
+  'Special Party Items': { icon: '🎉', order: 17 },
+  'Special Party Menu': { icon: '🎉', order: 18 },
+  'Kids': { icon: '👶', order: 19 },
+  'Kids Menu': { icon: '👶', order: 20 },
+  'Desserts': { icon: '🍰', order: 21 },
+  'Brunch': { icon: '🍳', order: 22 },
 };
 
 // Items to move to a different category (name pattern -> new category)
@@ -359,11 +366,11 @@ async function generatePack() {
   }
   console.log(`   ✓ Tenant: ${tenant.concept_name} - ${tenant.location_name}`);
 
-  // 2. Fetch ALL menu items
+  // 2. Fetch ALL menu items (including default_bread_id)
   console.log('📋 Fetching menu items...');
   const { data: dbMenuItems, error: menuError } = await supabase
     .from('menu_items')
-    .select('id, name, category, description, display_order, is_entree, is_side_only, side_ids, ticket_code, ingredients, garnishes')
+    .select('id, name, category, description, display_order, is_entree, is_side_only, side_ids, ticket_code, ingredients, garnishes, default_bread_id')
     .eq('tenant_id', TENANT_ID)
     .eq('is_active', true)
     .order('display_order', { ascending: true });
@@ -400,6 +407,51 @@ async function generatePack() {
     process.exit(1);
   }
   console.log(`   ✓ ${modifications?.length || 0} allergen rules total`);
+
+  // 3a. Fetch breads
+  console.log('📋 Fetching breads...');
+  const { data: breads, error: breadsError } = await supabase
+    .from('breads')
+    .select('id, name, ingredients, allergens, display_order')
+    .eq('tenant_id', TENANT_ID)
+    .eq('is_active', true)
+    .order('display_order', { ascending: true });
+
+  if (breadsError) {
+    console.log(`   ⚠️ Breads table not found or error: ${breadsError.message}`);
+  } else {
+    console.log(`   ✓ ${breads?.length || 0} breads`);
+  }
+
+  // 3b. Fetch compound ingredients (sauces, marinades, seasonings, etc.)
+  console.log('📋 Fetching compound ingredients...');
+  const { data: compoundIngredients, error: compoundError } = await supabase
+    .from('compound_ingredients')
+    .select('id, name, category, ingredients, allergens, notes')
+    .eq('tenant_id', TENANT_ID)
+    .eq('is_active', true);
+
+  if (compoundError) {
+    console.log(`   ⚠️ Compound ingredients table not found or error: ${compoundError.message}`);
+  } else {
+    console.log(`   ✓ ${compoundIngredients?.length || 0} compound ingredients`);
+  }
+
+  // Build bread lookup map
+  const breadLookup = new Map<string, any>();
+  if (breads) {
+    for (const bread of breads) {
+      breadLookup.set(bread.id, bread);
+    }
+  }
+
+  // Build compound ingredients lookup by name (lowercase)
+  const compoundLookup = new Map<string, any>();
+  if (compoundIngredients) {
+    for (const ci of compoundIngredients) {
+      compoundLookup.set(ci.name.toLowerCase(), ci);
+    }
+  }
 
   // 4. Analyze linking status
   const linkedMods = modifications?.filter(m => m.menu_item_id !== null) || [];
@@ -568,6 +620,30 @@ async function generatePack() {
         .filter((s: any) => s !== null);
     }
 
+    // Add side selection for Sandwiches - user picks from all available sides
+    if (effectiveCategory === 'Sandwiches') {
+      // Collect all items in the "Sides" category
+      const sideItems = dbMenuItems.filter(i => i.category === 'Sides');
+      if (sideItems.length > 0) {
+        item.isEntree = true;  // Triggers side selection step
+        item.sides = sideItems.map(sideItem => ({
+          id: sideItem.id,
+          name: sideItem.name,
+        }));
+      }
+      
+      // Add default bread info if available
+      if (menuItem.default_bread_id && breadLookup.has(menuItem.default_bread_id)) {
+        const bread = breadLookup.get(menuItem.default_bread_id);
+        item.defaultBread = {
+          id: bread.id,
+          name: bread.name,
+          ingredients: bread.ingredients || [],
+          allergens: bread.allergens || [],
+        };
+      }
+    }
+
     return item;
   });
 
@@ -711,6 +787,24 @@ async function generatePack() {
   
   console.log(`   Built ${Object.keys(ingredientGroups).length} ingredient groups for smart search`);
 
+  // Build breads array for pack
+  const breadsForPack = breads?.map(b => ({
+    id: b.id,
+    name: b.name,
+    ingredients: b.ingredients || [],
+    allergens: b.allergens || [],
+  })) || [];
+
+  // Build compound ingredients array for pack (organized by category)
+  const compoundIngredientsForPack = compoundIngredients?.map(ci => ({
+    id: ci.id,
+    name: ci.name,
+    category: ci.category,
+    ingredients: ci.ingredients || [],
+    allergens: ci.allergens || [],
+    notes: ci.notes,
+  })) || [];
+
   // Build final pack
   const pack = {
     tenantId: tenant.id,
@@ -722,6 +816,8 @@ async function generatePack() {
     allIngredients,
     allGarnishes,
     ingredientGroups,  // Maps base ingredients to specific ingredients for smart search
+    breads: breadsForPack,  // All bread types with ingredients
+    compoundIngredients: compoundIngredientsForPack,  // Sauces, marinades, seasonings breakdown
     categories: categories,
     items,
     stats: {
@@ -732,6 +828,8 @@ async function generatePack() {
       itemsWithRules: menuItemsWithRules,
       itemsWithoutRules: menuItemsWithoutRules,
       allergensSupported: ALLERGEN_DEFINITIONS.length,
+      totalBreads: breadsForPack.length,
+      totalCompoundIngredients: compoundIngredientsForPack.length,
     },
   };
 
