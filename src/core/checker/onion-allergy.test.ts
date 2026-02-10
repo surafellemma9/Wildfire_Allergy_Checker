@@ -235,7 +235,6 @@ describe('Wildfire Onion Allergy - Sides', () => {
     });
 
     it('Baked Potato - should be SAFE', () => {
-      const item = findItem('Baked Potato');
       // Might match "Loaded Baked Potato" - be specific
       const specificItem = pack.items.find(i => 
         i.name.toLowerCase() === 'idaho baked potato' ||

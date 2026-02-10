@@ -51,18 +51,6 @@ function getAllRemovals(consolidated: ReturnType<typeof consolidateModifications
   return removals;
 }
 
-// Helper to get all substitutions from consolidated result
-function getAllSubstitutions(consolidated: ReturnType<typeof consolidateModifications>): string[] {
-  const subs = [
-    ...consolidated.substitutions.protein,
-    ...consolidated.substitutions.other,
-  ];
-  // Include bread substitution if it's a "SUB" option
-  if (consolidated.bread.selected && !consolidated.bread.selected.toLowerCase().startsWith('no ')) {
-    subs.push(consolidated.bread.selected);
-  }
-  return subs;
-}
 
 describe('Consolidation Pipeline', () => {
   
@@ -419,7 +407,7 @@ describe('Consolidation Pipeline', () => {
       }
       
       // No removal should appear more than once
-      for (const [removal, count] of removalCounts) {
+      for (const [_removal, count] of removalCounts) {
         expect(count).toBe(1);
       }
     });
@@ -452,13 +440,6 @@ describe('Consolidation Pipeline', () => {
       const result = checkAllergens(pack, selections);
       expect(result.mainItem.consolidated).toBeDefined();
       
-      // GF bun should be rejected
-      const gfRejected = result.mainItem.consolidated!.bread.rejected.some(r =>
-        r.option.toLowerCase().includes('gluten free') || 
-        r.option.toLowerCase().includes('gluten-free') ||
-        r.option.toLowerCase().includes('gf')
-      );
-      
       // The bread selected should NOT be GF bun
       const breadSelected = result.mainItem.consolidated!.bread.selected;
       if (breadSelected) {
@@ -479,12 +460,6 @@ describe('Consolidation Pipeline', () => {
       
       const result = checkAllergens(pack, selections);
       expect(result.mainItem.consolidated).toBeDefined();
-      
-      // Multi-grain should be rejected
-      const multiGrainRejected = result.mainItem.consolidated!.bread.rejected.some(r =>
-        r.option.toLowerCase().includes('multi-grain') ||
-        r.option.toLowerCase().includes('multigrain')
-      );
       
       // GF bun should be selected (no gluten, no sesame)
       const breadSelected = result.mainItem.consolidated!.bread.selected;
@@ -561,7 +536,6 @@ describe('Consolidation Pipeline', () => {
         // Any bun with eggs would be rejected, so selected should be egg-free
         const hasGF = breadSelected.toLowerCase().includes('gluten free');
         const hasKids = breadSelected.toLowerCase().includes('kids');
-        const hasSesame = breadSelected.toLowerCase().includes('sesame');
         // GF bun and Kids bun have eggs, so these should NOT be selected
         expect(hasGF || hasKids).toBe(false);
       }

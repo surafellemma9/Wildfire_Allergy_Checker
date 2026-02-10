@@ -376,7 +376,7 @@ describe('Sesame Allergy - Official Allergy Sheet Verification', () => {
   describe('Bread Substitution Rules', () => {
     
     it('All modifiable sandwiches should offer GF bun or kids bun as substitution', () => {
-      const sandwiches = pack.items.filter(item => item.category === 'Sandwiches');
+      const sandwiches = pack.items.filter(item => item.categoryId === 'sandwiches');
       
       sandwiches.forEach(sandwich => {
         const result = checkSesame(sandwich.id);

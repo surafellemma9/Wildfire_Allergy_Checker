@@ -60,13 +60,6 @@ function hasModification(result: ReturnType<typeof checkAllergens>, pattern: str
   );
 }
 
-// Helper to check if notes contain a specific pattern
-function hasNote(result: ReturnType<typeof checkAllergens>, pattern: string): boolean {
-  const patternLower = pattern.toLowerCase();
-  return result.mainItem.perAllergen.some(pa => 
-    pa.notes.some(note => note.toLowerCase().includes(patternLower))
-  );
-}
 
 describe('Wildfire Dairy Allergy - Sandwiches', () => {
   
@@ -453,14 +446,6 @@ describe('Wildfire Dairy Allergy - Bread Substitution Conflict Resolution', () =
     
     // With both dairy and gluten, the only safe option is "NO bun"
     // Multi-grain has gluten, sesame seed has gluten, GF bun has dairy
-    const dairyResult = result.mainItem.perAllergen.find(pa => pa.allergenId === 'dairy');
-    const glutenResult = result.mainItem.perAllergen.find(pa => pa.allergenId === 'gluten');
-    
-    // Should still be able to modify with "NO bun"
-    const hasNoBun = result.mainItem.perAllergen.some(pa => 
-      pa.substitutions.some(sub => sub.toLowerCase().includes('no bun'))
-    );
-    
     // If no bun is available, dish should be MODIFIABLE
     // If no options at all, might be UNSAFE
     expect(['MODIFIABLE', 'UNSAFE'].includes(result.mainItem.status)).toBe(true);

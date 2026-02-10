@@ -85,13 +85,6 @@ function hasModification(result: ReturnType<typeof checkAllergens>, pattern: str
   );
 }
 
-// Helper to check if notes contain a specific pattern
-function hasNote(result: ReturnType<typeof checkAllergens>, pattern: string): boolean {
-  const patternLower = pattern.toLowerCase();
-  return result.mainItem.perAllergen.some(pa => 
-    pa.notes.some(note => note.toLowerCase().includes(patternLower))
-  );
-}
 
 describe('Gluten Allergy - Official Allergy Sheet Verification', () => {
   
@@ -484,7 +477,7 @@ describe('Gluten Allergy - Official Allergy Sheet Verification', () => {
   describe('Bread Rules Verification', () => {
     
     it('Modifiable sandwiches should offer GF bun or NO bun (not other breads)', () => {
-      const sandwiches = pack.items.filter(item => item.category === 'Sandwiches');
+      const sandwiches = pack.items.filter(item => item.categoryId === 'sandwiches');
       
       const modifiableSandwiches = sandwiches.filter(sandwich => {
         const result = checkGluten(sandwich.id);
