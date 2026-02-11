@@ -3,7 +3,7 @@
   "conceptName": "Wildfire",
   "locationName": "Tysons Corner",
   "version": 1,
-  "generatedAt": "2026-02-11T03:33:47.622Z",
+  "generatedAt": "2026-02-11T05:04:19.880Z",
   "allergens": [
     {
       "id": "dairy",
@@ -8843,7 +8843,7 @@
         "gluten": {
           "status": "MODIFIABLE",
           "substitutions": [
-            "NO soy"
+            "GF steak butter"
           ],
           "notes": "San J Tamari contains wheat",
           "requiresVerification": false

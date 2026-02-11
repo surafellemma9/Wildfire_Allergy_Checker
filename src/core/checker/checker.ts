@@ -1007,10 +1007,17 @@ function categorizeModification(mod: string): { category: ModificationCategory; 
   }
   
   // GARNISH - Toppings/additions that can be removed
-  if (lower.includes('cheese') || lower.includes('scallion') ||
+  // Exception: "steak butter" is a preparation/protein item, not a garnish
+  const isStakeButter = lower.includes('steak butter');
+  if (!isStakeButter && (lower.includes('cheese') || lower.includes('scallion') ||
       lower.includes('lettuce') || lower.includes('tomato') || lower.includes('pickle') ||
-      lower.includes('bacon') || lower.includes('coleslaw') || lower.includes('butter')) {
+      lower.includes('bacon') || lower.includes('coleslaw') || lower.includes('butter'))) {
     return { category: 'garnish', isRemoval };
+  }
+  
+  // STEAK BUTTER - Goes to "other" for substitutions or removal
+  if (isStakeButter) {
+    return { category: 'other', isRemoval };
   }
   
   // SAUCE
