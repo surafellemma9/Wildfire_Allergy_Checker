@@ -276,6 +276,114 @@ const DRESSING_OPTIONS = [
   },
 ];
 
+// Steak crust options with allergen info
+// Based on compound_ingredients data:
+// - Horseradish Crust: dairy, gluten, soy
+// - Garlic Crust (GF): dairy, egg
+// - Mushroom Crust: dairy, gluten
+// - Parmesan Crust: dairy, gluten
+// - Blue Cheese Crust: dairy, gluten
+const STEAK_CRUST_OPTIONS = [
+  {
+    id: 'crust_horseradish',
+    name: 'Horseradish Crust',
+    allergens: ['dairy', 'gluten', 'soy'],
+    allergenRules: {
+      dairy: { status: 'UNSAFE', substitutions: [], notes: 'Contains butter' },
+      gluten: { status: 'UNSAFE', substitutions: [], notes: 'Contains Japanese breadcrumbs' },
+      soy: { status: 'UNSAFE', substitutions: [], notes: 'Contains soy' },
+      shellfish: { status: 'SAFE', substitutions: [], notes: null },
+      eggs: { status: 'SAFE', substitutions: [], notes: null },
+      peanuts: { status: 'SAFE', substitutions: [], notes: null },
+      tree_nuts: { status: 'SAFE', substitutions: [], notes: null },
+      sesame: { status: 'SAFE', substitutions: [], notes: null },
+      garlic: { status: 'SAFE', substitutions: [], notes: null },
+      onion: { status: 'SAFE', substitutions: [], notes: null },
+    }
+  },
+  {
+    id: 'crust_garlic_gf',
+    name: 'Garlic Crust (GF)',
+    allergens: ['dairy', 'egg'],
+    isGlutenFree: true,
+    allergenRules: {
+      dairy: { status: 'UNSAFE', substitutions: [], notes: 'Contains butter' },
+      gluten: { status: 'SAFE', substitutions: [], notes: 'Gluten-free bread crumbs' },
+      soy: { status: 'SAFE', substitutions: [], notes: null },
+      shellfish: { status: 'SAFE', substitutions: [], notes: null },
+      eggs: { status: 'UNSAFE', substitutions: [], notes: 'Contains egg' },
+      peanuts: { status: 'SAFE', substitutions: [], notes: null },
+      tree_nuts: { status: 'SAFE', substitutions: [], notes: null },
+      sesame: { status: 'SAFE', substitutions: [], notes: null },
+      garlic: { status: 'UNSAFE', substitutions: [], notes: 'Contains garlic' },
+      onion: { status: 'MODIFIABLE', substitutions: ['NO shallots'], notes: 'Contains shallots' },
+    }
+  },
+  {
+    id: 'crust_mushroom',
+    name: 'Mushroom Crust',
+    allergens: ['dairy', 'gluten'],
+    allergenRules: {
+      dairy: { status: 'UNSAFE', substitutions: [], notes: 'Contains butter' },
+      gluten: { status: 'UNSAFE', substitutions: [], notes: 'Contains breadcrumbs' },
+      soy: { status: 'SAFE', substitutions: [], notes: null },
+      shellfish: { status: 'SAFE', substitutions: [], notes: null },
+      eggs: { status: 'SAFE', substitutions: [], notes: null },
+      peanuts: { status: 'SAFE', substitutions: [], notes: null },
+      tree_nuts: { status: 'SAFE', substitutions: [], notes: null },
+      sesame: { status: 'SAFE', substitutions: [], notes: null },
+      garlic: { status: 'UNSAFE', substitutions: [], notes: 'Contains garlic' },
+      onion: { status: 'MODIFIABLE', substitutions: ['NO shallots'], notes: 'Contains shallots' },
+    }
+  },
+  {
+    id: 'crust_parmesan',
+    name: 'Parmesan Crust',
+    allergens: ['dairy', 'gluten'],
+    allergenRules: {
+      dairy: { status: 'UNSAFE', substitutions: [], notes: 'Contains butter and Parmesan' },
+      gluten: { status: 'UNSAFE', substitutions: [], notes: 'Contains Japanese breadcrumbs' },
+      soy: { status: 'SAFE', substitutions: [], notes: null },
+      shellfish: { status: 'SAFE', substitutions: [], notes: null },
+      eggs: { status: 'SAFE', substitutions: [], notes: null },
+      peanuts: { status: 'SAFE', substitutions: [], notes: null },
+      tree_nuts: { status: 'SAFE', substitutions: [], notes: null },
+      sesame: { status: 'SAFE', substitutions: [], notes: null },
+      garlic: { status: 'UNSAFE', substitutions: [], notes: 'Contains garlic' },
+      onion: { status: 'MODIFIABLE', substitutions: ['NO shallots'], notes: 'Contains shallots' },
+    }
+  },
+  {
+    id: 'crust_blue_cheese',
+    name: 'Blue Cheese Crust',
+    allergens: ['dairy', 'gluten'],
+    allergenRules: {
+      dairy: { status: 'UNSAFE', substitutions: [], notes: 'Contains butter and blue cheese' },
+      gluten: { status: 'UNSAFE', substitutions: [], notes: 'Contains Japanese breadcrumbs' },
+      soy: { status: 'SAFE', substitutions: [], notes: null },
+      shellfish: { status: 'SAFE', substitutions: [], notes: null },
+      eggs: { status: 'SAFE', substitutions: [], notes: null },
+      peanuts: { status: 'SAFE', substitutions: [], notes: null },
+      tree_nuts: { status: 'SAFE', substitutions: [], notes: null },
+      sesame: { status: 'SAFE', substitutions: [], notes: null },
+      garlic: { status: 'SAFE', substitutions: [], notes: null },
+      onion: { status: 'SAFE', substitutions: [], notes: null },
+    }
+  },
+];
+
+// Items that have replacement crust mode (default crust can be replaced, not added)
+const REPLACEMENT_CRUST_ITEMS = [
+  'Horseradish Crusted Filet',
+  'Mushroom Crusted Fancy Pork Chops',
+];
+
+// Default crusts for items with replacement mode
+const DEFAULT_CRUSTS: Record<string, string> = {
+  'Horseradish Crusted Filet': 'crust_horseradish',
+  'Mushroom Crusted Fancy Pork Chops': 'crust_mushroom',
+};
+
 // Category display order and icons
 const CATEGORY_CONFIG: Record<string, { icon: string; order: number }> = {
   'Appetizers': { icon: '🍤', order: 1 },
@@ -608,6 +716,19 @@ async function generatePack() {
         id: addon.id,
         name: addon.name,
       }));
+      
+      // Add crust options for all steaks
+      item.requiresCrust = true;
+      item.crustOptions = STEAK_CRUST_OPTIONS;
+      item.maxCrusts = 3;  // Users can select up to 3 crusts
+      
+      // Check if this is a replacement crust item (Pork Chops or Horseradish Crusted Filet)
+      if (REPLACEMENT_CRUST_ITEMS.includes(menuItem.name)) {
+        item.crustMode = 'replace';  // Single selection, replaces default crust
+        item.defaultCrust = DEFAULT_CRUSTS[menuItem.name] || null;
+      } else {
+        item.crustMode = 'add';  // Multi-select, adds crusts
+      }
     }
 
     // Add sides array for brunch entrées

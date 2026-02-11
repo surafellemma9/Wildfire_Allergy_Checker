@@ -110,6 +110,18 @@ INSERT INTO compound_ingredients (tenant_id, name, category, ingredients, allerg
   ARRAY['soy', 'sesame'],
   'Served with coconut shrimp and other appetizers'),
 
+('63c69ee3-0167-4799-8986-09df2824ab93', 'Steak Butter',
+  'spread',
+  ARRAY['balsamic vinegar reduction', 'Worcestershire sauce', 'sugar', 'butter', 'salt', 'pepper'],
+  ARRAY['dairy', 'shellfish'],
+  'Whipped compound butter for steaks. Shellfish from Worcestershire sauce.'),
+
+('63c69ee3-0167-4799-8986-09df2824ab93', 'Garlic Crouton',
+  'other',
+  ARRAY['Parisian Baguette bread', 'garlic butter'],
+  ARRAY['gluten', 'dairy'],
+  'Also called onion soup crouton. Served with filet mignon.'),
+
 ('63c69ee3-0167-4799-8986-09df2824ab93', 'Cocktail Sauce',
   'sauce',
   ARRAY['ketchup', 'prepared horseradish', 'lemon juice', 'Worcestershire sauce', 'hot sauce', 'salt'],

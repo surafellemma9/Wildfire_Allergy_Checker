@@ -110,7 +110,7 @@ export function TenantAllergyChecker({
   const [selectedProtein, setSelectedProtein] = useState<ProteinOption | null>(null);
   const [selectedDressing, setSelectedDressing] = useState<DressingOption | null>(null);
   const [selectedSide, setSelectedSide] = useState<MenuItem | null>(null);
-  const [selectedCrust, setSelectedCrust] = useState<string | null>(null);
+  const [selectedCrusts, setSelectedCrusts] = useState<string[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [showAllIngredients, setShowAllIngredients] = useState(false);
@@ -196,7 +196,7 @@ export function TenantAllergyChecker({
         allergenIds: selectedAllergens,
         itemId: selectedItem.id,
         sideId: selectedSide?.id,
-        crustId: selectedCrust || undefined,
+        crustIds: selectedCrusts.length > 0 ? selectedCrusts : undefined,
         dressingId: selectedDressing?.id,  // Pass dressing for ingredient checking
         customAllergenText: customAllergenText.trim() || undefined,
         customIngredients: selectedCustomIngredients.length > 0 ? selectedCustomIngredients : undefined,
@@ -264,7 +264,7 @@ export function TenantAllergyChecker({
       console.error('Checker error:', error);
       return null;
     }
-  }, [pack, selectedItem, selectedDressing, selectedProtein, selectedSide, selectedCrust, selectedAllergens, customAllergenText, selectedCustomIngredients]);
+  }, [pack, selectedItem, selectedDressing, selectedProtein, selectedSide, selectedCrusts, selectedAllergens, customAllergenText, selectedCustomIngredients]);
 
   // ========== Handlers ==========
   const handleAcceptDisclaimer = () => {
@@ -344,8 +344,34 @@ export function TenantAllergyChecker({
     }
   };
 
-  const handleSelectCrust = (crustId: string | null) => {
-    setSelectedCrust(crustId);
+  const handleSelectCrust = (crustId: string) => {
+    const item = selectedItem as any;
+    const isReplaceMode = item?.crustMode === 'replace';
+    const maxCrusts = item?.maxCrusts || 3;
+    
+    if (isReplaceMode) {
+      // Replace mode: single selection, auto-proceed
+      setSelectedCrusts([crustId]);
+      setCurrentStep('results');
+    } else {
+      // Add mode: toggle selection (up to maxCrusts)
+      setSelectedCrusts(prev => {
+        if (prev.includes(crustId)) {
+          return prev.filter(id => id !== crustId);
+        } else if (prev.length < maxCrusts) {
+          return [...prev, crustId];
+        }
+        return prev;
+      });
+    }
+  };
+  
+  const handleCrustDone = () => {
+    setCurrentStep('results');
+  };
+  
+  const handleNoCrust = () => {
+    setSelectedCrusts([]);
     setCurrentStep('results');
   };
 
@@ -430,7 +456,7 @@ export function TenantAllergyChecker({
     setSelectedDressing(null);
     setSelectedProtein(null);
     setSelectedSide(null);
-    setSelectedCrust(null);
+    setSelectedCrusts([]);
     setSearchQuery('');
     setSelectedCategory(null);
   };
@@ -994,28 +1020,71 @@ export function TenantAllergyChecker({
         {currentStep === 'crust' && selectedItem?.crustOptions && (
           <div className="space-y-8">
             <div className="text-center">
-              <h2 className="text-3xl font-bold text-white mb-3">Select Crust</h2>
+              <h2 className="text-3xl font-bold text-white mb-3">
+                {(selectedItem as any).crustMode === 'replace' ? 'Replace Crust' : 'Add Crust'}
+              </h2>
               <p className="text-white/50 text-base">
-                Choose a crust for {selectedItem.name}
+                {(selectedItem as any).crustMode === 'replace' 
+                  ? `Replace ${(selectedItem as any).defaultCrust === 'crust_horseradish' ? 'Horseradish' : 'Mushroom'} crust with:`
+                  : `Select up to ${(selectedItem as any).maxCrusts || 3} crusts for ${selectedItem.name}`}
               </p>
+              {(selectedItem as any).crustMode !== 'replace' && selectedCrusts.length > 0 && (
+                <p className="text-amber-400/80 text-sm mt-2">
+                  {selectedCrusts.length} of {(selectedItem as any).maxCrusts || 3} selected
+                </p>
+              )}
             </div>
 
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 max-w-3xl mx-auto">
-              {selectedItem.crustOptions.map((crust) => (
-                <button
-                  key={crust.id}
-                  onClick={() => handleSelectCrust(crust.id)}
-                  className="p-4 bg-white/5 border border-white/10 rounded-xl text-white font-medium text-sm hover:bg-white/10 hover:border-white/20 transition-all"
-                >
-                  {crust.name}
-                </button>
-              ))}
+              {selectedItem.crustOptions.map((crust) => {
+                const isSelected = selectedCrusts.includes(crust.id);
+                const isReplaceMode = (selectedItem as any).crustMode === 'replace';
+                const isDefaultCrust = (selectedItem as any).defaultCrust === crust.id;
+                
+                return (
+                  <button
+                    key={crust.id}
+                    onClick={() => handleSelectCrust(crust.id)}
+                    className={cn(
+                      "p-4 border rounded-xl font-medium text-sm transition-all relative",
+                      isSelected
+                        ? "bg-amber-500/20 border-amber-500/50 text-amber-300"
+                        : "bg-white/5 border-white/10 text-white hover:bg-white/10 hover:border-white/20"
+                    )}
+                  >
+                    {crust.name}
+                    {isDefaultCrust && isReplaceMode && (
+                      <span className="block text-xs text-white/40 mt-1">(Current)</span>
+                    )}
+                    {isSelected && (
+                      <Check className="absolute top-2 right-2 w-4 h-4 text-amber-400" />
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+
+            <div className="flex justify-center gap-4 mt-6">
               <button
-                onClick={() => handleSelectCrust(null)}
-                className="p-4 bg-white/[0.02] border border-white/5 rounded-xl text-white/40 font-medium text-sm hover:bg-white/5 hover:border-white/10 transition-all"
+                onClick={handleNoCrust}
+                className="px-6 py-3 bg-white/[0.02] border border-white/5 rounded-xl text-white/40 font-medium text-sm hover:bg-white/5 hover:border-white/10 transition-all"
               >
-                No crust
+                {(selectedItem as any).crustMode === 'replace' ? 'Keep Current Crust' : 'No Crust'}
               </button>
+              {(selectedItem as any).crustMode !== 'replace' && (
+                <button
+                  onClick={handleCrustDone}
+                  disabled={selectedCrusts.length === 0}
+                  className={cn(
+                    "px-6 py-3 rounded-xl font-medium text-sm transition-all",
+                    selectedCrusts.length > 0
+                      ? "bg-amber-500/20 border border-amber-500/50 text-amber-300 hover:bg-amber-500/30"
+                      : "bg-white/5 border border-white/10 text-white/30 cursor-not-allowed"
+                  )}
+                >
+                  Continue with {selectedCrusts.length} crust{selectedCrusts.length !== 1 ? 's' : ''}
+                </button>
+              )}
             </div>
           </div>
         )}
