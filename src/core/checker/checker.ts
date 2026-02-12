@@ -21,7 +21,8 @@ export interface CheckerSelections {
   allergenIds: string[];
   itemId: string;
   sideId?: string;
-  crustId?: string;
+  crustId?: string;           // Single crust (legacy)
+  crustIds?: string[];        // Multiple crusts (new - for steaks)
   dressingId?: string;
   addOnIds?: string[];  // Multiple add-ons can be selected
   customAllergenText?: string;
@@ -137,7 +138,7 @@ export function checkAllergens(
   pack: TenantPack,
   selections: CheckerSelections
 ): CheckerResult {
-  const { allergenIds, itemId, sideId, crustId, dressingId, addOnIds, customAllergenText, customIngredients } = selections;
+  const { allergenIds, itemId, sideId, crustId, crustIds, dressingId, addOnIds, customAllergenText, customIngredients } = selections;
 
   // Find the main item
   const mainItem = pack.items.find((i) => i.id === itemId);
@@ -157,16 +158,27 @@ export function checkAllergens(
     }
   }
 
-  // Check crust if selected (look in item's crustOptions)
+  // Check crust(s) if selected - supports both single crustId and multiple crustIds
   let crustResult: ItemCheckResult | undefined;
-  if (crustId && mainItem.crustOptions) {
-    const crustOption = mainItem.crustOptions.find((c) => c.id === crustId);
-    if (crustOption) {
-      // Look for crust item in pack
-      const crustItem = pack.items.find((i) => i.id === crustId);
-      if (crustItem) {
-        crustResult = checkItem(pack, crustItem, allergenIds);
+  const effectiveCrustIds = crustIds && crustIds.length > 0 ? crustIds : (crustId ? [crustId] : []);
+  if (effectiveCrustIds.length > 0 && mainItem.crustOptions) {
+    // For multiple crusts, combine their results
+    const crustResults: ItemCheckResult[] = [];
+    for (const cId of effectiveCrustIds) {
+      const crustOption = mainItem.crustOptions.find((c) => c.id === cId);
+      if (crustOption) {
+        const crustItem = pack.items.find((i) => i.id === cId);
+        if (crustItem) {
+          crustResults.push(checkItem(pack, crustItem, allergenIds));
+        }
       }
+    }
+    // Combine multiple crust results into one
+    if (crustResults.length === 1) {
+      crustResult = crustResults[0];
+    } else if (crustResults.length > 1) {
+      // Merge multiple crust results - take worst status, combine all mods
+      crustResult = mergeCrustResults(crustResults);
     }
   }
 
@@ -364,6 +376,78 @@ function checkIngredientInDressing(dressing: DressingOption, ingredient: string)
 // ============================================================================
 // Helper Functions
 // ============================================================================
+
+/**
+ * Merge multiple crust results into one combined result
+ * Takes the worst status and combines all modifications
+ */
+function mergeCrustResults(results: ItemCheckResult[]): ItemCheckResult {
+  if (results.length === 0) {
+    throw new Error('Cannot merge empty results array');
+  }
+  if (results.length === 1) {
+    return results[0];
+  }
+
+  // Determine worst status
+  const statusPriority: Record<string, number> = {
+    'UNSAFE': 0,
+    'NOT_SAFE_NOT_IN_SHEET': 1,
+    'VERIFY_WITH_KITCHEN': 2,
+    'MODIFIABLE': 3,
+    'SAFE': 4,
+  };
+
+  let worstStatus = results[0].status;
+  for (const result of results) {
+    if ((statusPriority[result.status] ?? 5) < (statusPriority[worstStatus] ?? 5)) {
+      worstStatus = result.status;
+    }
+  }
+
+  // Combine item names and IDs
+  const combinedName = results.map(r => r.itemName).join(' + ');
+  const combinedId = results.map(r => r.itemId).join('+');
+  
+  // Combine per-allergen results
+  const combinedPerAllergen: PerAllergenResult[] = [];
+  const allergenMap = new Map<string, PerAllergenResult>();
+  
+  for (const result of results) {
+    for (const pa of result.perAllergen) {
+      const existing = allergenMap.get(pa.allergenId);
+      if (existing) {
+        // Merge: take worst status, combine substitutions and notes
+        if ((statusPriority[pa.status] ?? 5) < (statusPriority[existing.status] ?? 5)) {
+          existing.status = pa.status;
+        }
+        existing.substitutions = [...new Set([...existing.substitutions, ...pa.substitutions])];
+        existing.notes = [...new Set([...existing.notes, ...pa.notes])];
+        existing.foundIngredients = [...new Set([...existing.foundIngredients, ...pa.foundIngredients])];
+      } else {
+        allergenMap.set(pa.allergenId, { 
+          ...pa, 
+          substitutions: [...pa.substitutions],
+          notes: [...pa.notes],
+          foundIngredients: [...pa.foundIngredients],
+        });
+      }
+    }
+  }
+  
+  for (const pa of allergenMap.values()) {
+    combinedPerAllergen.push(pa);
+  }
+
+  return {
+    itemId: combinedId,
+    itemName: combinedName,
+    ticketCode: results.map(r => r.ticketCode).filter(Boolean).join(' + ') || undefined,
+    status: worstStatus,
+    canBeModified: worstStatus === 'MODIFIABLE' || worstStatus === 'SAFE',
+    perAllergen: combinedPerAllergen,
+  };
+}
 
 /**
  * Check a single item against selected allergens
