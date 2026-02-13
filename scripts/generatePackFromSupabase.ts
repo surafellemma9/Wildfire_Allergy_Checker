@@ -398,8 +398,7 @@ const CATEGORY_CONFIG: Record<string, { icon: string; order: number }> = {
   'Prime Rib': { icon: '🥩', order: 10 },
   'Seafood': { icon: '🐟', order: 11 },
   'Fresh Fish and Seafood': { icon: '🐟', order: 12 },
-  'Chicken': { icon: '🍗', order: 13 },
-  'BBQ': { icon: '🍖', order: 14 },
+  'Chicken & BBQ': { icon: '🍗', order: 13 },
   'Nightly Specials': { icon: '⭐', order: 15 },
   'Specials': { icon: '⭐', order: 16 },
   'Special Party Items': { icon: '🎉', order: 17 },
@@ -503,18 +502,33 @@ async function generatePack() {
     console.log(`   ✓ Also excluded items: ${EXCLUDED_ITEMS.join(', ')}`);
   }
 
-  // 3. Fetch allergen modifications WITH menu_item_id
+  // 3. Fetch allergen modifications WITH menu_item_id (with pagination to handle >1000 rules)
   console.log('📋 Fetching allergen modifications...');
-  const { data: modifications, error: modError } = await supabase
-    .from('allergen_modifications')
-    .select('id, menu_item_id, dish_name, category, allergen, status, modifications, notes')
-    .eq('tenant_id', TENANT_ID);
+  let modifications: any[] = [];
+  let offset = 0;
+  const pageSize = 1000;
+  
+  while (true) {
+    const { data: page, error: modError } = await supabase
+      .from('allergen_modifications')
+      .select('id, menu_item_id, dish_name, category, allergen, status, modifications, notes')
+      .eq('tenant_id', TENANT_ID)
+      .range(offset, offset + pageSize - 1);
 
-  if (modError) {
-    console.error('❌ Error fetching modifications:', modError.message);
-    process.exit(1);
+    if (modError) {
+      console.error('❌ Error fetching modifications:', modError.message);
+      process.exit(1);
+    }
+    
+    if (!page || page.length === 0) break;
+    
+    modifications = modifications.concat(page);
+    
+    if (page.length < pageSize) break; // Last page
+    offset += pageSize;
   }
-  console.log(`   ✓ ${modifications?.length || 0} allergen rules total`);
+  
+  console.log(`   ✓ ${modifications.length} allergen rules total`);
 
   // 3a. Fetch breads
   console.log('📋 Fetching breads...');
@@ -763,6 +777,29 @@ async function generatePack() {
           allergens: bread.allergens || [],
         };
       }
+    }
+
+    // Add side selection for Chicken & BBQ - user picks from all available sides
+    if (effectiveCategory === 'Chicken & BBQ') {
+      const sideItems = dbMenuItems.filter(i => i.category === 'Sides');
+      if (sideItems.length > 0) {
+        item.isEntree = true;  // Triggers side selection step
+        item.sides = sideItems.map(sideItem => ({
+          id: sideItem.id,
+          name: sideItem.name,
+        }));
+      }
+    }
+
+    // Add bread selection for Kids items (burgers, sandwiches, grilled cheese)
+    if (effectiveCategory === 'Kids' && menuItem.default_bread_id && breadLookup.has(menuItem.default_bread_id)) {
+      const bread = breadLookup.get(menuItem.default_bread_id);
+      item.defaultBread = {
+        id: bread.id,
+        name: bread.name,
+        ingredients: bread.ingredients || [],
+        allergens: bread.allergens || [],
+      };
     }
 
     return item;
