@@ -407,6 +407,7 @@ const CATEGORY_CONFIG: Record<string, { icon: string; order: number }> = {
   'Kids Menu': { icon: '👶', order: 20 },
   'Desserts': { icon: '🍰', order: 21 },
   'Brunch': { icon: '🍳', order: 22 },
+  'Brunch Sides': { icon: '🍳', order: 23 },
 };
 
 // Items to move to a different category (name pattern -> new category)
@@ -788,6 +789,21 @@ async function generatePack() {
           id: sideItem.id,
           name: sideItem.name,
         }));
+      }
+    }
+
+    // Add brunch side selection for Brunch entrees (except pancakes and French toast)
+    if (effectiveCategory === 'Brunch') {
+      const isPancakeOrFrenchToast = /pancake|french toast/i.test(menuItem.name);
+      if (!isPancakeOrFrenchToast) {
+        const brunchSideItems = dbMenuItems.filter(i => i.category === 'Brunch Sides');
+        if (brunchSideItems.length > 0) {
+          item.isEntree = true;  // Triggers side selection step
+          item.brunchSides = brunchSideItems.map(sideItem => ({
+            id: sideItem.id,
+            name: sideItem.name,
+          }));
+        }
       }
     }
 

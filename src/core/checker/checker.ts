@@ -1421,6 +1421,11 @@ export function getItemsByCategory(
 ): MenuItem[] {
   let items: MenuItem[] = [];
 
+  // Check if this category IS a sides/add-ons category (should show side-only items)
+  const isSidesCategory = categoryId.includes('sides') || 
+                          categoryId.includes('add_ons') || 
+                          categoryId.includes('add-ons');
+
   // Use O(1) index if available (built during pack validation)
   if (pack._categoryIndex) {
     items = pack._categoryIndex.get(categoryId) || [];
@@ -1429,8 +1434,10 @@ export function getItemsByCategory(
       console.log('[DEBUG-H3] Index items before filter:', {categoryId,indexCount:items.length,indexItems:items.map(i=>({name:i.name,isSideOnly:i.isSideOnly})),hasKale:items.some(i=>i.name?.toLowerCase().includes('kale'))});
     }
     // #endregion
-    // Filter out side-only items from main menu grid
-    items = items.filter(item => !item.isSideOnly);
+    // Filter out side-only items from main menu grid (but NOT when browsing a sides category)
+    if (!isSidesCategory) {
+      items = items.filter(item => !item.isSideOnly);
+    }
   } else {
     // #region agent log - H4: Log fallback path usage
     if (categoryId === 'salads') {
@@ -1440,8 +1447,8 @@ export function getItemsByCategory(
     // #endregion
     // Fallback to O(n) filter (legacy packs or invalid state)
     items = pack.items.filter((item) => {
-      // Filter out side-only items
-      if (item.isSideOnly) return false;
+      // Filter out side-only items (but NOT when browsing a sides category)
+      if (!isSidesCategory && item.isSideOnly) return false;
 
       // Primary: match by categoryId
       if (item.categoryId === categoryId) {

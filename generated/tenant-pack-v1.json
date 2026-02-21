@@ -3,7 +3,7 @@
   "conceptName": "Wildfire",
   "locationName": "Tysons Corner",
   "version": 1,
-  "generatedAt": "2026-02-13T19:44:38.048Z",
+  "generatedAt": "2026-02-21T16:13:21.863Z",
   "allergens": [
     {
       "id": "dairy",
@@ -67,11 +67,13 @@
     }
   ],
   "allIngredients": [
+    "al pastor marinade",
     "alaskan halibut",
     "american cheese",
     "apple cider vinegar",
     "apples",
     "applesauce",
+    "applewood smoked bacon",
     "apricot dipping sauce",
     "artichokes",
     "arugula",
@@ -80,6 +82,7 @@
     "atlantic salmon",
     "au jus",
     "avocado",
+    "avocado spread",
     "baby back pork ribs",
     "baby spinach",
     "bacon",
@@ -98,6 +101,7 @@
     "bbq sauce",
     "beef patty",
     "beef rib eye chop",
+    "beefsteak tomato",
     "berry sauce",
     "bison burger",
     "bison meatballs",
@@ -115,6 +119,7 @@
     "brussels sprouts",
     "butter",
     "buttermilk",
+    "buttermilk pancake batter",
     "butternut squash",
     "béarnaise sauce",
     "cabbage",
@@ -124,6 +129,7 @@
     "carrot",
     "cauliflower",
     "celery",
+    "challah bread",
     "char-crust",
     "char-crust seasoning",
     "cheddar cheese",
@@ -139,6 +145,7 @@
     "chocolate chips",
     "chocolate icing",
     "chocolate pistoles",
+    "chocolate shavings",
     "cider vinegar",
     "cinnamon",
     "clam juice",
@@ -149,18 +156,22 @@
     "coleslaw",
     "cooking spray",
     "coriander",
+    "corn",
     "corn syrup",
     "corn tortilla squares",
     "cornstarch",
     "coulotte steak",
     "crab",
+    "crab cake",
     "crab meat",
     "cracked black pepper",
     "cream",
     "cream cheese",
+    "creamed spinach",
     "cremini mushrooms",
     "crispy fried chicken breast",
     "crushed red chilies",
+    "cubed potatoes",
     "cucumbers",
     "cumin",
     "dejonghe crust",
@@ -170,6 +181,7 @@
     "door county cherries",
     "door county cherry juice",
     "elbow macaroni",
+    "english muffin",
     "extra virgin olive oil",
     "feta cheese",
     "field greens",
@@ -177,8 +189,11 @@
     "filet mignon",
     "flatbread",
     "flour",
+    "flour tortilla",
     "french fries",
+    "french toast batter",
     "fresh corn",
+    "fresh fruit",
     "fresh herb marinade",
     "fresh lemon juice",
     "fresh mozzarella",
@@ -189,10 +204,12 @@
     "graham cracker crust",
     "grilled chicken breast",
     "ground beef patty",
+    "guacamole",
     "half and half",
     "heavy cream",
     "herb chicken marinade",
     "hidden valley ranch dry dressing",
+    "hollandaise sauce",
     "homemade coleslaw",
     "homemade flatbread",
     "hot fudge",
@@ -201,6 +218,7 @@
     "iceberg lettuce",
     "idaho potato",
     "idaho russet potatoes",
+    "jalapeno jack cheese",
     "japanese breadcrumbs",
     "jim beam bourbon",
     "kalamata olives",
@@ -219,12 +237,15 @@
     "lettuce",
     "lime juice",
     "lobster base",
+    "macerated strawberries",
     "maltodextrin",
+    "maple syrup",
     "marinated chicken",
     "mashed potatoes",
     "mayonnaise",
     "melted butter",
     "milk",
+    "multi-grain bread",
     "mushroom caps",
     "mustard mayo",
     "mustard mayo marinade",
@@ -232,6 +253,7 @@
     "new york strip",
     "nutmeg",
     "oatmeal raisin cookie crumbles",
+    "oil",
     "old bay",
     "old bay seasoning",
     "olive oil",
@@ -246,17 +268,22 @@
     "pepperoncini",
     "pepperoni",
     "pickles",
+    "pico de gallo",
     "pie crust",
     "pork rib chops",
     "porterhouse",
     "portobello mushroom cap",
     "portobello mushrooms",
     "potatoes",
+    "powdered sugar",
+    "preserves",
     "prime rib",
     "quinoa",
+    "ranchero sauce",
     "raspberries",
     "red chilies",
     "red pepper",
+    "red pepper flakes",
     "red skin potatoes",
     "red wine vinegar",
     "roasted market vegetables",
@@ -270,8 +297,10 @@
     "saltine crackers",
     "san j tamari",
     "scallops",
+    "seasonal fruit",
     "seasoned flour",
     "sherry",
+    "shredded baked potato",
     "shredded carrots",
     "shredded coconut",
     "shrimp",
@@ -280,6 +309,7 @@
     "skirt steak",
     "sliced cucumbers",
     "sliced prime rib",
+    "sliced tomatoes",
     "sliced turkey breast",
     "sour cream",
     "spicy pumpkin seeds",
@@ -305,6 +335,8 @@
     "tomato wedges",
     "tomatoes",
     "turkey patty",
+    "turkey sausage",
+    "turkey sausage patties",
     "tuscan kale",
     "vanilla",
     "vanilla extract",
@@ -332,6 +364,7 @@
     "cheese",
     "chicken jus",
     "choice of crust",
+    "cilantro",
     "cocktail sauce",
     "corn",
     "fresh basil",
@@ -370,6 +403,17 @@
     "zaatar spice"
   ],
   "ingredientGroups": {
+    "pastor": [
+      "al pastor marinade"
+    ],
+    "marinade": [
+      "al pastor marinade",
+      "bourbon marinade",
+      "fresh herb marinade",
+      "herb chicken marinade",
+      "mustard mayo marinade",
+      "steak marinade"
+    ],
     "alaskan": [
       "alaskan halibut"
     ],
@@ -386,6 +430,7 @@
       "cream cheese",
       "feta cheese",
       "goat cheese",
+      "jalapeno jack cheese",
       "land o lakes golden velvet yellow cheese spread",
       "land o'lakes golden velvet yellow cheese spread",
       "parmesan cheese",
@@ -398,7 +443,8 @@
     "apple": [
       "apple cider vinegar",
       "apples",
-      "applesauce"
+      "applesauce",
+      "applewood smoked bacon"
     ],
     "vinegar": [
       "apple cider vinegar",
@@ -416,6 +462,16 @@
     ],
     "applesauce": [
       "applesauce"
+    ],
+    "bacon": [
+      "applewood smoked bacon",
+      "bacon"
+    ],
+    "applewood": [
+      "applewood smoked bacon"
+    ],
+    "smoked": [
+      "applewood smoked bacon"
     ],
     "apricot": [
       "apricot dipping sauce"
@@ -449,7 +505,13 @@
       "chicken jus"
     ],
     "avocado": [
-      "avocado"
+      "avocado",
+      "avocado spread"
+    ],
+    "spread": [
+      "avocado spread",
+      "land o lakes golden velvet yellow cheese spread",
+      "land o'lakes golden velvet yellow cheese spread"
     ],
     "pork": [
       "baby back pork ribs",
@@ -467,24 +529,25 @@
     ],
     "spinach": [
       "baby spinach",
+      "creamed spinach",
       "spinach"
-    ],
-    "bacon": [
-      "bacon"
     ],
     "potato": [
       "baked potato",
       "baked sweet potato",
+      "cubed potatoes",
       "idaho potato",
       "idaho russet potatoes",
       "mashed potatoes",
       "potatoes",
       "red skin potatoes",
+      "shredded baked potato",
       "sweet potato"
     ],
     "baked": [
       "baked potato",
-      "baked sweet potato"
+      "baked sweet potato",
+      "shredded baked potato"
     ],
     "sweet": [
       "baked sweet potato",
@@ -571,6 +634,7 @@
     "beef": [
       "beef patty",
       "beef rib eye chop",
+      "beefsteak tomato",
       "ground beef patty"
     ],
     "patty": [
@@ -583,6 +647,20 @@
     ],
     "chop": [
       "beef rib eye chop"
+    ],
+    "tomato": [
+      "beefsteak tomato",
+      "oven dried tomatoes",
+      "sliced tomatoes",
+      "tomato",
+      "tomato basil sauce",
+      "tomato jam",
+      "tomato paste",
+      "tomato wedges",
+      "tomatoes"
+    ],
+    "beefsteak": [
+      "beefsteak tomato"
     ],
     "berry": [
       "berry sauce"
@@ -605,7 +683,8 @@
       "pepper",
       "pepperoncini",
       "pepperoni",
-      "red pepper"
+      "red pepper",
+      "red pepper flakes"
     ],
     "black": [
       "black pepper",
@@ -662,13 +741,6 @@
       "blue cheese crumbles",
       "oatmeal raisin cookie crumbles"
     ],
-    "marinade": [
-      "bourbon marinade",
-      "fresh herb marinade",
-      "herb chicken marinade",
-      "mustard mayo marinade",
-      "steak marinade"
-    ],
     "brine": [
       "brine"
     ],
@@ -683,6 +755,7 @@
     ],
     "sugar": [
       "brown sugar",
+      "powdered sugar",
       "sugar"
     ],
     "brussels": [
@@ -694,6 +767,7 @@
     "butter": [
       "butter",
       "buttermilk",
+      "buttermilk pancake batter",
       "butternut squash",
       "clarified butter",
       "lemon butter sauce",
@@ -701,7 +775,15 @@
       "steak butter"
     ],
     "buttermilk": [
-      "buttermilk"
+      "buttermilk",
+      "buttermilk pancake batter"
+    ],
+    "pancake": [
+      "buttermilk pancake batter"
+    ],
+    "batter": [
+      "buttermilk pancake batter",
+      "french toast batter"
     ],
     "butternut": [
       "butternut squash"
@@ -736,6 +818,17 @@
     ],
     "celery": [
       "celery"
+    ],
+    "bread": [
+      "challah bread",
+      "flatbread",
+      "homemade flatbread",
+      "japanese breadcrumbs",
+      "multi-grain bread",
+      "panko breadcrumbs"
+    ],
+    "challah": [
+      "challah bread"
     ],
     "char": [
       "char-crust",
@@ -782,7 +875,8 @@
     "chocolate": [
       "chocolate chips",
       "chocolate icing",
-      "chocolate pistoles"
+      "chocolate pistoles",
+      "chocolate shavings"
     ],
     "chips": [
       "chocolate chips"
@@ -792,6 +886,9 @@
     ],
     "pistoles": [
       "chocolate pistoles"
+    ],
+    "shavings": [
+      "chocolate shavings"
     ],
     "cinnamon": [
       "cinnamon"
@@ -826,10 +923,12 @@
       "coriander"
     ],
     "syrup": [
-      "corn syrup"
+      "corn syrup",
+      "maple syrup"
     ],
     "tortilla": [
-      "corn tortilla squares"
+      "corn tortilla squares",
+      "flour tortilla"
     ],
     "squares": [
       "corn tortilla squares"
@@ -842,8 +941,13 @@
     ],
     "crab": [
       "crab",
+      "crab cake",
       "crab meat",
       "super lump crab meat"
+    ],
+    "cake": [
+      "crab cake",
+      "toasted cake crumbs"
     ],
     "meat": [
       "crab meat",
@@ -855,12 +959,16 @@
     "cream": [
       "cream",
       "cream cheese",
+      "creamed spinach",
       "heavy cream",
       "horseradish cream sauce",
       "sour cream",
       "vanilla ice cream",
       "whipped cream",
       "whipping cream"
+    ],
+    "creamed": [
+      "creamed spinach"
     ],
     "mushroom": [
       "cremini mushrooms",
@@ -892,6 +1000,7 @@
       "crushed red chilies",
       "red chilies",
       "red pepper",
+      "red pepper flakes",
       "red skin potatoes",
       "red wine vinaigrette",
       "red wine vinegar"
@@ -899,6 +1008,16 @@
     "chilies": [
       "crushed red chilies",
       "red chilies"
+    ],
+    "cubed": [
+      "cubed potatoes"
+    ],
+    "potatoes": [
+      "cubed potatoes",
+      "idaho russet potatoes",
+      "mashed potatoes",
+      "potatoes",
+      "red skin potatoes"
     ],
     "cucumber": [
       "cucumbers",
@@ -947,6 +1066,12 @@
     "macaroni": [
       "elbow macaroni"
     ],
+    "english": [
+      "english muffin"
+    ],
+    "muffin": [
+      "english muffin"
+    ],
     "olive": [
       "extra virgin olive oil",
       "kalamata olives",
@@ -977,35 +1102,38 @@
     "mignon": [
       "filet mignon"
     ],
-    "bread": [
-      "flatbread",
-      "homemade flatbread",
-      "japanese breadcrumbs",
-      "multi-grain bread",
-      "panko breadcrumbs"
-    ],
     "flatbread": [
       "flatbread",
       "homemade flatbread"
     ],
     "flour": [
       "flour",
+      "flour tortilla",
       "seasoned flour"
     ],
     "french": [
-      "french fries"
+      "french fries",
+      "french toast batter"
     ],
     "fries": [
       "french fries"
     ],
+    "toast": [
+      "french toast batter"
+    ],
     "fresh": [
       "fresh basil",
       "fresh corn",
+      "fresh fruit",
       "fresh herb marinade",
       "fresh lemon juice",
       "fresh mozzarella",
       "fresh oranges",
       "fresh thyme"
+    ],
+    "fruit": [
+      "fresh fruit",
+      "seasonal fruit"
     ],
     "herb": [
       "fresh herb marinade",
@@ -1066,6 +1194,9 @@
     "ground": [
       "ground beef patty"
     ],
+    "guacamole": [
+      "guacamole"
+    ],
     "half": [
       "half and half"
     ],
@@ -1075,7 +1206,8 @@
     "ranch": [
       "hidden valley ranch dry dressing",
       "ranch dressing",
-      "ranch dressing drizzle"
+      "ranch dressing drizzle",
+      "ranchero sauce"
     ],
     "hidden": [
       "hidden valley ranch dry dressing"
@@ -1085,6 +1217,9 @@
     ],
     "dry": [
       "hidden valley ranch dry dressing"
+    ],
+    "hollandaise": [
+      "hollandaise sauce"
     ],
     "homemade": [
       "homemade coleslaw",
@@ -1123,11 +1258,11 @@
     "russet": [
       "idaho russet potatoes"
     ],
-    "potatoes": [
-      "idaho russet potatoes",
-      "mashed potatoes",
-      "potatoes",
-      "red skin potatoes"
+    "jalapeno": [
+      "jalapeno jack cheese"
+    ],
+    "jack": [
+      "jalapeno jack cheese"
     ],
     "japanese": [
       "japanese breadcrumbs"
@@ -1201,10 +1336,6 @@
       "land o lakes golden velvet yellow cheese spread",
       "land o'lakes golden velvet yellow cheese spread"
     ],
-    "spread": [
-      "land o lakes golden velvet yellow cheese spread",
-      "land o'lakes golden velvet yellow cheese spread"
-    ],
     "o'lakes": [
       "land o'lakes golden velvet yellow cheese spread"
     ],
@@ -1225,8 +1356,18 @@
     "base": [
       "lobster base"
     ],
+    "macerated": [
+      "macerated strawberries"
+    ],
+    "strawberries": [
+      "macerated strawberries",
+      "strawberries"
+    ],
     "maltodextrin": [
       "maltodextrin"
+    ],
+    "maple": [
+      "maple syrup"
     ],
     "marinated": [
       "marinated chicken"
@@ -1252,6 +1393,12 @@
       "milk",
       "sweetened condensed milk",
       "whole milk"
+    ],
+    "multi": [
+      "multi-grain bread"
+    ],
+    "grain": [
+      "multi-grain bread"
     ],
     "caps": [
       "mushroom caps"
@@ -1281,15 +1428,6 @@
     "oregano": [
       "oregano"
     ],
-    "tomato": [
-      "oven dried tomatoes",
-      "tomato",
-      "tomato basil sauce",
-      "tomato jam",
-      "tomato paste",
-      "tomato wedges",
-      "tomatoes"
-    ],
     "oven": [
       "oven dried tomatoes"
     ],
@@ -1298,6 +1436,7 @@
     ],
     "tomatoes": [
       "oven dried tomatoes",
+      "sliced tomatoes",
       "tomatoes"
     ],
     "panko": [
@@ -1325,6 +1464,12 @@
     "pickles": [
       "pickles"
     ],
+    "pico": [
+      "pico de gallo"
+    ],
+    "gallo": [
+      "pico de gallo"
+    ],
     "pie": [
       "pie crust"
     ],
@@ -1336,6 +1481,12 @@
     "cap": [
       "portobello mushroom cap"
     ],
+    "powdered": [
+      "powdered sugar"
+    ],
+    "preserves": [
+      "preserves"
+    ],
     "prime": [
       "prime rib",
       "sliced prime rib"
@@ -1343,8 +1494,14 @@
     "quinoa": [
       "quinoa"
     ],
+    "ranchero": [
+      "ranchero sauce"
+    ],
     "raspberries": [
       "raspberries"
+    ],
+    "flakes": [
+      "red pepper flakes"
     ],
     "skin": [
       "red skin potatoes"
@@ -1393,10 +1550,14 @@
     "scallops": [
       "scallops"
     ],
+    "seasonal": [
+      "seasonal fruit"
+    ],
     "sherry": [
       "sherry"
     ],
     "shredded": [
+      "shredded baked potato",
       "shredded carrots",
       "shredded coconut"
     ],
@@ -1425,11 +1586,14 @@
     "sliced": [
       "sliced cucumbers",
       "sliced prime rib",
+      "sliced tomatoes",
       "sliced turkey breast"
     ],
     "turkey": [
       "sliced turkey breast",
-      "turkey patty"
+      "turkey patty",
+      "turkey sausage",
+      "turkey sausage patties"
     ],
     "sour": [
       "sour cream"
@@ -1442,9 +1606,6 @@
     ],
     "seeds": [
       "spicy pumpkin seeds"
-    ],
-    "strawberries": [
-      "strawberries"
     ],
     "super": [
       "super lump crab meat"
@@ -1477,15 +1638,19 @@
     "toasted": [
       "toasted cake crumbs"
     ],
-    "cake": [
-      "toasted cake crumbs"
-    ],
     "crumbs": [
       "toasted cake crumbs"
     ],
     "wedges": [
       "lemon wedges",
       "tomato wedges"
+    ],
+    "sausage": [
+      "turkey sausage",
+      "turkey sausage patties"
+    ],
+    "patties": [
+      "turkey sausage patties"
     ],
     "tuscan": [
       "tuscan kale"
@@ -1530,6 +1695,9 @@
     "choice": [
       "choice of crust"
     ],
+    "cilantro": [
+      "cilantro"
+    ],
     "cocktail": [
       "cocktail sauce"
     ],
@@ -1552,12 +1720,6 @@
     ],
     "chimichurri": [
       "mint chimichurri"
-    ],
-    "multi": [
-      "multi-grain bread"
-    ],
-    "grain": [
-      "multi-grain bread"
     ],
     "drizzle": [
       "ranch dressing drizzle"
@@ -3068,6 +3230,160 @@
         "garlic"
       ],
       "notes": "Contains garlic"
+    },
+    {
+      "id": "52d52b14-9766-4a54-8b41-e51735ba9451",
+      "name": "Avocado Spread",
+      "category": "sauce",
+      "ingredients": [
+        "avocado",
+        "salt",
+        "pepper",
+        "lime juice",
+        "scallions",
+        "cilantro"
+      ],
+      "allergens": [],
+      "notes": "Used on avocado toast dishes"
+    },
+    {
+      "id": "30fab355-e452-421d-b0dd-e4fe276bd654",
+      "name": "Pico de Gallo",
+      "category": "sauce",
+      "ingredients": [
+        "plum tomatoes",
+        "onions",
+        "jalapenos",
+        "cilantro",
+        "salt",
+        "pepper",
+        "lemon juice"
+      ],
+      "allergens": [],
+      "notes": "Fresh salsa"
+    },
+    {
+      "id": "d0315806-2d5e-45d9-8679-d9e6f4d5f095",
+      "name": "Guacamole",
+      "category": "sauce",
+      "ingredients": [
+        "tomatoes",
+        "onions",
+        "jalapenos",
+        "cilantro",
+        "salt",
+        "pepper",
+        "lime juice",
+        "avocados"
+      ],
+      "allergens": [],
+      "notes": "Fresh guacamole"
+    },
+    {
+      "id": "75cd0ae8-1929-4595-a7ad-58f18bba21b8",
+      "name": "Ranchero Sauce",
+      "category": "sauce",
+      "ingredients": [
+        "plum tomatoes",
+        "onions",
+        "jalapenos",
+        "water",
+        "salt",
+        "cilantro"
+      ],
+      "allergens": [],
+      "notes": "Mexican-style tomato sauce"
+    },
+    {
+      "id": "7b21dbd5-fb28-4f41-b93a-eee18298aa2a",
+      "name": "Al Pastor Spice",
+      "category": "seasoning",
+      "ingredients": [
+        "chili pepper",
+        "dehydrated garlic",
+        "onion",
+        "spices",
+        "paprika",
+        "maltodextrin",
+        "salt",
+        "natural flavors",
+        "silicon dioxide"
+      ],
+      "allergens": [
+        ""
+      ],
+      "notes": "Dry spice blend"
+    },
+    {
+      "id": "ec17f61a-a6ec-43dd-a7ca-a5c96d1eb20b",
+      "name": "Hollandaise Sauce",
+      "category": "sauce",
+      "ingredients": [
+        "egg yolks",
+        "white wine",
+        "lemon juice",
+        "Tabasco sauce",
+        "Worcestershire sauce",
+        "salt",
+        "pepper",
+        "butter"
+      ],
+      "allergens": [
+        "dairy",
+        "eggs",
+        "shellfish"
+      ],
+      "notes": "For Eggs Benedict"
+    },
+    {
+      "id": "ad12e16a-4a91-4a84-b67b-3fd6e27eb3a9",
+      "name": "French Toast Batter",
+      "category": "other",
+      "ingredients": [
+        "half and half",
+        "sugar",
+        "vanilla paste",
+        "egg yolks"
+      ],
+      "allergens": [
+        "dairy",
+        "eggs"
+      ],
+      "notes": "For French toast"
+    },
+    {
+      "id": "7bafc43d-b42d-4e5c-89f5-ddcddb6a44e3",
+      "name": "Buttermilk Brine",
+      "category": "marinade",
+      "ingredients": [
+        "buttermilk",
+        "salt",
+        "pepper"
+      ],
+      "allergens": [
+        "dairy"
+      ],
+      "notes": "Brine"
+    },
+    {
+      "id": "a011b274-0691-48fb-8be4-b17638f2b4cf",
+      "name": "Buttermilk Pancake Batter",
+      "category": "other",
+      "ingredients": [
+        "flour",
+        "sugar",
+        "salt",
+        "baking soda",
+        "butter",
+        "eggs",
+        "buttermilk"
+      ],
+      "allergens": [
+        "gluten",
+        "eggs",
+        "dairy"
+      ],
+      "notes": "For pancakes"
     }
   ],
   "categories": [
@@ -3174,6 +3490,13 @@
       "name": "Brunch",
       "icon": "🍳",
       "displayOrder": 22,
+      "needsReview": false
+    },
+    {
+      "id": "brunch_sides",
+      "name": "Brunch Sides",
+      "icon": "🍳",
+      "displayOrder": 23,
       "needsReview": false
     }
   ],
@@ -23793,121 +24116,122 @@
       "_ruleCount": 10
     },
     {
-      "id": "4d709edd-45be-4888-a762-7eb6969bd480",
-      "name": "Avocado Toast",
-      "ticketCode": null,
+      "id": "19f5ac56-47f0-4cb7-b637-944008534e21",
+      "name": "Avocado Toast and Eggs",
+      "ticketCode": "AVO TOAST EGG",
       "categoryId": "brunch",
       "category": "Brunch",
       "description": null,
       "displayOrder": 112,
       "allergenRules": {
         "dairy": {
-          "status": "MODIFIABLE",
-          "substitutions": [
-            "NO butter on toast",
-            "NO cheese in eggs"
-          ],
-          "notes": "Can be made dairy-safe with listed modifications",
-          "requiresVerification": false
-        },
-        "gluten": {
-          "status": "MODIFIABLE",
-          "substitutions": [
-            "NO toast",
-            "SUB GF BUN"
-          ],
-          "notes": "Can be made gluten-safe with gluten-free substitutions",
-          "requiresVerification": false
-        },
-        "shellfish": {
-          "status": "SAFE",
-          "substitutions": [],
-          "notes": "Safe for shellfish allergy",
-          "requiresVerification": false
-        },
-        "soy": {
-          "status": "SAFE",
-          "substitutions": [],
-          "notes": "No changes needed",
-          "requiresVerification": false
-        },
-        "eggs": {
-          "status": "MODIFIABLE",
-          "substitutions": [
-            "NO eggs"
-          ],
-          "notes": "Can be made egg-safe with listed modifications",
-          "requiresVerification": false
-        },
-        "peanuts": {
-          "status": "SAFE",
-          "substitutions": [],
-          "notes": "No changes needed",
-          "requiresVerification": false
-        },
-        "tree_nuts": {
-          "status": "SAFE",
-          "substitutions": [],
-          "notes": "No changes needed",
-          "requiresVerification": false
-        },
-        "sesame": {
-          "status": "MODIFIABLE",
-          "substitutions": [
-            "NO multi-grain bread"
-          ],
-          "notes": "Can be made sesame-safe with listed modifications",
-          "requiresVerification": false
-        },
-        "garlic": {
-          "status": "SAFE",
-          "substitutions": [],
-          "notes": "No changes needed",
-          "requiresVerification": false
-        },
-        "onion": {
           "status": "NOT_SAFE_NOT_IN_SHEET",
           "substitutions": [],
           "notes": "NOT IN ALLERGY SHEET - Cannot verify safety",
           "requiresVerification": false
+        },
+        "gluten": {
+          "status": "NOT_SAFE_NOT_IN_SHEET",
+          "substitutions": [],
+          "notes": "NOT IN ALLERGY SHEET - Cannot verify safety",
+          "requiresVerification": false
+        },
+        "shellfish": {
+          "status": "NOT_SAFE_NOT_IN_SHEET",
+          "substitutions": [],
+          "notes": "NOT IN ALLERGY SHEET - Cannot verify safety",
+          "requiresVerification": false
+        },
+        "soy": {
+          "status": "NOT_SAFE_NOT_IN_SHEET",
+          "substitutions": [],
+          "notes": "NOT IN ALLERGY SHEET - Cannot verify safety",
+          "requiresVerification": false
+        },
+        "eggs": {
+          "status": "NOT_SAFE_NOT_IN_SHEET",
+          "substitutions": [],
+          "notes": "NOT IN ALLERGY SHEET - Cannot verify safety",
+          "requiresVerification": false
+        },
+        "peanuts": {
+          "status": "NOT_SAFE_NOT_IN_SHEET",
+          "substitutions": [],
+          "notes": "NOT IN ALLERGY SHEET - Cannot verify safety",
+          "requiresVerification": false
+        },
+        "tree_nuts": {
+          "status": "NOT_SAFE_NOT_IN_SHEET",
+          "substitutions": [],
+          "notes": "NOT IN ALLERGY SHEET - Cannot verify safety",
+          "requiresVerification": false
+        },
+        "sesame": {
+          "status": "NOT_SAFE_NOT_IN_SHEET",
+          "substitutions": [],
+          "notes": "NOT IN ALLERGY SHEET - Cannot verify safety",
+          "requiresVerification": false
+        },
+        "garlic": {
+          "status": "NOT_SAFE_NOT_IN_SHEET",
+          "substitutions": [],
+          "notes": "NOT IN ALLERGY SHEET - Cannot verify safety",
+          "requiresVerification": false
+        },
+        "onion": {
+          "status": "UNSAFE",
+          "substitutions": [],
+          "notes": "Contains scallions in avocado spread",
+          "requiresVerification": false
         }
       },
-      "ingredients": [],
-      "garnishes": [],
+      "ingredients": [
+        "multi-grain bread",
+        "butter",
+        "avocado spread",
+        "eggs",
+        "salt",
+        "pepper",
+        "cheddar cheese",
+        "breakfast potatoes and onions"
+      ],
+      "garnishes": [
+        "chives"
+      ],
       "isEntree": true,
       "_hasRules": true,
-      "_ruleCount": 9,
-      "sides": [
+      "_ruleCount": 1,
+      "brunchSides": [
+        {
+          "id": "c47a44de-b5b7-452c-84d7-b38c33bb0355",
+          "name": "Breakfast Potatoes and Onions"
+        },
         {
           "id": "15ea5cbb-bbd1-432d-bc02-1652962a8c98",
-          "name": "Side of Fresh Fruit"
+          "name": "Fresh Seasonal Fruit"
         },
         {
           "id": "f57d678c-2da0-48db-9052-fa75db196ff4",
-          "name": "Side of Wheat Toast"
+          "name": "Multi-Grain Toast"
         },
         {
           "id": "2a92e404-85e9-47be-b167-97a9383272ea",
-          "name": "Side of Turkey Sausage"
+          "name": "Turkey Sausage Patties"
+        },
+        {
+          "id": "6c10e37c-753e-4186-9aa9-2d2182e9ac9d",
+          "name": "Applewood Smoked Bacon"
         },
         {
           "id": "a2595668-5c3d-49bf-af66-9b4012fa34da",
           "name": "Side of Eggs"
-        },
-        {
-          "id": "6c10e37c-753e-4186-9aa9-2d2182e9ac9d",
-          "name": "Side of Bacon"
-        },
-        {
-          "id": "c47a44de-b5b7-452c-84d7-b38c33bb0355",
-          "name": "Breakfast Potatoes"
         }
       ]
     },
     {
       "id": "26bbee82-f6c1-4014-8cb7-fab2363df940",
       "name": "Avocado Toast with Sliced Tomatoes",
-      "ticketCode": null,
+      "ticketCode": "AVO TOAST TOM",
       "categoryId": "brunch",
       "category": "Brunch",
       "description": null,
@@ -23975,29 +24299,39 @@
           "requiresVerification": false
         },
         "onion": {
-          "status": "NOT_SAFE_NOT_IN_SHEET",
+          "status": "UNSAFE",
           "substitutions": [],
-          "notes": "NOT IN ALLERGY SHEET - Cannot verify safety",
+          "notes": "Contains scallions in avocado spread",
           "requiresVerification": false
         }
       },
-      "ingredients": [],
+      "ingredients": [
+        "multi-grain bread",
+        "butter",
+        "avocado spread",
+        "sliced tomatoes",
+        "olive oil",
+        "salt",
+        "pepper",
+        "red pepper flakes",
+        "breakfast potatoes and onions"
+      ],
       "garnishes": [],
       "isEntree": true,
       "_hasRules": true,
-      "_ruleCount": 9,
+      "_ruleCount": 10,
       "sides": [
         {
           "id": "15ea5cbb-bbd1-432d-bc02-1652962a8c98",
-          "name": "Side of Fresh Fruit"
+          "name": "Fresh Seasonal Fruit"
         },
         {
           "id": "f57d678c-2da0-48db-9052-fa75db196ff4",
-          "name": "Side of Wheat Toast"
+          "name": "Multi-Grain Toast"
         },
         {
           "id": "2a92e404-85e9-47be-b167-97a9383272ea",
-          "name": "Side of Turkey Sausage"
+          "name": "Turkey Sausage Patties"
         },
         {
           "id": "a2595668-5c3d-49bf-af66-9b4012fa34da",
@@ -24005,33 +24339,59 @@
         },
         {
           "id": "6c10e37c-753e-4186-9aa9-2d2182e9ac9d",
-          "name": "Side of Bacon"
+          "name": "Applewood Smoked Bacon"
         },
         {
           "id": "c47a44de-b5b7-452c-84d7-b38c33bb0355",
-          "name": "Breakfast Potatoes"
+          "name": "Breakfast Potatoes and Onions"
+        }
+      ],
+      "brunchSides": [
+        {
+          "id": "c47a44de-b5b7-452c-84d7-b38c33bb0355",
+          "name": "Breakfast Potatoes and Onions"
+        },
+        {
+          "id": "15ea5cbb-bbd1-432d-bc02-1652962a8c98",
+          "name": "Fresh Seasonal Fruit"
+        },
+        {
+          "id": "f57d678c-2da0-48db-9052-fa75db196ff4",
+          "name": "Multi-Grain Toast"
+        },
+        {
+          "id": "2a92e404-85e9-47be-b167-97a9383272ea",
+          "name": "Turkey Sausage Patties"
+        },
+        {
+          "id": "6c10e37c-753e-4186-9aa9-2d2182e9ac9d",
+          "name": "Applewood Smoked Bacon"
+        },
+        {
+          "id": "a2595668-5c3d-49bf-af66-9b4012fa34da",
+          "name": "Side of Eggs"
         }
       ]
     },
     {
       "id": "3ab12b7e-b68d-4a94-8dd6-c0cce876ed5e",
       "name": "Breakfast Burrito",
-      "ticketCode": null,
+      "ticketCode": "BRKFST BURRITO",
       "categoryId": "brunch",
       "category": "Brunch",
       "description": null,
       "displayOrder": 114,
       "allergenRules": {
         "dairy": {
-          "status": "NOT_SAFE_NOT_IN_SHEET",
+          "status": "UNSAFE",
           "substitutions": [],
-          "notes": "NOT IN ALLERGY SHEET - Cannot verify safety",
+          "notes": "Contains jalapeno jack cheese, sour cream, and whipping cream in eggs",
           "requiresVerification": false
         },
         "gluten": {
-          "status": "NOT_SAFE_NOT_IN_SHEET",
+          "status": "UNSAFE",
           "substitutions": [],
-          "notes": "NOT IN ALLERGY SHEET - Cannot verify safety",
+          "notes": "Contains flour tortilla",
           "requiresVerification": false
         },
         "shellfish": {
@@ -24047,9 +24407,9 @@
           "requiresVerification": false
         },
         "eggs": {
-          "status": "NOT_SAFE_NOT_IN_SHEET",
+          "status": "UNSAFE",
           "substitutions": [],
-          "notes": "NOT IN ALLERGY SHEET - Cannot verify safety",
+          "notes": "Contains scrambled eggs",
           "requiresVerification": false
         },
         "peanuts": {
@@ -24088,23 +24448,38 @@
           "requiresVerification": false
         }
       },
-      "ingredients": [],
-      "garnishes": [],
+      "ingredients": [
+        "flour tortilla",
+        "oil",
+        "eggs",
+        "whipping cream",
+        "house oil",
+        "pico de gallo",
+        "turkey sausage",
+        "jalapeno jack cheese",
+        "sour cream",
+        "breakfast potatoes and onions",
+        "guacamole",
+        "ranchero sauce"
+      ],
+      "garnishes": [
+        "cilantro"
+      ],
       "isEntree": true,
       "_hasRules": true,
-      "_ruleCount": 7,
+      "_ruleCount": 10,
       "sides": [
         {
           "id": "15ea5cbb-bbd1-432d-bc02-1652962a8c98",
-          "name": "Side of Fresh Fruit"
+          "name": "Fresh Seasonal Fruit"
         },
         {
           "id": "f57d678c-2da0-48db-9052-fa75db196ff4",
-          "name": "Side of Wheat Toast"
+          "name": "Multi-Grain Toast"
         },
         {
           "id": "2a92e404-85e9-47be-b167-97a9383272ea",
-          "name": "Side of Turkey Sausage"
+          "name": "Turkey Sausage Patties"
         },
         {
           "id": "a2595668-5c3d-49bf-af66-9b4012fa34da",
@@ -24112,109 +24487,59 @@
         },
         {
           "id": "6c10e37c-753e-4186-9aa9-2d2182e9ac9d",
-          "name": "Side of Bacon"
+          "name": "Applewood Smoked Bacon"
         },
         {
           "id": "c47a44de-b5b7-452c-84d7-b38c33bb0355",
-          "name": "Breakfast Potatoes"
+          "name": "Breakfast Potatoes and Onions"
+        }
+      ],
+      "brunchSides": [
+        {
+          "id": "c47a44de-b5b7-452c-84d7-b38c33bb0355",
+          "name": "Breakfast Potatoes and Onions"
+        },
+        {
+          "id": "15ea5cbb-bbd1-432d-bc02-1652962a8c98",
+          "name": "Fresh Seasonal Fruit"
+        },
+        {
+          "id": "f57d678c-2da0-48db-9052-fa75db196ff4",
+          "name": "Multi-Grain Toast"
+        },
+        {
+          "id": "2a92e404-85e9-47be-b167-97a9383272ea",
+          "name": "Turkey Sausage Patties"
+        },
+        {
+          "id": "6c10e37c-753e-4186-9aa9-2d2182e9ac9d",
+          "name": "Applewood Smoked Bacon"
+        },
+        {
+          "id": "a2595668-5c3d-49bf-af66-9b4012fa34da",
+          "name": "Side of Eggs"
         }
       ]
     },
     {
-      "id": "c47a44de-b5b7-452c-84d7-b38c33bb0355",
-      "name": "Breakfast Potatoes",
-      "ticketCode": null,
+      "id": "8b13e659-208e-4b8f-a710-b23880a38354",
+      "name": "Buttermilk Pancakes",
+      "ticketCode": "PANCAKES",
       "categoryId": "brunch",
       "category": "Brunch",
       "description": null,
       "displayOrder": 115,
       "allergenRules": {
         "dairy": {
-          "status": "NOT_SAFE_NOT_IN_SHEET",
+          "status": "UNSAFE",
           "substitutions": [],
-          "notes": "NOT IN ALLERGY SHEET - Cannot verify safety",
+          "notes": "Contains buttermilk and butter in pancake batter",
           "requiresVerification": false
         },
         "gluten": {
-          "status": "SAFE",
+          "status": "UNSAFE",
           "substitutions": [],
-          "notes": "No changes needed",
-          "requiresVerification": false
-        },
-        "shellfish": {
-          "status": "SAFE",
-          "substitutions": [],
-          "notes": "Safe for shellfish allergy",
-          "requiresVerification": false
-        },
-        "soy": {
-          "status": "SAFE",
-          "substitutions": [],
-          "notes": "No changes needed",
-          "requiresVerification": false
-        },
-        "eggs": {
-          "status": "SAFE",
-          "substitutions": [],
-          "notes": "No changes needed",
-          "requiresVerification": false
-        },
-        "peanuts": {
-          "status": "SAFE",
-          "substitutions": [],
-          "notes": "No changes needed",
-          "requiresVerification": false
-        },
-        "tree_nuts": {
-          "status": "SAFE",
-          "substitutions": [],
-          "notes": "No changes needed",
-          "requiresVerification": false
-        },
-        "sesame": {
-          "status": "SAFE",
-          "substitutions": [],
-          "notes": "No changes needed",
-          "requiresVerification": false
-        },
-        "garlic": {
-          "status": "NOT_SAFE_NOT_IN_SHEET",
-          "substitutions": [],
-          "notes": "NOT IN ALLERGY SHEET - Cannot verify safety",
-          "requiresVerification": false
-        },
-        "onion": {
-          "status": "NOT_SAFE_NOT_IN_SHEET",
-          "substitutions": [],
-          "notes": "NOT IN ALLERGY SHEET - Cannot verify safety",
-          "requiresVerification": false
-        }
-      },
-      "ingredients": [],
-      "garnishes": [],
-      "isSideOnly": true,
-      "_hasRules": true,
-      "_ruleCount": 7
-    },
-    {
-      "id": "8b13e659-208e-4b8f-a710-b23880a38354",
-      "name": "Buttermilk Pancakes",
-      "ticketCode": null,
-      "categoryId": "brunch",
-      "category": "Brunch",
-      "description": null,
-      "displayOrder": 116,
-      "allergenRules": {
-        "dairy": {
-          "status": "NOT_SAFE_NOT_IN_SHEET",
-          "substitutions": [],
-          "notes": "NOT IN ALLERGY SHEET - Cannot verify safety",
-          "requiresVerification": false
-        },
-        "gluten": {
-          "status": "NOT_SAFE_NOT_IN_SHEET",
-          "substitutions": [],
-          "notes": "NOT IN ALLERGY SHEET - Cannot verify safety",
+          "notes": "Contains flour in pancake batter",
           "requiresVerification": false
         },
         "shellfish": {
@@ -24232,9 +24557,9 @@
           "requiresVerification": false
         },
         "eggs": {
-          "status": "NOT_SAFE_NOT_IN_SHEET",
+          "status": "UNSAFE",
           "substitutions": [],
-          "notes": "NOT IN ALLERGY SHEET - Cannot verify safety",
+          "notes": "Contains eggs in pancake batter",
           "requiresVerification": false
         },
         "peanuts": {
@@ -24268,23 +24593,27 @@
           "requiresVerification": false
         }
       },
-      "ingredients": [],
+      "ingredients": [
+        "buttermilk pancake batter",
+        "powdered sugar",
+        "maple syrup"
+      ],
       "garnishes": [],
       "isEntree": true,
       "_hasRules": true,
-      "_ruleCount": 7,
+      "_ruleCount": 10,
       "sides": [
         {
           "id": "15ea5cbb-bbd1-432d-bc02-1652962a8c98",
-          "name": "Side of Fresh Fruit"
+          "name": "Fresh Seasonal Fruit"
         },
         {
           "id": "f57d678c-2da0-48db-9052-fa75db196ff4",
-          "name": "Side of Wheat Toast"
+          "name": "Multi-Grain Toast"
         },
         {
           "id": "2a92e404-85e9-47be-b167-97a9383272ea",
-          "name": "Side of Turkey Sausage"
+          "name": "Turkey Sausage Patties"
         },
         {
           "id": "a2595668-5c3d-49bf-af66-9b4012fa34da",
@@ -24292,22 +24621,22 @@
         },
         {
           "id": "6c10e37c-753e-4186-9aa9-2d2182e9ac9d",
-          "name": "Side of Bacon"
+          "name": "Applewood Smoked Bacon"
         },
         {
           "id": "c47a44de-b5b7-452c-84d7-b38c33bb0355",
-          "name": "Breakfast Potatoes"
+          "name": "Breakfast Potatoes and Onions"
         }
       ]
     },
     {
       "id": "c895cf2b-774f-4bec-91cf-e2c65e559b31",
       "name": "Classic Breakfast",
-      "ticketCode": null,
+      "ticketCode": "CLASSIC BRKFST",
       "categoryId": "brunch",
       "category": "Brunch",
       "description": null,
-      "displayOrder": 117,
+      "displayOrder": 116,
       "allergenRules": {
         "dairy": {
           "status": "MODIFIABLE",
@@ -24344,9 +24673,9 @@
           "requiresVerification": false
         },
         "eggs": {
-          "status": "NOT_SAFE_NOT_IN_SHEET",
+          "status": "UNSAFE",
           "substitutions": [],
-          "notes": "NOT IN ALLERGY SHEET - Cannot verify safety",
+          "notes": "Contains eggs",
           "requiresVerification": false
         },
         "peanuts": {
@@ -24384,23 +24713,31 @@
           "requiresVerification": false
         }
       },
-      "ingredients": [],
+      "ingredients": [
+        "eggs",
+        "bacon",
+        "turkey sausage patties",
+        "breakfast potatoes and onions",
+        "multi-grain bread",
+        "butter",
+        "preserves"
+      ],
       "garnishes": [],
       "isEntree": true,
       "_hasRules": true,
-      "_ruleCount": 9,
+      "_ruleCount": 10,
       "sides": [
         {
           "id": "15ea5cbb-bbd1-432d-bc02-1652962a8c98",
-          "name": "Side of Fresh Fruit"
+          "name": "Fresh Seasonal Fruit"
         },
         {
           "id": "f57d678c-2da0-48db-9052-fa75db196ff4",
-          "name": "Side of Wheat Toast"
+          "name": "Multi-Grain Toast"
         },
         {
           "id": "2a92e404-85e9-47be-b167-97a9383272ea",
-          "name": "Side of Turkey Sausage"
+          "name": "Turkey Sausage Patties"
         },
         {
           "id": "a2595668-5c3d-49bf-af66-9b4012fa34da",
@@ -24408,33 +24745,59 @@
         },
         {
           "id": "6c10e37c-753e-4186-9aa9-2d2182e9ac9d",
-          "name": "Side of Bacon"
+          "name": "Applewood Smoked Bacon"
         },
         {
           "id": "c47a44de-b5b7-452c-84d7-b38c33bb0355",
-          "name": "Breakfast Potatoes"
+          "name": "Breakfast Potatoes and Onions"
+        }
+      ],
+      "brunchSides": [
+        {
+          "id": "c47a44de-b5b7-452c-84d7-b38c33bb0355",
+          "name": "Breakfast Potatoes and Onions"
+        },
+        {
+          "id": "15ea5cbb-bbd1-432d-bc02-1652962a8c98",
+          "name": "Fresh Seasonal Fruit"
+        },
+        {
+          "id": "f57d678c-2da0-48db-9052-fa75db196ff4",
+          "name": "Multi-Grain Toast"
+        },
+        {
+          "id": "2a92e404-85e9-47be-b167-97a9383272ea",
+          "name": "Turkey Sausage Patties"
+        },
+        {
+          "id": "6c10e37c-753e-4186-9aa9-2d2182e9ac9d",
+          "name": "Applewood Smoked Bacon"
+        },
+        {
+          "id": "a2595668-5c3d-49bf-af66-9b4012fa34da",
+          "name": "Side of Eggs"
         }
       ]
     },
     {
-      "id": "18a71b2e-45c1-4bb0-ab08-1a59dafd8c1a",
-      "name": "Crab Cake Benedict",
-      "ticketCode": null,
+      "id": "ed0f35ff-ef15-4213-a236-ae7ee8788849",
+      "name": "Classic French Toast",
+      "ticketCode": "FRENCH TOAST",
       "categoryId": "brunch",
       "category": "Brunch",
       "description": null,
-      "displayOrder": 118,
+      "displayOrder": 117,
       "allergenRules": {
         "dairy": {
-          "status": "NOT_SAFE_NOT_IN_SHEET",
+          "status": "UNSAFE",
           "substitutions": [],
-          "notes": "NOT IN ALLERGY SHEET - Cannot verify safety",
+          "notes": "Contains half and half in French toast batter",
           "requiresVerification": false
         },
         "gluten": {
-          "status": "NOT_SAFE_NOT_IN_SHEET",
+          "status": "UNSAFE",
           "substitutions": [],
-          "notes": "NOT IN ALLERGY SHEET - Cannot verify safety",
+          "notes": "Contains Challah bread",
           "requiresVerification": false
         },
         "shellfish": {
@@ -24444,15 +24807,15 @@
           "requiresVerification": false
         },
         "soy": {
-          "status": "NOT_SAFE_NOT_IN_SHEET",
+          "status": "UNSAFE",
           "substitutions": [],
-          "notes": "NOT IN ALLERGY SHEET - Cannot verify safety",
+          "notes": "Contains soy in Challah bread (soybean oil)",
           "requiresVerification": false
         },
         "eggs": {
-          "status": "NOT_SAFE_NOT_IN_SHEET",
+          "status": "UNSAFE",
           "substitutions": [],
-          "notes": "NOT IN ALLERGY SHEET - Cannot verify safety",
+          "notes": "Contains egg yolks in French toast batter",
           "requiresVerification": false
         },
         "peanuts": {
@@ -24474,35 +24837,42 @@
           "requiresVerification": false
         },
         "garlic": {
-          "status": "NOT_SAFE_NOT_IN_SHEET",
+          "status": "SAFE",
           "substitutions": [],
-          "notes": "NOT IN ALLERGY SHEET - Cannot verify safety",
+          "notes": "No changes needed",
           "requiresVerification": false
         },
         "onion": {
-          "status": "NOT_SAFE_NOT_IN_SHEET",
+          "status": "SAFE",
           "substitutions": [],
-          "notes": "NOT IN ALLERGY SHEET - Cannot verify safety",
+          "notes": "No changes needed",
           "requiresVerification": false
         }
       },
-      "ingredients": [],
+      "ingredients": [
+        "Challah bread",
+        "French toast batter",
+        "powdered sugar",
+        "macerated strawberries",
+        "sugar",
+        "maple syrup"
+      ],
       "garnishes": [],
       "isEntree": true,
       "_hasRules": true,
-      "_ruleCount": 4,
+      "_ruleCount": 10,
       "sides": [
         {
           "id": "15ea5cbb-bbd1-432d-bc02-1652962a8c98",
-          "name": "Side of Fresh Fruit"
+          "name": "Fresh Seasonal Fruit"
         },
         {
           "id": "f57d678c-2da0-48db-9052-fa75db196ff4",
-          "name": "Side of Wheat Toast"
+          "name": "Multi-Grain Toast"
         },
         {
           "id": "2a92e404-85e9-47be-b167-97a9383272ea",
-          "name": "Side of Turkey Sausage"
+          "name": "Turkey Sausage Patties"
         },
         {
           "id": "a2595668-5c3d-49bf-af66-9b4012fa34da",
@@ -24510,33 +24880,33 @@
         },
         {
           "id": "6c10e37c-753e-4186-9aa9-2d2182e9ac9d",
-          "name": "Side of Bacon"
+          "name": "Applewood Smoked Bacon"
         },
         {
           "id": "c47a44de-b5b7-452c-84d7-b38c33bb0355",
-          "name": "Breakfast Potatoes"
+          "name": "Breakfast Potatoes and Onions"
         }
       ]
     },
     {
       "id": "91cfde82-35d3-487b-a3de-ac3cccfd49cb",
       "name": "Door County Cherry Pancakes",
-      "ticketCode": null,
+      "ticketCode": "CHERRY PANCAKES",
       "categoryId": "brunch",
       "category": "Brunch",
       "description": null,
-      "displayOrder": 119,
+      "displayOrder": 118,
       "allergenRules": {
         "dairy": {
-          "status": "NOT_SAFE_NOT_IN_SHEET",
+          "status": "UNSAFE",
           "substitutions": [],
-          "notes": "NOT IN ALLERGY SHEET - Cannot verify safety",
+          "notes": "Contains buttermilk and butter in pancake batter",
           "requiresVerification": false
         },
         "gluten": {
-          "status": "NOT_SAFE_NOT_IN_SHEET",
+          "status": "UNSAFE",
           "substitutions": [],
-          "notes": "NOT IN ALLERGY SHEET - Cannot verify safety",
+          "notes": "Contains flour in pancake batter",
           "requiresVerification": false
         },
         "shellfish": {
@@ -24554,9 +24924,9 @@
           "requiresVerification": false
         },
         "eggs": {
-          "status": "NOT_SAFE_NOT_IN_SHEET",
+          "status": "UNSAFE",
           "substitutions": [],
-          "notes": "NOT IN ALLERGY SHEET - Cannot verify safety",
+          "notes": "Contains eggs in pancake batter",
           "requiresVerification": false
         },
         "peanuts": {
@@ -24590,23 +24960,29 @@
           "requiresVerification": false
         }
       },
-      "ingredients": [],
+      "ingredients": [
+        "buttermilk pancake batter",
+        "Door County cherries",
+        "berry sauce",
+        "powdered sugar",
+        "maple syrup"
+      ],
       "garnishes": [],
       "isEntree": true,
       "_hasRules": true,
-      "_ruleCount": 5,
+      "_ruleCount": 8,
       "sides": [
         {
           "id": "15ea5cbb-bbd1-432d-bc02-1652962a8c98",
-          "name": "Side of Fresh Fruit"
+          "name": "Fresh Seasonal Fruit"
         },
         {
           "id": "f57d678c-2da0-48db-9052-fa75db196ff4",
-          "name": "Side of Wheat Toast"
+          "name": "Multi-Grain Toast"
         },
         {
           "id": "2a92e404-85e9-47be-b167-97a9383272ea",
-          "name": "Side of Turkey Sausage"
+          "name": "Turkey Sausage Patties"
         },
         {
           "id": "a2595668-5c3d-49bf-af66-9b4012fa34da",
@@ -24614,33 +24990,33 @@
         },
         {
           "id": "6c10e37c-753e-4186-9aa9-2d2182e9ac9d",
-          "name": "Side of Bacon"
+          "name": "Applewood Smoked Bacon"
         },
         {
           "id": "c47a44de-b5b7-452c-84d7-b38c33bb0355",
-          "name": "Breakfast Potatoes"
+          "name": "Breakfast Potatoes and Onions"
         }
       ]
     },
     {
       "id": "db747209-6e6a-4a6f-bf40-4f33d46c4ec9",
       "name": "Eggs Benedict",
-      "ticketCode": null,
+      "ticketCode": "EGGS BENE",
       "categoryId": "brunch",
       "category": "Brunch",
       "description": null,
-      "displayOrder": 120,
+      "displayOrder": 119,
       "allergenRules": {
         "dairy": {
-          "status": "NOT_SAFE_NOT_IN_SHEET",
+          "status": "UNSAFE",
           "substitutions": [],
-          "notes": "NOT IN ALLERGY SHEET - Cannot verify safety",
+          "notes": "Contains hollandaise sauce (butter)",
           "requiresVerification": false
         },
         "gluten": {
-          "status": "NOT_SAFE_NOT_IN_SHEET",
+          "status": "UNSAFE",
           "substitutions": [],
-          "notes": "NOT IN ALLERGY SHEET - Cannot verify safety",
+          "notes": "Contains English muffin",
           "requiresVerification": false
         },
         "shellfish": {
@@ -24658,9 +25034,9 @@
           "requiresVerification": false
         },
         "eggs": {
-          "status": "NOT_SAFE_NOT_IN_SHEET",
+          "status": "UNSAFE",
           "substitutions": [],
-          "notes": "NOT IN ALLERGY SHEET - Cannot verify safety",
+          "notes": "Contains poached eggs and hollandaise (egg yolks)",
           "requiresVerification": false
         },
         "peanuts": {
@@ -24682,321 +25058,15 @@
           "requiresVerification": false
         },
         "garlic": {
-          "status": "NOT_SAFE_NOT_IN_SHEET",
-          "substitutions": [],
-          "notes": "NOT IN ALLERGY SHEET - Cannot verify safety",
-          "requiresVerification": false
-        },
-        "onion": {
-          "status": "NOT_SAFE_NOT_IN_SHEET",
-          "substitutions": [],
-          "notes": "NOT IN ALLERGY SHEET - Cannot verify safety",
-          "requiresVerification": false
-        }
-      },
-      "ingredients": [],
-      "garnishes": [],
-      "isEntree": true,
-      "_hasRules": true,
-      "_ruleCount": 2,
-      "sides": [
-        {
-          "id": "15ea5cbb-bbd1-432d-bc02-1652962a8c98",
-          "name": "Side of Fresh Fruit"
-        },
-        {
-          "id": "f57d678c-2da0-48db-9052-fa75db196ff4",
-          "name": "Side of Wheat Toast"
-        },
-        {
-          "id": "2a92e404-85e9-47be-b167-97a9383272ea",
-          "name": "Side of Turkey Sausage"
-        },
-        {
-          "id": "a2595668-5c3d-49bf-af66-9b4012fa34da",
-          "name": "Side of Eggs"
-        },
-        {
-          "id": "6c10e37c-753e-4186-9aa9-2d2182e9ac9d",
-          "name": "Side of Bacon"
-        },
-        {
-          "id": "c47a44de-b5b7-452c-84d7-b38c33bb0355",
-          "name": "Breakfast Potatoes"
-        }
-      ]
-    },
-    {
-      "id": "f2e3aa1f-7ca0-49f6-bc80-b8ad61d13f2d",
-      "name": "Eggs Florentine",
-      "ticketCode": null,
-      "categoryId": "brunch",
-      "category": "Brunch",
-      "description": null,
-      "displayOrder": 121,
-      "allergenRules": {
-        "dairy": {
-          "status": "NOT_SAFE_NOT_IN_SHEET",
-          "substitutions": [],
-          "notes": "NOT IN ALLERGY SHEET - Cannot verify safety",
-          "requiresVerification": false
-        },
-        "gluten": {
-          "status": "NOT_SAFE_NOT_IN_SHEET",
-          "substitutions": [],
-          "notes": "NOT IN ALLERGY SHEET - Cannot verify safety",
-          "requiresVerification": false
-        },
-        "shellfish": {
-          "status": "SAFE",
-          "substitutions": [],
-          "notes": "Safe for shellfish allergy",
-          "requiresVerification": false
-        },
-        "soy": {
-          "status": "SAFE",
-          "substitutions": [],
-          "notes": "No changes needed",
-          "requiresVerification": false
-        },
-        "eggs": {
-          "status": "NOT_SAFE_NOT_IN_SHEET",
-          "substitutions": [],
-          "notes": "NOT IN ALLERGY SHEET - Cannot verify safety",
-          "requiresVerification": false
-        },
-        "peanuts": {
-          "status": "SAFE",
-          "substitutions": [],
-          "notes": "No changes needed",
-          "requiresVerification": false
-        },
-        "tree_nuts": {
-          "status": "SAFE",
-          "substitutions": [],
-          "notes": "No changes needed",
-          "requiresVerification": false
-        },
-        "sesame": {
-          "status": "SAFE",
-          "substitutions": [],
-          "notes": "No changes needed",
-          "requiresVerification": false
-        },
-        "garlic": {
-          "status": "NOT_SAFE_NOT_IN_SHEET",
-          "substitutions": [],
-          "notes": "NOT IN ALLERGY SHEET - Cannot verify safety",
-          "requiresVerification": false
-        },
-        "onion": {
-          "status": "NOT_SAFE_NOT_IN_SHEET",
-          "substitutions": [],
-          "notes": "NOT IN ALLERGY SHEET - Cannot verify safety",
-          "requiresVerification": false
-        }
-      },
-      "ingredients": [],
-      "garnishes": [],
-      "isEntree": true,
-      "_hasRules": true,
-      "_ruleCount": 5,
-      "sides": [
-        {
-          "id": "15ea5cbb-bbd1-432d-bc02-1652962a8c98",
-          "name": "Side of Fresh Fruit"
-        },
-        {
-          "id": "f57d678c-2da0-48db-9052-fa75db196ff4",
-          "name": "Side of Wheat Toast"
-        },
-        {
-          "id": "2a92e404-85e9-47be-b167-97a9383272ea",
-          "name": "Side of Turkey Sausage"
-        },
-        {
-          "id": "a2595668-5c3d-49bf-af66-9b4012fa34da",
-          "name": "Side of Eggs"
-        },
-        {
-          "id": "6c10e37c-753e-4186-9aa9-2d2182e9ac9d",
-          "name": "Side of Bacon"
-        },
-        {
-          "id": "c47a44de-b5b7-452c-84d7-b38c33bb0355",
-          "name": "Breakfast Potatoes"
-        }
-      ]
-    },
-    {
-      "id": "ed0f35ff-ef15-4213-a236-ae7ee8788849",
-      "name": "French Toast",
-      "ticketCode": null,
-      "categoryId": "brunch",
-      "category": "Brunch",
-      "description": null,
-      "displayOrder": 122,
-      "allergenRules": {
-        "dairy": {
-          "status": "NOT_SAFE_NOT_IN_SHEET",
-          "substitutions": [],
-          "notes": "NOT IN ALLERGY SHEET - Cannot verify safety",
-          "requiresVerification": false
-        },
-        "gluten": {
-          "status": "NOT_SAFE_NOT_IN_SHEET",
-          "substitutions": [],
-          "notes": "NOT IN ALLERGY SHEET - Cannot verify safety",
-          "requiresVerification": false
-        },
-        "shellfish": {
-          "status": "SAFE",
-          "substitutions": [],
-          "notes": "Safe for shellfish allergy",
-          "requiresVerification": false
-        },
-        "soy": {
-          "status": "NOT_SAFE_NOT_IN_SHEET",
-          "substitutions": [],
-          "notes": "NOT IN ALLERGY SHEET - Cannot verify safety",
-          "requiresVerification": false
-        },
-        "eggs": {
-          "status": "NOT_SAFE_NOT_IN_SHEET",
-          "substitutions": [],
-          "notes": "NOT IN ALLERGY SHEET - Cannot verify safety",
-          "requiresVerification": false
-        },
-        "peanuts": {
-          "status": "SAFE",
-          "substitutions": [],
-          "notes": "No changes needed",
-          "requiresVerification": false
-        },
-        "tree_nuts": {
-          "status": "SAFE",
-          "substitutions": [],
-          "notes": "No changes needed",
-          "requiresVerification": false
-        },
-        "sesame": {
-          "status": "SAFE",
-          "substitutions": [],
-          "notes": "No changes needed",
-          "requiresVerification": false
-        },
-        "garlic": {
           "status": "SAFE",
           "substitutions": [],
           "notes": "No changes needed",
           "requiresVerification": false
         },
         "onion": {
-          "status": "SAFE",
+          "status": "UNSAFE",
           "substitutions": [],
-          "notes": "No changes needed",
-          "requiresVerification": false
-        }
-      },
-      "ingredients": [],
-      "garnishes": [],
-      "isEntree": true,
-      "_hasRules": true,
-      "_ruleCount": 6,
-      "sides": [
-        {
-          "id": "15ea5cbb-bbd1-432d-bc02-1652962a8c98",
-          "name": "Side of Fresh Fruit"
-        },
-        {
-          "id": "f57d678c-2da0-48db-9052-fa75db196ff4",
-          "name": "Side of Wheat Toast"
-        },
-        {
-          "id": "2a92e404-85e9-47be-b167-97a9383272ea",
-          "name": "Side of Turkey Sausage"
-        },
-        {
-          "id": "a2595668-5c3d-49bf-af66-9b4012fa34da",
-          "name": "Side of Eggs"
-        },
-        {
-          "id": "6c10e37c-753e-4186-9aa9-2d2182e9ac9d",
-          "name": "Side of Bacon"
-        },
-        {
-          "id": "c47a44de-b5b7-452c-84d7-b38c33bb0355",
-          "name": "Breakfast Potatoes"
-        }
-      ]
-    },
-    {
-      "id": "5f48a27b-2811-4c2c-8043-ffa5076be250",
-      "name": "Kids Buttermilk Pancakes",
-      "ticketCode": null,
-      "categoryId": "brunch",
-      "category": "Brunch",
-      "description": null,
-      "displayOrder": 123,
-      "allergenRules": {
-        "dairy": {
-          "status": "NOT_SAFE_NOT_IN_SHEET",
-          "substitutions": [],
-          "notes": "NOT IN ALLERGY SHEET - Cannot verify safety",
-          "requiresVerification": false
-        },
-        "gluten": {
-          "status": "NOT_SAFE_NOT_IN_SHEET",
-          "substitutions": [],
-          "notes": "NOT IN ALLERGY SHEET - Cannot verify safety",
-          "requiresVerification": false
-        },
-        "shellfish": {
-          "status": "SAFE",
-          "substitutions": [],
-          "notes": null,
-          "requiresVerification": false
-        },
-        "soy": {
-          "status": "SAFE",
-          "substitutions": [],
-          "notes": "No changes needed",
-          "requiresVerification": false
-        },
-        "eggs": {
-          "status": "NOT_SAFE_NOT_IN_SHEET",
-          "substitutions": [],
-          "notes": "NOT IN ALLERGY SHEET - Cannot verify safety",
-          "requiresVerification": false
-        },
-        "peanuts": {
-          "status": "SAFE",
-          "substitutions": [],
-          "notes": "No changes needed",
-          "requiresVerification": false
-        },
-        "tree_nuts": {
-          "status": "SAFE",
-          "substitutions": [],
-          "notes": "No changes needed",
-          "requiresVerification": false
-        },
-        "sesame": {
-          "status": "SAFE",
-          "substitutions": [],
-          "notes": "No changes needed",
-          "requiresVerification": false
-        },
-        "garlic": {
-          "status": "SAFE",
-          "substitutions": [],
-          "notes": "No changes needed",
-          "requiresVerification": false
-        },
-        "onion": {
-          "status": "SAFE",
-          "substitutions": [],
-          "notes": "No changes needed",
+          "notes": "Contains onion",
           "requiresVerification": false
         }
       },
@@ -25008,15 +25078,15 @@
       "sides": [
         {
           "id": "15ea5cbb-bbd1-432d-bc02-1652962a8c98",
-          "name": "Side of Fresh Fruit"
+          "name": "Fresh Seasonal Fruit"
         },
         {
           "id": "f57d678c-2da0-48db-9052-fa75db196ff4",
-          "name": "Side of Wheat Toast"
+          "name": "Multi-Grain Toast"
         },
         {
           "id": "2a92e404-85e9-47be-b167-97a9383272ea",
-          "name": "Side of Turkey Sausage"
+          "name": "Turkey Sausage Patties"
         },
         {
           "id": "a2595668-5c3d-49bf-af66-9b4012fa34da",
@@ -25024,33 +25094,304 @@
         },
         {
           "id": "6c10e37c-753e-4186-9aa9-2d2182e9ac9d",
-          "name": "Side of Bacon"
+          "name": "Applewood Smoked Bacon"
         },
         {
           "id": "c47a44de-b5b7-452c-84d7-b38c33bb0355",
-          "name": "Breakfast Potatoes"
+          "name": "Breakfast Potatoes and Onions"
+        }
+      ],
+      "brunchSides": [
+        {
+          "id": "c47a44de-b5b7-452c-84d7-b38c33bb0355",
+          "name": "Breakfast Potatoes and Onions"
+        },
+        {
+          "id": "15ea5cbb-bbd1-432d-bc02-1652962a8c98",
+          "name": "Fresh Seasonal Fruit"
+        },
+        {
+          "id": "f57d678c-2da0-48db-9052-fa75db196ff4",
+          "name": "Multi-Grain Toast"
+        },
+        {
+          "id": "2a92e404-85e9-47be-b167-97a9383272ea",
+          "name": "Turkey Sausage Patties"
+        },
+        {
+          "id": "6c10e37c-753e-4186-9aa9-2d2182e9ac9d",
+          "name": "Applewood Smoked Bacon"
+        },
+        {
+          "id": "a2595668-5c3d-49bf-af66-9b4012fa34da",
+          "name": "Side of Eggs"
+        }
+      ]
+    },
+    {
+      "id": "f2e3aa1f-7ca0-49f6-bc80-b8ad61d13f2d",
+      "name": "Eggs Florentine",
+      "ticketCode": "EGGS FLOR",
+      "categoryId": "brunch",
+      "category": "Brunch",
+      "description": null,
+      "displayOrder": 120,
+      "allergenRules": {
+        "dairy": {
+          "status": "UNSAFE",
+          "substitutions": [],
+          "notes": "Contains hollandaise sauce (butter) and creamed spinach",
+          "requiresVerification": false
+        },
+        "gluten": {
+          "status": "UNSAFE",
+          "substitutions": [],
+          "notes": "Contains English muffin",
+          "requiresVerification": false
+        },
+        "shellfish": {
+          "status": "SAFE",
+          "substitutions": [],
+          "notes": "Safe for shellfish allergy",
+          "requiresVerification": false
+        },
+        "soy": {
+          "status": "SAFE",
+          "substitutions": [],
+          "notes": "No changes needed",
+          "requiresVerification": false
+        },
+        "eggs": {
+          "status": "UNSAFE",
+          "substitutions": [],
+          "notes": "Contains poached eggs and hollandaise (egg yolks)",
+          "requiresVerification": false
+        },
+        "peanuts": {
+          "status": "SAFE",
+          "substitutions": [],
+          "notes": "No changes needed",
+          "requiresVerification": false
+        },
+        "tree_nuts": {
+          "status": "SAFE",
+          "substitutions": [],
+          "notes": "No changes needed",
+          "requiresVerification": false
+        },
+        "sesame": {
+          "status": "SAFE",
+          "substitutions": [],
+          "notes": "No changes needed",
+          "requiresVerification": false
+        },
+        "garlic": {
+          "status": "SAFE",
+          "substitutions": [],
+          "notes": "No changes needed",
+          "requiresVerification": false
+        },
+        "onion": {
+          "status": "UNSAFE",
+          "substitutions": [],
+          "notes": "Contains onion in creamed spinach",
+          "requiresVerification": false
+        }
+      },
+      "ingredients": [
+        "English muffin",
+        "butter",
+        "beefsteak tomato",
+        "creamed spinach",
+        "poached egg",
+        "hollandaise sauce",
+        "breakfast potatoes and onions"
+      ],
+      "garnishes": [
+        "chives"
+      ],
+      "isEntree": true,
+      "_hasRules": true,
+      "_ruleCount": 10,
+      "sides": [
+        {
+          "id": "15ea5cbb-bbd1-432d-bc02-1652962a8c98",
+          "name": "Fresh Seasonal Fruit"
+        },
+        {
+          "id": "f57d678c-2da0-48db-9052-fa75db196ff4",
+          "name": "Multi-Grain Toast"
+        },
+        {
+          "id": "2a92e404-85e9-47be-b167-97a9383272ea",
+          "name": "Turkey Sausage Patties"
+        },
+        {
+          "id": "a2595668-5c3d-49bf-af66-9b4012fa34da",
+          "name": "Side of Eggs"
+        },
+        {
+          "id": "6c10e37c-753e-4186-9aa9-2d2182e9ac9d",
+          "name": "Applewood Smoked Bacon"
+        },
+        {
+          "id": "c47a44de-b5b7-452c-84d7-b38c33bb0355",
+          "name": "Breakfast Potatoes and Onions"
+        }
+      ],
+      "brunchSides": [
+        {
+          "id": "c47a44de-b5b7-452c-84d7-b38c33bb0355",
+          "name": "Breakfast Potatoes and Onions"
+        },
+        {
+          "id": "15ea5cbb-bbd1-432d-bc02-1652962a8c98",
+          "name": "Fresh Seasonal Fruit"
+        },
+        {
+          "id": "f57d678c-2da0-48db-9052-fa75db196ff4",
+          "name": "Multi-Grain Toast"
+        },
+        {
+          "id": "2a92e404-85e9-47be-b167-97a9383272ea",
+          "name": "Turkey Sausage Patties"
+        },
+        {
+          "id": "6c10e37c-753e-4186-9aa9-2d2182e9ac9d",
+          "name": "Applewood Smoked Bacon"
+        },
+        {
+          "id": "a2595668-5c3d-49bf-af66-9b4012fa34da",
+          "name": "Side of Eggs"
+        }
+      ]
+    },
+    {
+      "id": "5f48a27b-2811-4c2c-8043-ffa5076be250",
+      "name": "Kids Buttermilk Pancakes",
+      "ticketCode": "KIDS PANCAKES",
+      "categoryId": "brunch",
+      "category": "Brunch",
+      "description": null,
+      "displayOrder": 121,
+      "allergenRules": {
+        "dairy": {
+          "status": "UNSAFE",
+          "substitutions": [],
+          "notes": "Contains buttermilk and butter in pancake batter",
+          "requiresVerification": false
+        },
+        "gluten": {
+          "status": "UNSAFE",
+          "substitutions": [],
+          "notes": "Contains flour in pancake batter",
+          "requiresVerification": false
+        },
+        "shellfish": {
+          "status": "SAFE",
+          "substitutions": [],
+          "notes": null,
+          "requiresVerification": false
+        },
+        "soy": {
+          "status": "SAFE",
+          "substitutions": [],
+          "notes": "No changes needed",
+          "requiresVerification": false
+        },
+        "eggs": {
+          "status": "UNSAFE",
+          "substitutions": [],
+          "notes": "Contains eggs in pancake batter",
+          "requiresVerification": false
+        },
+        "peanuts": {
+          "status": "SAFE",
+          "substitutions": [],
+          "notes": "No changes needed",
+          "requiresVerification": false
+        },
+        "tree_nuts": {
+          "status": "SAFE",
+          "substitutions": [],
+          "notes": "No changes needed",
+          "requiresVerification": false
+        },
+        "sesame": {
+          "status": "SAFE",
+          "substitutions": [],
+          "notes": "No changes needed",
+          "requiresVerification": false
+        },
+        "garlic": {
+          "status": "SAFE",
+          "substitutions": [],
+          "notes": "No changes needed",
+          "requiresVerification": false
+        },
+        "onion": {
+          "status": "SAFE",
+          "substitutions": [],
+          "notes": "No changes needed",
+          "requiresVerification": false
+        }
+      },
+      "ingredients": [
+        "buttermilk pancake batter",
+        "butter",
+        "powdered sugar",
+        "maple syrup"
+      ],
+      "garnishes": [],
+      "isEntree": true,
+      "_hasRules": true,
+      "_ruleCount": 10,
+      "sides": [
+        {
+          "id": "15ea5cbb-bbd1-432d-bc02-1652962a8c98",
+          "name": "Fresh Seasonal Fruit"
+        },
+        {
+          "id": "f57d678c-2da0-48db-9052-fa75db196ff4",
+          "name": "Multi-Grain Toast"
+        },
+        {
+          "id": "2a92e404-85e9-47be-b167-97a9383272ea",
+          "name": "Turkey Sausage Patties"
+        },
+        {
+          "id": "a2595668-5c3d-49bf-af66-9b4012fa34da",
+          "name": "Side of Eggs"
+        },
+        {
+          "id": "6c10e37c-753e-4186-9aa9-2d2182e9ac9d",
+          "name": "Applewood Smoked Bacon"
+        },
+        {
+          "id": "c47a44de-b5b7-452c-84d7-b38c33bb0355",
+          "name": "Breakfast Potatoes and Onions"
         }
       ]
     },
     {
       "id": "7dd8f813-811a-4078-ac56-1668012c54aa",
       "name": "Kids Chocolate Chip Pancakes",
-      "ticketCode": null,
+      "ticketCode": "KIDS CHOC PANCAKES",
       "categoryId": "brunch",
       "category": "Brunch",
       "description": null,
-      "displayOrder": 124,
+      "displayOrder": 122,
       "allergenRules": {
         "dairy": {
-          "status": "NOT_SAFE_NOT_IN_SHEET",
+          "status": "UNSAFE",
           "substitutions": [],
-          "notes": "NOT IN ALLERGY SHEET - Cannot verify safety",
+          "notes": "Contains buttermilk and butter in pancake batter",
           "requiresVerification": false
         },
         "gluten": {
-          "status": "NOT_SAFE_NOT_IN_SHEET",
+          "status": "UNSAFE",
           "substitutions": [],
-          "notes": "NOT IN ALLERGY SHEET - Cannot verify safety",
+          "notes": "Contains flour in pancake batter",
           "requiresVerification": false
         },
         "shellfish": {
@@ -25060,15 +25401,15 @@
           "requiresVerification": false
         },
         "soy": {
-          "status": "NOT_SAFE_NOT_IN_SHEET",
+          "status": "UNSAFE",
           "substitutions": [],
-          "notes": "NOT IN ALLERGY SHEET - Cannot verify safety",
+          "notes": "Contains soy lecithin in chocolate chips",
           "requiresVerification": false
         },
         "eggs": {
-          "status": "NOT_SAFE_NOT_IN_SHEET",
+          "status": "UNSAFE",
           "substitutions": [],
-          "notes": "NOT IN ALLERGY SHEET - Cannot verify safety",
+          "notes": "Contains eggs in pancake batter",
           "requiresVerification": false
         },
         "peanuts": {
@@ -25102,23 +25443,29 @@
           "requiresVerification": false
         }
       },
-      "ingredients": [],
+      "ingredients": [
+        "buttermilk pancake batter",
+        "chocolate chips",
+        "powdered sugar",
+        "chocolate shavings",
+        "maple syrup"
+      ],
       "garnishes": [],
       "isEntree": true,
       "_hasRules": true,
-      "_ruleCount": 6,
+      "_ruleCount": 10,
       "sides": [
         {
           "id": "15ea5cbb-bbd1-432d-bc02-1652962a8c98",
-          "name": "Side of Fresh Fruit"
+          "name": "Fresh Seasonal Fruit"
         },
         {
           "id": "f57d678c-2da0-48db-9052-fa75db196ff4",
-          "name": "Side of Wheat Toast"
+          "name": "Multi-Grain Toast"
         },
         {
           "id": "2a92e404-85e9-47be-b167-97a9383272ea",
-          "name": "Side of Turkey Sausage"
+          "name": "Turkey Sausage Patties"
         },
         {
           "id": "a2595668-5c3d-49bf-af66-9b4012fa34da",
@@ -25126,33 +25473,33 @@
         },
         {
           "id": "6c10e37c-753e-4186-9aa9-2d2182e9ac9d",
-          "name": "Side of Bacon"
+          "name": "Applewood Smoked Bacon"
         },
         {
           "id": "c47a44de-b5b7-452c-84d7-b38c33bb0355",
-          "name": "Breakfast Potatoes"
+          "name": "Breakfast Potatoes and Onions"
         }
       ]
     },
     {
       "id": "641ba133-48d8-4f0f-a22e-cadf26bd8ceb",
       "name": "Kids French Toast",
-      "ticketCode": null,
+      "ticketCode": "KIDS FR TOAST",
       "categoryId": "brunch",
       "category": "Brunch",
       "description": null,
-      "displayOrder": 125,
+      "displayOrder": 123,
       "allergenRules": {
         "dairy": {
-          "status": "NOT_SAFE_NOT_IN_SHEET",
+          "status": "UNSAFE",
           "substitutions": [],
-          "notes": "NOT IN ALLERGY SHEET - Cannot verify safety",
+          "notes": "Contains half and half in French toast batter",
           "requiresVerification": false
         },
         "gluten": {
-          "status": "NOT_SAFE_NOT_IN_SHEET",
+          "status": "UNSAFE",
           "substitutions": [],
-          "notes": "NOT IN ALLERGY SHEET - Cannot verify safety",
+          "notes": "Contains Challah bread",
           "requiresVerification": false
         },
         "shellfish": {
@@ -25162,15 +25509,15 @@
           "requiresVerification": false
         },
         "soy": {
-          "status": "NOT_SAFE_NOT_IN_SHEET",
+          "status": "UNSAFE",
           "substitutions": [],
-          "notes": "NOT IN ALLERGY SHEET - Cannot verify safety",
+          "notes": "Contains soy in Challah bread (soybean oil)",
           "requiresVerification": false
         },
         "eggs": {
-          "status": "NOT_SAFE_NOT_IN_SHEET",
+          "status": "UNSAFE",
           "substitutions": [],
-          "notes": "NOT IN ALLERGY SHEET - Cannot verify safety",
+          "notes": "Contains egg yolks in French toast batter",
           "requiresVerification": false
         },
         "peanuts": {
@@ -25204,23 +25551,29 @@
           "requiresVerification": false
         }
       },
-      "ingredients": [],
+      "ingredients": [
+        "Challah bread",
+        "French toast batter",
+        "powdered sugar",
+        "macerated strawberries",
+        "maple syrup"
+      ],
       "garnishes": [],
       "isEntree": true,
       "_hasRules": true,
-      "_ruleCount": 6,
+      "_ruleCount": 10,
       "sides": [
         {
           "id": "15ea5cbb-bbd1-432d-bc02-1652962a8c98",
-          "name": "Side of Fresh Fruit"
+          "name": "Fresh Seasonal Fruit"
         },
         {
           "id": "f57d678c-2da0-48db-9052-fa75db196ff4",
-          "name": "Side of Wheat Toast"
+          "name": "Multi-Grain Toast"
         },
         {
           "id": "2a92e404-85e9-47be-b167-97a9383272ea",
-          "name": "Side of Turkey Sausage"
+          "name": "Turkey Sausage Patties"
         },
         {
           "id": "a2595668-5c3d-49bf-af66-9b4012fa34da",
@@ -25228,22 +25581,22 @@
         },
         {
           "id": "6c10e37c-753e-4186-9aa9-2d2182e9ac9d",
-          "name": "Side of Bacon"
+          "name": "Applewood Smoked Bacon"
         },
         {
           "id": "c47a44de-b5b7-452c-84d7-b38c33bb0355",
-          "name": "Breakfast Potatoes"
+          "name": "Breakfast Potatoes and Onions"
         }
       ]
     },
     {
       "id": "d3c9fceb-c885-4972-94cd-38e88a7f0b6e",
       "name": "Kids Scramble",
-      "ticketCode": null,
+      "ticketCode": "KIDS SCRAMBLE",
       "categoryId": "brunch",
       "category": "Brunch",
       "description": null,
-      "displayOrder": 126,
+      "displayOrder": 124,
       "allergenRules": {
         "dairy": {
           "status": "MODIFIABLE",
@@ -25272,9 +25625,9 @@
           "requiresVerification": false
         },
         "eggs": {
-          "status": "NOT_SAFE_NOT_IN_SHEET",
+          "status": "UNSAFE",
           "substitutions": [],
-          "notes": "NOT IN ALLERGY SHEET - Cannot verify safety",
+          "notes": "Contains scrambled eggs",
           "requiresVerification": false
         },
         "peanuts": {
@@ -25308,23 +25661,31 @@
           "requiresVerification": false
         }
       },
-      "ingredients": [],
+      "ingredients": [
+        "eggs",
+        "house oil",
+        "salt",
+        "pepper",
+        "American cheese",
+        "fresh fruit",
+        "applewood smoked bacon"
+      ],
       "garnishes": [],
       "isEntree": true,
       "_hasRules": true,
-      "_ruleCount": 9,
+      "_ruleCount": 10,
       "sides": [
         {
           "id": "15ea5cbb-bbd1-432d-bc02-1652962a8c98",
-          "name": "Side of Fresh Fruit"
+          "name": "Fresh Seasonal Fruit"
         },
         {
           "id": "f57d678c-2da0-48db-9052-fa75db196ff4",
-          "name": "Side of Wheat Toast"
+          "name": "Multi-Grain Toast"
         },
         {
           "id": "2a92e404-85e9-47be-b167-97a9383272ea",
-          "name": "Side of Turkey Sausage"
+          "name": "Turkey Sausage Patties"
         },
         {
           "id": "a2595668-5c3d-49bf-af66-9b4012fa34da",
@@ -25332,33 +25693,59 @@
         },
         {
           "id": "6c10e37c-753e-4186-9aa9-2d2182e9ac9d",
-          "name": "Side of Bacon"
+          "name": "Applewood Smoked Bacon"
         },
         {
           "id": "c47a44de-b5b7-452c-84d7-b38c33bb0355",
-          "name": "Breakfast Potatoes"
+          "name": "Breakfast Potatoes and Onions"
+        }
+      ],
+      "brunchSides": [
+        {
+          "id": "c47a44de-b5b7-452c-84d7-b38c33bb0355",
+          "name": "Breakfast Potatoes and Onions"
+        },
+        {
+          "id": "15ea5cbb-bbd1-432d-bc02-1652962a8c98",
+          "name": "Fresh Seasonal Fruit"
+        },
+        {
+          "id": "f57d678c-2da0-48db-9052-fa75db196ff4",
+          "name": "Multi-Grain Toast"
+        },
+        {
+          "id": "2a92e404-85e9-47be-b167-97a9383272ea",
+          "name": "Turkey Sausage Patties"
+        },
+        {
+          "id": "6c10e37c-753e-4186-9aa9-2d2182e9ac9d",
+          "name": "Applewood Smoked Bacon"
+        },
+        {
+          "id": "a2595668-5c3d-49bf-af66-9b4012fa34da",
+          "name": "Side of Eggs"
         }
       ]
     },
     {
-      "id": "6c10e37c-753e-4186-9aa9-2d2182e9ac9d",
-      "name": "Side of Bacon",
-      "ticketCode": null,
+      "id": "18a71b2e-45c1-4bb0-ab08-1a59dafd8c1a",
+      "name": "Oven Roasted Crab Cakes Benedict",
+      "ticketCode": "CRAB BENE",
       "categoryId": "brunch",
       "category": "Brunch",
       "description": null,
-      "displayOrder": 127,
+      "displayOrder": 125,
       "allergenRules": {
         "dairy": {
-          "status": "SAFE",
+          "status": "UNSAFE",
           "substitutions": [],
-          "notes": "No changes needed",
+          "notes": "Contains hollandaise sauce (butter)",
           "requiresVerification": false
         },
         "gluten": {
-          "status": "SAFE",
+          "status": "UNSAFE",
           "substitutions": [],
-          "notes": "No changes needed",
+          "notes": "Contains English muffin and breading in crab cake",
           "requiresVerification": false
         },
         "shellfish": {
@@ -25368,15 +25755,15 @@
           "requiresVerification": false
         },
         "soy": {
-          "status": "SAFE",
+          "status": "UNSAFE",
           "substitutions": [],
-          "notes": "No changes needed",
+          "notes": "Contains soy in English muffin and crab cake (mayonnaise)",
           "requiresVerification": false
         },
         "eggs": {
-          "status": "SAFE",
+          "status": "UNSAFE",
           "substitutions": [],
-          "notes": "No changes needed",
+          "notes": "Contains poached eggs, hollandaise (egg yolks), and eggs in crab cake",
           "requiresVerification": false
         },
         "peanuts": {
@@ -25398,342 +25785,93 @@
           "requiresVerification": false
         },
         "garlic": {
-          "status": "SAFE",
+          "status": "UNSAFE",
           "substitutions": [],
-          "notes": "No changes needed",
+          "notes": "Contains garlic in crab cake",
           "requiresVerification": false
         },
         "onion": {
-          "status": "SAFE",
+          "status": "UNSAFE",
           "substitutions": [],
-          "notes": "No changes needed",
+          "notes": "Contains onion in crab cake",
           "requiresVerification": false
         }
       },
-      "ingredients": [],
-      "garnishes": [],
-      "isSideOnly": true,
+      "ingredients": [
+        "English muffin",
+        "butter",
+        "crab cake",
+        "poached egg",
+        "hollandaise sauce",
+        "breakfast potatoes and onions"
+      ],
+      "garnishes": [
+        "chives"
+      ],
+      "isEntree": true,
       "_hasRules": true,
-      "_ruleCount": 10
-    },
-    {
-      "id": "a2595668-5c3d-49bf-af66-9b4012fa34da",
-      "name": "Side of Eggs",
-      "ticketCode": null,
-      "categoryId": "brunch",
-      "category": "Brunch",
-      "description": null,
-      "displayOrder": 128,
-      "allergenRules": {
-        "dairy": {
-          "status": "MODIFIABLE",
-          "substitutions": [
-            "NO butter when cooking eggs"
-          ],
-          "notes": "Can be made dairy-safe with listed modifications",
-          "requiresVerification": false
+      "_ruleCount": 10,
+      "sides": [
+        {
+          "id": "15ea5cbb-bbd1-432d-bc02-1652962a8c98",
+          "name": "Fresh Seasonal Fruit"
         },
-        "gluten": {
-          "status": "SAFE",
-          "substitutions": [],
-          "notes": "No changes needed",
-          "requiresVerification": false
+        {
+          "id": "f57d678c-2da0-48db-9052-fa75db196ff4",
+          "name": "Multi-Grain Toast"
         },
-        "shellfish": {
-          "status": "SAFE",
-          "substitutions": [],
-          "notes": "Safe for shellfish allergy",
-          "requiresVerification": false
+        {
+          "id": "2a92e404-85e9-47be-b167-97a9383272ea",
+          "name": "Turkey Sausage Patties"
         },
-        "soy": {
-          "status": "NOT_SAFE_NOT_IN_SHEET",
-          "substitutions": [],
-          "notes": "NOT IN ALLERGY SHEET - Cannot verify safety",
-          "requiresVerification": false
+        {
+          "id": "a2595668-5c3d-49bf-af66-9b4012fa34da",
+          "name": "Side of Eggs"
         },
-        "eggs": {
-          "status": "NOT_SAFE_NOT_IN_SHEET",
-          "substitutions": [],
-          "notes": "NOT IN ALLERGY SHEET - Cannot verify safety",
-          "requiresVerification": false
+        {
+          "id": "6c10e37c-753e-4186-9aa9-2d2182e9ac9d",
+          "name": "Applewood Smoked Bacon"
         },
-        "peanuts": {
-          "status": "SAFE",
-          "substitutions": [],
-          "notes": "No changes needed",
-          "requiresVerification": false
-        },
-        "tree_nuts": {
-          "status": "SAFE",
-          "substitutions": [],
-          "notes": "No changes needed",
-          "requiresVerification": false
-        },
-        "sesame": {
-          "status": "SAFE",
-          "substitutions": [],
-          "notes": "No changes needed",
-          "requiresVerification": false
-        },
-        "garlic": {
-          "status": "NOT_SAFE_NOT_IN_SHEET",
-          "substitutions": [],
-          "notes": "NOT IN ALLERGY SHEET - Cannot verify safety",
-          "requiresVerification": false
-        },
-        "onion": {
-          "status": "NOT_SAFE_NOT_IN_SHEET",
-          "substitutions": [],
-          "notes": "NOT IN ALLERGY SHEET - Cannot verify safety",
-          "requiresVerification": false
+        {
+          "id": "c47a44de-b5b7-452c-84d7-b38c33bb0355",
+          "name": "Breakfast Potatoes and Onions"
         }
-      },
-      "ingredients": [],
-      "garnishes": [],
-      "isSideOnly": true,
-      "_hasRules": true,
-      "_ruleCount": 6
-    },
-    {
-      "id": "15ea5cbb-bbd1-432d-bc02-1652962a8c98",
-      "name": "Side of Fresh Fruit",
-      "ticketCode": null,
-      "categoryId": "brunch",
-      "category": "Brunch",
-      "description": null,
-      "displayOrder": 129,
-      "allergenRules": {
-        "dairy": {
-          "status": "SAFE",
-          "substitutions": [],
-          "notes": "No changes needed",
-          "requiresVerification": false
+      ],
+      "brunchSides": [
+        {
+          "id": "c47a44de-b5b7-452c-84d7-b38c33bb0355",
+          "name": "Breakfast Potatoes and Onions"
         },
-        "gluten": {
-          "status": "SAFE",
-          "substitutions": [],
-          "notes": "No changes needed",
-          "requiresVerification": false
+        {
+          "id": "15ea5cbb-bbd1-432d-bc02-1652962a8c98",
+          "name": "Fresh Seasonal Fruit"
         },
-        "shellfish": {
-          "status": "SAFE",
-          "substitutions": [],
-          "notes": "Safe for shellfish allergy",
-          "requiresVerification": false
+        {
+          "id": "f57d678c-2da0-48db-9052-fa75db196ff4",
+          "name": "Multi-Grain Toast"
         },
-        "soy": {
-          "status": "NOT_SAFE_NOT_IN_SHEET",
-          "substitutions": [],
-          "notes": "NOT IN ALLERGY SHEET - Cannot verify safety",
-          "requiresVerification": false
+        {
+          "id": "2a92e404-85e9-47be-b167-97a9383272ea",
+          "name": "Turkey Sausage Patties"
         },
-        "eggs": {
-          "status": "NOT_SAFE_NOT_IN_SHEET",
-          "substitutions": [],
-          "notes": "NOT IN ALLERGY SHEET - Cannot verify safety",
-          "requiresVerification": false
+        {
+          "id": "6c10e37c-753e-4186-9aa9-2d2182e9ac9d",
+          "name": "Applewood Smoked Bacon"
         },
-        "peanuts": {
-          "status": "SAFE",
-          "substitutions": [],
-          "notes": "No changes needed",
-          "requiresVerification": false
-        },
-        "tree_nuts": {
-          "status": "SAFE",
-          "substitutions": [],
-          "notes": "No changes needed",
-          "requiresVerification": false
-        },
-        "sesame": {
-          "status": "SAFE",
-          "substitutions": [],
-          "notes": "No changes needed",
-          "requiresVerification": false
-        },
-        "garlic": {
-          "status": "NOT_SAFE_NOT_IN_SHEET",
-          "substitutions": [],
-          "notes": "NOT IN ALLERGY SHEET - Cannot verify safety",
-          "requiresVerification": false
-        },
-        "onion": {
-          "status": "SAFE",
-          "substitutions": [],
-          "notes": "No changes needed",
-          "requiresVerification": false
+        {
+          "id": "a2595668-5c3d-49bf-af66-9b4012fa34da",
+          "name": "Side of Eggs"
         }
-      },
-      "ingredients": [],
-      "garnishes": [],
-      "isSideOnly": true,
-      "_hasRules": true,
-      "_ruleCount": 7
-    },
-    {
-      "id": "2a92e404-85e9-47be-b167-97a9383272ea",
-      "name": "Side of Turkey Sausage",
-      "ticketCode": null,
-      "categoryId": "brunch",
-      "category": "Brunch",
-      "description": null,
-      "displayOrder": 130,
-      "allergenRules": {
-        "dairy": {
-          "status": "SAFE",
-          "substitutions": [],
-          "notes": "No changes needed",
-          "requiresVerification": false
-        },
-        "gluten": {
-          "status": "SAFE",
-          "substitutions": [],
-          "notes": "No changes needed",
-          "requiresVerification": false
-        },
-        "shellfish": {
-          "status": "SAFE",
-          "substitutions": [],
-          "notes": "Safe for shellfish allergy",
-          "requiresVerification": false
-        },
-        "soy": {
-          "status": "SAFE",
-          "substitutions": [],
-          "notes": "No changes needed",
-          "requiresVerification": false
-        },
-        "eggs": {
-          "status": "NOT_SAFE_NOT_IN_SHEET",
-          "substitutions": [],
-          "notes": "NOT IN ALLERGY SHEET - Cannot verify safety",
-          "requiresVerification": false
-        },
-        "peanuts": {
-          "status": "SAFE",
-          "substitutions": [],
-          "notes": "No changes needed",
-          "requiresVerification": false
-        },
-        "tree_nuts": {
-          "status": "SAFE",
-          "substitutions": [],
-          "notes": "No changes needed",
-          "requiresVerification": false
-        },
-        "sesame": {
-          "status": "SAFE",
-          "substitutions": [],
-          "notes": "No changes needed",
-          "requiresVerification": false
-        },
-        "garlic": {
-          "status": "SAFE",
-          "substitutions": [],
-          "notes": "No changes needed",
-          "requiresVerification": false
-        },
-        "onion": {
-          "status": "SAFE",
-          "substitutions": [],
-          "notes": "No changes needed",
-          "requiresVerification": false
-        }
-      },
-      "ingredients": [],
-      "garnishes": [],
-      "isSideOnly": true,
-      "_hasRules": true,
-      "_ruleCount": 9
-    },
-    {
-      "id": "f57d678c-2da0-48db-9052-fa75db196ff4",
-      "name": "Side of Wheat Toast",
-      "ticketCode": null,
-      "categoryId": "brunch",
-      "category": "Brunch",
-      "description": null,
-      "displayOrder": 131,
-      "allergenRules": {
-        "dairy": {
-          "status": "MODIFIABLE",
-          "substitutions": [
-            "NO butter"
-          ],
-          "notes": "Can be made dairy-safe with listed modifications",
-          "requiresVerification": false
-        },
-        "gluten": {
-          "status": "NOT_SAFE_NOT_IN_SHEET",
-          "substitutions": [],
-          "notes": "NOT IN ALLERGY SHEET - Cannot verify safety",
-          "requiresVerification": false
-        },
-        "shellfish": {
-          "status": "SAFE",
-          "substitutions": [],
-          "notes": "Safe for shellfish allergy",
-          "requiresVerification": false
-        },
-        "soy": {
-          "status": "MODIFIABLE",
-          "substitutions": [
-            "NO whipped butter"
-          ],
-          "notes": "Can be made soy-safe with listed modifications",
-          "requiresVerification": false
-        },
-        "eggs": {
-          "status": "NOT_SAFE_NOT_IN_SHEET",
-          "substitutions": [],
-          "notes": "NOT IN ALLERGY SHEET - Cannot verify safety",
-          "requiresVerification": false
-        },
-        "peanuts": {
-          "status": "SAFE",
-          "substitutions": [],
-          "notes": "No changes needed",
-          "requiresVerification": false
-        },
-        "tree_nuts": {
-          "status": "SAFE",
-          "substitutions": [],
-          "notes": "No changes needed",
-          "requiresVerification": false
-        },
-        "sesame": {
-          "status": "NOT_SAFE_NOT_IN_SHEET",
-          "substitutions": [],
-          "notes": "NOT IN ALLERGY SHEET - Cannot verify safety",
-          "requiresVerification": false
-        },
-        "garlic": {
-          "status": "SAFE",
-          "substitutions": [],
-          "notes": "No changes needed",
-          "requiresVerification": false
-        },
-        "onion": {
-          "status": "SAFE",
-          "substitutions": [],
-          "notes": "No changes needed",
-          "requiresVerification": false
-        }
-      },
-      "ingredients": [],
-      "garnishes": [],
-      "isSideOnly": true,
-      "_hasRules": true,
-      "_ruleCount": 7
+      ]
     },
     {
       "id": "d95523cf-9951-4a73-80ac-d665cc0cad70",
-      "name": "Southwestern Steak and Eggs",
-      "ticketCode": null,
+      "name": "Southwestern Skirt Steak & Eggs",
+      "ticketCode": "SW STEAK EGG",
       "categoryId": "brunch",
       "category": "Brunch",
       "description": null,
-      "displayOrder": 132,
+      "displayOrder": 126,
       "allergenRules": {
         "dairy": {
           "status": "SAFE",
@@ -25786,35 +25924,41 @@
           "requiresVerification": false
         },
         "garlic": {
-          "status": "NOT_SAFE_NOT_IN_SHEET",
+          "status": "UNSAFE",
           "substitutions": [],
-          "notes": "NOT IN ALLERGY SHEET - Cannot verify safety",
+          "notes": "Contains garlic in al pastor marinade",
           "requiresVerification": false
         },
         "onion": {
-          "status": "NOT_SAFE_NOT_IN_SHEET",
+          "status": "UNSAFE",
           "substitutions": [],
-          "notes": "NOT IN ALLERGY SHEET - Cannot verify safety",
+          "notes": "Contains onion in al pastor marinade and ranchero sauce",
           "requiresVerification": false
         }
       },
-      "ingredients": [],
+      "ingredients": [
+        "skirt steak",
+        "al pastor marinade",
+        "eggs",
+        "breakfast potatoes and onions",
+        "ranchero sauce"
+      ],
       "garnishes": [],
       "isEntree": true,
       "_hasRules": true,
-      "_ruleCount": 8,
+      "_ruleCount": 10,
       "sides": [
         {
           "id": "15ea5cbb-bbd1-432d-bc02-1652962a8c98",
-          "name": "Side of Fresh Fruit"
+          "name": "Fresh Seasonal Fruit"
         },
         {
           "id": "f57d678c-2da0-48db-9052-fa75db196ff4",
-          "name": "Side of Wheat Toast"
+          "name": "Multi-Grain Toast"
         },
         {
           "id": "2a92e404-85e9-47be-b167-97a9383272ea",
-          "name": "Side of Turkey Sausage"
+          "name": "Turkey Sausage Patties"
         },
         {
           "id": "a2595668-5c3d-49bf-af66-9b4012fa34da",
@@ -25822,27 +25966,53 @@
         },
         {
           "id": "6c10e37c-753e-4186-9aa9-2d2182e9ac9d",
-          "name": "Side of Bacon"
+          "name": "Applewood Smoked Bacon"
         },
         {
           "id": "c47a44de-b5b7-452c-84d7-b38c33bb0355",
-          "name": "Breakfast Potatoes"
+          "name": "Breakfast Potatoes and Onions"
+        }
+      ],
+      "brunchSides": [
+        {
+          "id": "c47a44de-b5b7-452c-84d7-b38c33bb0355",
+          "name": "Breakfast Potatoes and Onions"
+        },
+        {
+          "id": "15ea5cbb-bbd1-432d-bc02-1652962a8c98",
+          "name": "Fresh Seasonal Fruit"
+        },
+        {
+          "id": "f57d678c-2da0-48db-9052-fa75db196ff4",
+          "name": "Multi-Grain Toast"
+        },
+        {
+          "id": "2a92e404-85e9-47be-b167-97a9383272ea",
+          "name": "Turkey Sausage Patties"
+        },
+        {
+          "id": "6c10e37c-753e-4186-9aa9-2d2182e9ac9d",
+          "name": "Applewood Smoked Bacon"
+        },
+        {
+          "id": "a2595668-5c3d-49bf-af66-9b4012fa34da",
+          "name": "Side of Eggs"
         }
       ]
     },
     {
       "id": "e6131aa8-a7c5-4893-957d-5f577d4a5867",
-      "name": "Spinach and Kale Frittata",
-      "ticketCode": null,
+      "name": "Spinach, Kale, & Feta Egg White Frittata",
+      "ticketCode": "FRITTATA",
       "categoryId": "brunch",
       "category": "Brunch",
       "description": null,
-      "displayOrder": 133,
+      "displayOrder": 127,
       "allergenRules": {
         "dairy": {
-          "status": "NOT_SAFE_NOT_IN_SHEET",
+          "status": "UNSAFE",
           "substitutions": [],
-          "notes": "NOT IN ALLERGY SHEET - Cannot verify safety",
+          "notes": "Contains feta cheese and creamed spinach",
           "requiresVerification": false
         },
         "gluten": {
@@ -25864,9 +26034,9 @@
           "requiresVerification": false
         },
         "eggs": {
-          "status": "NOT_SAFE_NOT_IN_SHEET",
+          "status": "UNSAFE",
           "substitutions": [],
-          "notes": "NOT IN ALLERGY SHEET - Cannot verify safety",
+          "notes": "Contains egg whites",
           "requiresVerification": false
         },
         "peanuts": {
@@ -25896,29 +26066,47 @@
           "requiresVerification": false
         },
         "onion": {
-          "status": "NOT_SAFE_NOT_IN_SHEET",
+          "status": "UNSAFE",
           "substitutions": [],
-          "notes": "NOT IN ALLERGY SHEET - Cannot verify safety",
+          "notes": "Contains shallots and scallions in field greens salad",
           "requiresVerification": false
         }
       },
-      "ingredients": [],
-      "garnishes": [],
+      "ingredients": [
+        "shredded baked potato",
+        "house oil",
+        "salt",
+        "pepper",
+        "egg whites",
+        "shallots",
+        "kale",
+        "spinach",
+        "feta cheese",
+        "field greens",
+        "scallions",
+        "cucumbers",
+        "tomato",
+        "corn",
+        "balsamic vinaigrette"
+      ],
+      "garnishes": [
+        "chives"
+      ],
       "isEntree": true,
       "_hasRules": true,
-      "_ruleCount": 7,
+      "_ruleCount": 10,
       "sides": [
         {
           "id": "15ea5cbb-bbd1-432d-bc02-1652962a8c98",
-          "name": "Side of Fresh Fruit"
+          "name": "Fresh Seasonal Fruit"
         },
         {
           "id": "f57d678c-2da0-48db-9052-fa75db196ff4",
-          "name": "Side of Wheat Toast"
+          "name": "Multi-Grain Toast"
         },
         {
           "id": "2a92e404-85e9-47be-b167-97a9383272ea",
-          "name": "Side of Turkey Sausage"
+          "name": "Turkey Sausage Patties"
         },
         {
           "id": "a2595668-5c3d-49bf-af66-9b4012fa34da",
@@ -25926,24 +26114,532 @@
         },
         {
           "id": "6c10e37c-753e-4186-9aa9-2d2182e9ac9d",
-          "name": "Side of Bacon"
+          "name": "Applewood Smoked Bacon"
         },
         {
           "id": "c47a44de-b5b7-452c-84d7-b38c33bb0355",
-          "name": "Breakfast Potatoes"
+          "name": "Breakfast Potatoes and Onions"
+        }
+      ],
+      "brunchSides": [
+        {
+          "id": "c47a44de-b5b7-452c-84d7-b38c33bb0355",
+          "name": "Breakfast Potatoes and Onions"
+        },
+        {
+          "id": "15ea5cbb-bbd1-432d-bc02-1652962a8c98",
+          "name": "Fresh Seasonal Fruit"
+        },
+        {
+          "id": "f57d678c-2da0-48db-9052-fa75db196ff4",
+          "name": "Multi-Grain Toast"
+        },
+        {
+          "id": "2a92e404-85e9-47be-b167-97a9383272ea",
+          "name": "Turkey Sausage Patties"
+        },
+        {
+          "id": "6c10e37c-753e-4186-9aa9-2d2182e9ac9d",
+          "name": "Applewood Smoked Bacon"
+        },
+        {
+          "id": "a2595668-5c3d-49bf-af66-9b4012fa34da",
+          "name": "Side of Eggs"
         }
       ]
+    },
+    {
+      "id": "6c10e37c-753e-4186-9aa9-2d2182e9ac9d",
+      "name": "Applewood Smoked Bacon",
+      "ticketCode": "BACON",
+      "categoryId": "brunch_sides",
+      "category": "Brunch Sides",
+      "description": null,
+      "displayOrder": 128,
+      "allergenRules": {
+        "dairy": {
+          "status": "SAFE",
+          "substitutions": [],
+          "notes": "No changes needed",
+          "requiresVerification": false
+        },
+        "gluten": {
+          "status": "SAFE",
+          "substitutions": [],
+          "notes": "No changes needed",
+          "requiresVerification": false
+        },
+        "shellfish": {
+          "status": "SAFE",
+          "substitutions": [],
+          "notes": "No changes needed",
+          "requiresVerification": false
+        },
+        "soy": {
+          "status": "SAFE",
+          "substitutions": [],
+          "notes": "No changes needed",
+          "requiresVerification": false
+        },
+        "eggs": {
+          "status": "SAFE",
+          "substitutions": [],
+          "notes": "No changes needed",
+          "requiresVerification": false
+        },
+        "peanuts": {
+          "status": "SAFE",
+          "substitutions": [],
+          "notes": "No changes needed",
+          "requiresVerification": false
+        },
+        "tree_nuts": {
+          "status": "SAFE",
+          "substitutions": [],
+          "notes": "No changes needed",
+          "requiresVerification": false
+        },
+        "sesame": {
+          "status": "SAFE",
+          "substitutions": [],
+          "notes": "No changes needed",
+          "requiresVerification": false
+        },
+        "garlic": {
+          "status": "SAFE",
+          "substitutions": [],
+          "notes": "No changes needed",
+          "requiresVerification": false
+        },
+        "onion": {
+          "status": "SAFE",
+          "substitutions": [],
+          "notes": "No changes needed",
+          "requiresVerification": false
+        }
+      },
+      "ingredients": [
+        "applewood smoked bacon"
+      ],
+      "garnishes": [],
+      "isSideOnly": true,
+      "_hasRules": true,
+      "_ruleCount": 10
+    },
+    {
+      "id": "c47a44de-b5b7-452c-84d7-b38c33bb0355",
+      "name": "Breakfast Potatoes and Onions",
+      "ticketCode": "BRKFST POTATOES",
+      "categoryId": "brunch_sides",
+      "category": "Brunch Sides",
+      "description": null,
+      "displayOrder": 129,
+      "allergenRules": {
+        "dairy": {
+          "status": "UNSAFE",
+          "substitutions": [],
+          "notes": "Contains butter",
+          "requiresVerification": false
+        },
+        "gluten": {
+          "status": "SAFE",
+          "substitutions": [],
+          "notes": "No changes needed",
+          "requiresVerification": false
+        },
+        "shellfish": {
+          "status": "SAFE",
+          "substitutions": [],
+          "notes": "No changes needed",
+          "requiresVerification": false
+        },
+        "soy": {
+          "status": "SAFE",
+          "substitutions": [],
+          "notes": "No changes needed",
+          "requiresVerification": false
+        },
+        "eggs": {
+          "status": "SAFE",
+          "substitutions": [],
+          "notes": "No changes needed",
+          "requiresVerification": false
+        },
+        "peanuts": {
+          "status": "SAFE",
+          "substitutions": [],
+          "notes": "No changes needed",
+          "requiresVerification": false
+        },
+        "tree_nuts": {
+          "status": "SAFE",
+          "substitutions": [],
+          "notes": "No changes needed",
+          "requiresVerification": false
+        },
+        "sesame": {
+          "status": "SAFE",
+          "substitutions": [],
+          "notes": "No changes needed",
+          "requiresVerification": false
+        },
+        "garlic": {
+          "status": "SAFE",
+          "substitutions": [],
+          "notes": "No changes needed",
+          "requiresVerification": false
+        },
+        "onion": {
+          "status": "UNSAFE",
+          "substitutions": [],
+          "notes": "Contains onions",
+          "requiresVerification": false
+        }
+      },
+      "ingredients": [
+        "cubed potatoes",
+        "onions",
+        "house oil",
+        "butter",
+        "salt",
+        "pepper"
+      ],
+      "garnishes": [],
+      "isSideOnly": true,
+      "_hasRules": true,
+      "_ruleCount": 10
+    },
+    {
+      "id": "15ea5cbb-bbd1-432d-bc02-1652962a8c98",
+      "name": "Fresh Seasonal Fruit",
+      "ticketCode": "FRUIT",
+      "categoryId": "brunch_sides",
+      "category": "Brunch Sides",
+      "description": null,
+      "displayOrder": 130,
+      "allergenRules": {
+        "dairy": {
+          "status": "SAFE",
+          "substitutions": [],
+          "notes": "No changes needed",
+          "requiresVerification": false
+        },
+        "gluten": {
+          "status": "SAFE",
+          "substitutions": [],
+          "notes": "No changes needed",
+          "requiresVerification": false
+        },
+        "shellfish": {
+          "status": "SAFE",
+          "substitutions": [],
+          "notes": "No changes needed",
+          "requiresVerification": false
+        },
+        "soy": {
+          "status": "SAFE",
+          "substitutions": [],
+          "notes": "No changes needed",
+          "requiresVerification": false
+        },
+        "eggs": {
+          "status": "SAFE",
+          "substitutions": [],
+          "notes": "No changes needed",
+          "requiresVerification": false
+        },
+        "peanuts": {
+          "status": "SAFE",
+          "substitutions": [],
+          "notes": "No changes needed",
+          "requiresVerification": false
+        },
+        "tree_nuts": {
+          "status": "SAFE",
+          "substitutions": [],
+          "notes": "No changes needed",
+          "requiresVerification": false
+        },
+        "sesame": {
+          "status": "SAFE",
+          "substitutions": [],
+          "notes": "No changes needed",
+          "requiresVerification": false
+        },
+        "garlic": {
+          "status": "SAFE",
+          "substitutions": [],
+          "notes": "No changes needed",
+          "requiresVerification": false
+        },
+        "onion": {
+          "status": "SAFE",
+          "substitutions": [],
+          "notes": "No changes needed",
+          "requiresVerification": false
+        }
+      },
+      "ingredients": [
+        "seasonal fruit"
+      ],
+      "garnishes": [],
+      "isSideOnly": true,
+      "_hasRules": true,
+      "_ruleCount": 10
+    },
+    {
+      "id": "f57d678c-2da0-48db-9052-fa75db196ff4",
+      "name": "Multi-Grain Toast",
+      "ticketCode": "MG TOAST",
+      "categoryId": "brunch_sides",
+      "category": "Brunch Sides",
+      "description": null,
+      "displayOrder": 131,
+      "allergenRules": {
+        "dairy": {
+          "status": "MODIFIABLE",
+          "substitutions": [
+            "no butter"
+          ],
+          "notes": "NO butter on toast",
+          "requiresVerification": false
+        },
+        "gluten": {
+          "status": "UNSAFE",
+          "substitutions": [],
+          "notes": "Contains multi-grain bread",
+          "requiresVerification": false
+        },
+        "shellfish": {
+          "status": "SAFE",
+          "substitutions": [],
+          "notes": "No changes needed",
+          "requiresVerification": false
+        },
+        "soy": {
+          "status": "MODIFIABLE",
+          "substitutions": [
+            "no whipped butter"
+          ],
+          "notes": "NO whipped butter",
+          "requiresVerification": false
+        },
+        "eggs": {
+          "status": "SAFE",
+          "substitutions": [],
+          "notes": "No changes needed",
+          "requiresVerification": false
+        },
+        "peanuts": {
+          "status": "SAFE",
+          "substitutions": [],
+          "notes": "No changes needed",
+          "requiresVerification": false
+        },
+        "tree_nuts": {
+          "status": "SAFE",
+          "substitutions": [],
+          "notes": "No changes needed",
+          "requiresVerification": false
+        },
+        "sesame": {
+          "status": "UNSAFE",
+          "substitutions": [],
+          "notes": "Contains sesame seeds in multi-grain bread",
+          "requiresVerification": false
+        },
+        "garlic": {
+          "status": "SAFE",
+          "substitutions": [],
+          "notes": "No changes needed",
+          "requiresVerification": false
+        },
+        "onion": {
+          "status": "SAFE",
+          "substitutions": [],
+          "notes": "No changes needed",
+          "requiresVerification": false
+        }
+      },
+      "ingredients": [
+        "multi-grain bread",
+        "butter",
+        "preserves"
+      ],
+      "garnishes": [],
+      "isSideOnly": true,
+      "_hasRules": true,
+      "_ruleCount": 10
+    },
+    {
+      "id": "a2595668-5c3d-49bf-af66-9b4012fa34da",
+      "name": "Side of Eggs",
+      "ticketCode": "SIDE EGGS",
+      "categoryId": "brunch_sides",
+      "category": "Brunch Sides",
+      "description": null,
+      "displayOrder": 132,
+      "allergenRules": {
+        "dairy": {
+          "status": "MODIFIABLE",
+          "substitutions": [
+            "NO butter when cooking eggs"
+          ],
+          "notes": "Can be made dairy-safe with listed modifications",
+          "requiresVerification": false
+        },
+        "gluten": {
+          "status": "SAFE",
+          "substitutions": [],
+          "notes": "No changes needed",
+          "requiresVerification": false
+        },
+        "shellfish": {
+          "status": "SAFE",
+          "substitutions": [],
+          "notes": "Safe for shellfish allergy",
+          "requiresVerification": false
+        },
+        "soy": {
+          "status": "SAFE",
+          "substitutions": [],
+          "notes": "No changes needed",
+          "requiresVerification": false
+        },
+        "eggs": {
+          "status": "UNSAFE",
+          "substitutions": [],
+          "notes": "Contains eggs",
+          "requiresVerification": false
+        },
+        "peanuts": {
+          "status": "SAFE",
+          "substitutions": [],
+          "notes": "No changes needed",
+          "requiresVerification": false
+        },
+        "tree_nuts": {
+          "status": "SAFE",
+          "substitutions": [],
+          "notes": "No changes needed",
+          "requiresVerification": false
+        },
+        "sesame": {
+          "status": "SAFE",
+          "substitutions": [],
+          "notes": "No changes needed",
+          "requiresVerification": false
+        },
+        "garlic": {
+          "status": "SAFE",
+          "substitutions": [],
+          "notes": "No changes needed",
+          "requiresVerification": false
+        },
+        "onion": {
+          "status": "SAFE",
+          "substitutions": [],
+          "notes": "No changes needed",
+          "requiresVerification": false
+        }
+      },
+      "ingredients": [
+        "eggs",
+        "house oil"
+      ],
+      "garnishes": [],
+      "isSideOnly": true,
+      "_hasRules": true,
+      "_ruleCount": 10
+    },
+    {
+      "id": "2a92e404-85e9-47be-b167-97a9383272ea",
+      "name": "Turkey Sausage Patties",
+      "ticketCode": "TURKEY SAUSAGE",
+      "categoryId": "brunch_sides",
+      "category": "Brunch Sides",
+      "description": null,
+      "displayOrder": 133,
+      "allergenRules": {
+        "dairy": {
+          "status": "SAFE",
+          "substitutions": [],
+          "notes": "No changes needed",
+          "requiresVerification": false
+        },
+        "gluten": {
+          "status": "SAFE",
+          "substitutions": [],
+          "notes": "No changes needed",
+          "requiresVerification": false
+        },
+        "shellfish": {
+          "status": "SAFE",
+          "substitutions": [],
+          "notes": "No changes needed",
+          "requiresVerification": false
+        },
+        "soy": {
+          "status": "SAFE",
+          "substitutions": [],
+          "notes": "No changes needed",
+          "requiresVerification": false
+        },
+        "eggs": {
+          "status": "SAFE",
+          "substitutions": [],
+          "notes": "No changes needed",
+          "requiresVerification": false
+        },
+        "peanuts": {
+          "status": "SAFE",
+          "substitutions": [],
+          "notes": "No changes needed",
+          "requiresVerification": false
+        },
+        "tree_nuts": {
+          "status": "SAFE",
+          "substitutions": [],
+          "notes": "No changes needed",
+          "requiresVerification": false
+        },
+        "sesame": {
+          "status": "SAFE",
+          "substitutions": [],
+          "notes": "No changes needed",
+          "requiresVerification": false
+        },
+        "garlic": {
+          "status": "SAFE",
+          "substitutions": [],
+          "notes": "No changes needed",
+          "requiresVerification": false
+        },
+        "onion": {
+          "status": "SAFE",
+          "substitutions": [],
+          "notes": "No changes needed",
+          "requiresVerification": false
+        }
+      },
+      "ingredients": [
+        "turkey sausage"
+      ],
+      "garnishes": [],
+      "isSideOnly": true,
+      "_hasRules": true,
+      "_ruleCount": 10
     }
   ],
   "stats": {
     "totalItems": 134,
-    "totalCategories": 15,
-    "totalLinkedRules": 1171,
+    "totalCategories": 16,
+    "totalLinkedRules": 1265,
     "totalUnlinkedRules": 0,
     "itemsWithRules": 128,
     "itemsWithoutRules": 6,
     "allergensSupported": 10,
     "totalBreads": 7,
-    "totalCompoundIngredients": 67
+    "totalCompoundIngredients": 76
   }
 }
