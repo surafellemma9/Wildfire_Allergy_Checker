@@ -30,6 +30,8 @@ import {
   searchItems,
   type CheckerResult,
 } from '@/core/checker';
+import { printAllergyTicket } from '@/services/print-service';
+import { PrintTicketModal } from '@/components/PrintTicketModal';
 
 // ============================================================================
 // Props
@@ -1125,6 +1127,17 @@ interface ResultsViewProps {
 }
 
 function ResultsView({ result, selectedAllergens, selectedDressing, onStartOver }: ResultsViewProps) {
+  const [showPrintModal, setShowPrintModal] = useState(false);
+
+  async function handlePrint(tableNumber: string, seatNumber: string) {
+    await printAllergyTicket({
+      checkerResult: result,
+      selectedAllergens,
+      tableNumber,
+      seatNumber,
+    });
+  }
+
   const statusConfig: Record<
     RuleStatus,
     { 
@@ -1375,6 +1388,20 @@ function ResultsView({ result, selectedAllergens, selectedDressing, onStartOver 
       <p className="text-center text-white/30 text-xs">
         Always verify with kitchen staff
       </p>
+
+      {/* Print Allergy Ticket - always show; printAllergyTicket throws if no IP and not mock */}
+      <button
+        type="button"
+        onClick={() => setShowPrintModal(true)}
+        className="w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold py-3 rounded-lg flex items-center justify-center gap-2 transition-colors"
+      >
+        🖨️ Print Allergy Ticket
+      </button>
+      <PrintTicketModal
+        isOpen={showPrintModal}
+        onClose={() => setShowPrintModal(false)}
+        onPrint={handlePrint}
+      />
 
       {/* Action button */}
       <button

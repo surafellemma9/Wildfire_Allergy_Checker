@@ -113,7 +113,7 @@ const SALAD_PROTEIN_OPTIONS = [
 // SAFE dressings per allergen (from allergy sheets):
 // - Dairy: Balsamic, Citrus, Lemon Herb
 // - Onion: Caesar, Lemon Parmesan, Blue Cheese, Red Wine
-// - Gluten: Ranch, Balsamic, Caesar, Citrus, Red Wine, Blue Cheese
+// - Gluten: Ranch, Balsamic, Caesar, Citrus, Red Wine, Blue Cheese, Lemon Parmesan, Lemon Herb (safe per kitchen confirmation)
 // - Soy: Citrus, Red Wine, Caesar, Lemon Herb, Lemon Parmesan, Balsamic
 // - Garlic: Blue Cheese ONLY
 // - Shellfish: All except Caesar (anchovy)
@@ -212,7 +212,7 @@ const DRESSING_OPTIONS = [
     ingredients: ['lemon juice', 'garlic', 'Dijon mustard', 'salt', 'black pepper', 'house oil', 'extra virgin olive oil', 'Parmesan cheese'],
     allergenRules: {
       dairy: { status: 'UNSAFE', substitutions: [], notes: 'Contains Parmesan cheese' },
-      gluten: { status: 'UNSAFE', substitutions: [], notes: 'Not listed as safe for gluten allergy' },
+      gluten: { status: 'SAFE', substitutions: [], notes: 'Safe for gluten (confirmed; sheet may say otherwise)' },
       shellfish: { status: 'SAFE', substitutions: [], notes: null },
       soy: { status: 'SAFE', substitutions: [], notes: null },
       eggs: { status: 'SAFE', substitutions: [], notes: null },
@@ -229,7 +229,7 @@ const DRESSING_OPTIONS = [
     ingredients: ['lemon juice', 'red wine vinegar', 'water', 'lemon zest', 'shallots', 'garlic', 'salt', 'pepper', 'Old Bay Seasoning', 'sugar', 'Dijon mustard', 'house oil', 'extra virgin olive oil', 'thyme', 'basil'],
     allergenRules: {
       dairy: { status: 'SAFE', substitutions: [], notes: null },
-      gluten: { status: 'UNSAFE', substitutions: [], notes: 'Not listed as safe for gluten allergy' },
+      gluten: { status: 'SAFE', substitutions: [], notes: 'Safe for gluten (confirmed; sheet may say otherwise)' },
       shellfish: { status: 'SAFE', substitutions: [], notes: null },
       soy: { status: 'SAFE', substitutions: [], notes: null },
       eggs: { status: 'SAFE', substitutions: [], notes: null },

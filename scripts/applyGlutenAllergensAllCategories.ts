@@ -54,48 +54,49 @@ const ALL_GLUTEN_RULES: GlutenRule[] = [
     notes: 'No changes needed'
   },
 
-  // SALADS - RANCH, BALSAMIC VINAIGRETTE, CAESAR, CITRUS DRESSING, RED WINE VINAIGRETTE, BLUE CHEESE, OR OIL AND VINEGAR CRUETS ONLY
+  // SALADS - RANCH, BALSAMIC VINAIGRETTE, CAESAR, CITRUS DRESSING, RED WINE VINAIGRETTE, BLUE CHEESE, LEMON PARMESAN, LEMON HERB, OR OIL AND VINEGAR CRUETS ONLY
+  // Note: Lemon Parmesan and Lemon Herb are safe for gluten per kitchen confirmation (sheet may list differently)
   {
     itemName: 'Field Green salad',
     category: 'Salads',
     status: 'safe',
     modifications: [],
-    notes: 'No changes needed. Safe dressings: RANCH, BALSAMIC VINAIGRETTE, CAESAR, CITRUS, RED WINE VINAIGRETTE, BLUE CHEESE, OIL AND VINEGAR'
+    notes: 'No changes needed. Safe dressings: RANCH, BALSAMIC VINAIGRETTE, CAESAR, CITRUS, RED WINE VINAIGRETTE, BLUE CHEESE, LEMON PARMESAN, LEMON HERB, OIL AND VINEGAR'
   },
   {
     itemName: 'Caesar Salad',
     category: 'Salads',
     status: 'modifiable',
     modifications: ['NO croutons', 'SUB GLUTEN FREE CROUTONS'],
-    notes: 'Can be made gluten-safe with gluten-free substitutions. Safe dressings: RANCH, BALSAMIC VINAIGRETTE, CAESAR, CITRUS, RED WINE VINAIGRETTE, BLUE CHEESE, OIL AND VINEGAR'
+    notes: 'Can be made gluten-safe with gluten-free substitutions. Safe dressings: RANCH, BALSAMIC VINAIGRETTE, CAESAR, CITRUS, RED WINE VINAIGRETTE, BLUE CHEESE, LEMON PARMESAN, LEMON HERB, OIL AND VINEGAR'
   },
   {
     itemName: 'Kale and Spinach',
     category: 'Salads',
     status: 'safe',
     modifications: [],
-    notes: 'No changes needed. Safe dressings: RANCH, BALSAMIC VINAIGRETTE, CAESAR, CITRUS, RED WINE VINAIGRETTE, BLUE CHEESE, OIL AND VINEGAR'
+    notes: 'No changes needed. Safe dressings: RANCH, BALSAMIC VINAIGRETTE, CAESAR, CITRUS, RED WINE VINAIGRETTE, BLUE CHEESE, LEMON PARMESAN, LEMON HERB, OIL AND VINEGAR'
   },
   {
     itemName: 'Greek Salad',
     category: 'Salads',
     status: 'safe',
     modifications: [],
-    notes: 'No changes needed. Safe dressings: RANCH, BALSAMIC VINAIGRETTE, CAESAR, CITRUS, RED WINE VINAIGRETTE, BLUE CHEESE, OIL AND VINEGAR'
+    notes: 'No changes needed. Safe dressings: RANCH, BALSAMIC VINAIGRETTE, CAESAR, CITRUS, RED WINE VINAIGRETTE, BLUE CHEESE, LEMON PARMESAN, LEMON HERB, OIL AND VINEGAR'
   },
   {
     itemName: 'Steak and Blue Cheese Salad',
     category: 'Salads',
     status: 'modifiable',
     modifications: ['NO crispy onions'],
-    notes: 'Can be made gluten-safe with listed modifications. Safe dressings: RANCH, BALSAMIC VINAIGRETTE, CAESAR, CITRUS, RED WINE VINAIGRETTE, BLUE CHEESE, OIL AND VINEGAR'
+    notes: 'Can be made gluten-safe with listed modifications. Safe dressings: RANCH, BALSAMIC VINAIGRETTE, CAESAR, CITRUS, RED WINE VINAIGRETTE, BLUE CHEESE, LEMON PARMESAN, LEMON HERB, OIL AND VINEGAR'
   },
   {
     itemName: 'Chopped salad',
     category: 'Salads',
     status: 'modifiable',
     modifications: ['NO corn tortillas', 'SUB GLUTEN FREE TORTILLA CHIPS'],
-    notes: 'Can be made gluten-safe with gluten-free substitutions. Safe dressings: RANCH, BALSAMIC VINAIGRETTE, CAESAR, CITRUS, RED WINE VINAIGRETTE, BLUE CHEESE, OIL AND VINEGAR'
+    notes: 'Can be made gluten-safe with gluten-free substitutions. Safe dressings: RANCH, BALSAMIC VINAIGRETTE, CAESAR, CITRUS, RED WINE VINAIGRETTE, BLUE CHEESE, LEMON PARMESAN, LEMON HERB, OIL AND VINEGAR'
   },
 
   // STEAKS, CHOPS, AND PRIME RIB

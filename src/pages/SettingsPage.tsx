@@ -22,6 +22,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import type { TenantContext, TenantPack } from '@/core/tenant';
 import { getDeviceFingerprint, runSmokeCheck, logPackDebugInfo } from '@/core/tenant';
 import { getCachedPack } from '@/core/tenant';
+import { getPrinterIp, savePrinterIp } from '@/services/print-service';
 
 interface SettingsPageProps {
   tenantContext: TenantContext;
@@ -51,6 +52,7 @@ export function SettingsPage({
   const [copiedDeviceId, setCopiedDeviceId] = useState(false);
   const [showDebug, setShowDebug] = useState(false);
   const [debugInfo, setDebugInfo] = useState<string | null>(null);
+  const [printerIp, setPrinterIp] = useState<string>(getPrinterIp() ?? '');
 
   const handleCheckUpdates = async () => {
     setIsCheckingUpdates(true);
@@ -254,6 +256,36 @@ export function SettingsPage({
             <p className="text-xs text-slate-500 mt-2 text-center">
               Share this ID with support if you need assistance
             </p>
+          </CardContent>
+        </Card>
+
+        {/* Receipt Printer */}
+        <Card className="bg-slate-800/90 border-slate-700">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-lg text-white">Receipt Printer</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-2">
+            <p className="text-xs text-slate-500">
+              Enter the IP address of your Epson kitchen printer (e.g. 192.168.1.100)
+            </p>
+            <div className="flex gap-2">
+              <input
+                type="text"
+                value={printerIp}
+                onChange={(e) => setPrinterIp(e.target.value)}
+                placeholder="e.g. 192.168.1.100"
+                className="flex-1 rounded-lg border border-slate-600 bg-slate-700/50 px-3 py-2 text-sm text-white placeholder-slate-500 focus:border-amber-500 focus:outline-none focus:ring-1 focus:ring-amber-500"
+              />
+              <button
+                onClick={() => {
+                  savePrinterIp(printerIp);
+                  alert('Printer IP saved!');
+                }}
+                className="rounded-lg bg-amber-600 px-4 py-2 text-sm font-medium text-white hover:bg-amber-700 transition-colors"
+              >
+                Save
+              </button>
+            </div>
           </CardContent>
         </Card>
 
